@@ -17,18 +17,23 @@ import sys
 import subprocess
 from datetime import datetime
 
+
+# 強制使用 UTF-8 輸出以避免 Windows cp950 編碼問題
+sys.stdout.reconfigure(encoding="utf-8")
+
 # 精確定義 Unicode 中常見 Emoji 與符號的範圍
 EMOJI_PATTERNS = [
-    r'[\U0001F000-\U0001F9FF]',  # 現代常見 Emoji 表情、手勢、交通工具等 (1F000 - 1F9FF)
-    r'[\u2600-\u27BF]',          # 雜項符號與裝飾符號 (2600 - 27BF)
-    r'[\u2300-\u23FF]',          # 雜項技術符號 (2300 - 23FF)
-    r'[\u2B50\u2B55\u2B1B\u2B1C]',# 星星、圓圈、方塊等特殊符號
-    r'[\u2934\u2935]'            # 特殊轉折箭頭
+    r"[\U0001F000-\U0001F9FF]",  # 現代常見 Emoji 表情、手勢、交通工具等 (1F000 - 1F9FF)
+    r"[\u2600-\u27BF]",  # 雜項符號與裝飾符號 (2600 - 27BF)
+    r"[\u2300-\u23FF]",  # 雜項技術符號 (2300 - 23FF)
+    r"[\u2B50\u2B55\u2B1B\u2B1C]",  # 星星、圓圈、方塊等特殊符號
+    r"[\u2934\u2935]",  # 特殊轉折箭頭
 ]
-EMOJI_REGEX = re.compile('|'.join(EMOJI_PATTERNS))
+EMOJI_REGEX = re.compile("|".join(EMOJI_PATTERNS))
 
 # YAML Front Matter 必要屬性
-REQUIRED_KEYS = ['title', 'version', 'date', 'status', 'author']
+REQUIRED_KEYS = ["title", "version", "date", "status", "author"]
+
 
 def get_staged_markdown_files():
     """
@@ -40,39 +45,45 @@ def get_staged_markdown_files():
             ["git", "diff", "--cached", "--name-only", "--diff-filter=ACM"],
             capture_output=True,
             text=True,
-            check=True
+            check=True,
         )
-        files = result.stdout.strip().split('\n')
-        return [f for f in files if f.endswith('.md') and os.path.exists(f)]
+        files = result.stdout.strip().split("\n")
+        return [f for f in files if f.endswith(".md") and os.path.exists(f)]
     except Exception as e:
         print(f"錯誤: 無法取得 Git 暫存檔案清單: {str(e)}")
         return []
+
 
 def clean_emojis(text):
     """
     移除文字中的表情符號
     """
-    return EMOJI_REGEX.sub('', text)
+    return EMOJI_REGEX.sub("", text)
+
 
 def validate_and_update_header(file_path, content):
     """
     驗證 YAML Front Matter 是否合規，並自動更新「最後更新日期」
     """
-    today_str = datetime.today().strftime('%Y-%m-%d')
-    
+    today_str = datetime.today().strftime("%Y-%m-%d")
+
     # 1. 匹配最開頭的 YAML front matter
-    match = re.match(r'^---\s*\n(.*?)\n---\s*\n', content, re.DOTALL)
+    match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
     if not match:
-        return False, "缺少 YAML 元數據開頭 (YAML Front Matter)。請在檔案最上方加上 '---' 包裹的必要欄位。", content
-        
+        return (
+            False,
+            "缺少 YAML 元數據開頭 (YAML Front Matter)。請在檔案最上方加上 '---' 包裹的必要欄位。",
+            content,
+        )
+
     yaml_content = match.group(1)
-    
+
     # 2. 檢查必要屬性是否存在
     missing_keys = []
     for key in REQUIRED_KEYS:
-        if not re.search(fr'^{key}\s*:', yaml_content, re.MULTILINE):
+        if not re.search(rf"^{key}\s*:", yaml_content, re.MULTILINE):
             missing_keys.append(key)
-            
+
     if missing_keys:
         err_msg = (
             f"YAML 元數據中缺少必要欄位: {', '.join(missing_keys)}\n"
@@ -86,69 +97,72 @@ def validate_and_update_header(file_path, content):
             f"---"
         )
         return False, err_msg, content
-        
+
     # 3. 自動更新 YAML 中的 date 屬性為今天
     new_content = re.sub(
-        r'(^date\s*:\s*)\S+',
-        fr'\g<1>{today_str}',
-        content,
-        count=1,
-        flags=re.MULTILINE
+        r"(^date\s*:\s*)\S+", rf"\g<1>{today_str}", content, count=1, flags=re.MULTILINE
     )
-    
+
     # 4. 自動更新 Markdown 表格中的「最後更新 (Last Updated)」日期為今天
     # 匹配格式: | **最後更新 (Last Updated)** | 2026-05-24 | 或 | **最後更新** | 2026-05-24 |
     new_content = re.sub(
-        r'(\|\s*\*\*最後更新\s*(?:\(Last\s*Updated\))?\*\*\s*\|\s*)[^|\s]+(\s*\|)',
-        fr'\g<1>{today_str}\g<2>',
-        new_content
+        r"(\|\s*\*\*最後更新\s*(?:\(Last\s*Updated\))?\*\*\s*\|\s*)[^|\s]+(\s*\|)",
+        rf"\g<1>{today_str}\g<2>",
+        new_content,
     )
-    
+
     return True, "", new_content
+
 
 def process_file(file_path):
     """
     處理單個檔案的驗證、清理與日期更新
     """
     print(f"正在檢查文件: {file_path}")
-    
+
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             original_content = f.read()
-            
+
         # 步驟 A: 清除表情符號
         cleaned_content = clean_emojis(original_content)
-        
+
         # 步驟 B: 驗證 YAML Header 並自動更新更新日期
-        is_ok, err_msg, finalized_content = validate_and_update_header(file_path, cleaned_content)
-        
+        is_ok, err_msg, finalized_content = validate_and_update_header(
+            file_path, cleaned_content
+        )
+
         if not is_ok:
-            print(f"【提交失敗】檔案 {file_path} 未通過合規檢查:\n{err_msg}\n")
+            # 使用 ASCII 訊息以避免 Windows cp950 編碼問題
+            print(f"[ERROR] 檔案 {file_path} 未通過合規檢查:\n{err_msg}\n")
             return False
-            
+
         # 步驟 C: 若檔案內容有變更，寫回並重新執行 git add
         if finalized_content != original_content:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(finalized_content)
-                
+
             # 將背景變更重新暫存
             subprocess.run(["git", "add", file_path], check=True)
-            print(f"-> 【自動修正完成】已清除 Emoji 並更新最後更新日期為 {datetime.today().strftime('%Y-%m-%d')}")
+            print(
+                f"-> [FIXED] 已清除 Emoji 並更新最後更新日期為 {datetime.today().strftime('%Y-%m-%d')}"
+            )
         else:
-            print("-> 【通過】文件結構合規，且內容無變更")
-            
+            print("-> [PASS] 文件結構合規，且內容無變更")
+
         return True
-        
+
     except Exception as e:
         print(f"錯誤: 處理檔案 {file_path} 時發生未預期錯誤: {str(e)}")
         return False
+
 
 def main():
     staged_files = get_staged_markdown_files()
     if not staged_files:
         # 沒有暫存的 markdown 檔案，直接放行
         sys.exit(0)
-        
+
     success = True
     print("\n=== Linetra Markdown 自動標準化檢查 ===")
     for file_path in staged_files:
@@ -157,14 +171,16 @@ def main():
             continue
         if not process_file(file_path):
             success = False
-            
+
     if not success:
-        print("\n❌ 提交遭攔截！請修正上述錯誤後再重新 commit。")
+        # 使用 ASCII 警告訊息，避免 Unicode 編碼錯誤
+        print("\n[ERROR] 提交遭攔截！請修正上述錯誤後再重新 commit.")
         print("=========================================\n")
         sys.exit(1)
-        
+
     print("=== 檢查通過，允許執行 Git 提交 ===\n")
     sys.exit(0)
+
 
 if __name__ == "__main__":
     main()
