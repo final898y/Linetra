@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-05-24
+date: 2026-05-25
 status: Active
 author: Linetra Dev Team
 ---
@@ -31,6 +31,24 @@ author: Linetra Dev Team
 
 **變更檔案 (Changed Files):**
 - tools/git-hooks/install_hooks.ps1
+- tools/git-hooks/pre_commit_markdown_helper.py
+
+---
+
+### [2026-05-24 23:53:27 +0800] feat(git-hooks): add commit-msg and post-commit hooks and MIT license
+- Add commit-msg hook to validate conventional commit messages
+- Add post-commit hook to automate commit logging in docs/COMMIT_LOG.md
+- Add MIT License and update README.md
+- Modularize install_hooks.ps1 to support multiple hooks
+- Exclude README.md from pre-commit markdown standardization
+
+**變更檔案 (Changed Files):**
+- LICENSE
+- README.md
+- docs/COMMIT_LOG.md
+- tools/git-hooks/commit_msg_helper.py
+- tools/git-hooks/install_hooks.ps1
+- tools/git-hooks/post_commit_log_helper.py
 - tools/git-hooks/pre_commit_markdown_helper.py
 
 ---
