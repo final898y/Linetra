@@ -166,8 +166,9 @@ def main():
     success = True
     print("\n=== Linetra Markdown 自動標準化檢查 ===")
     for file_path in staged_files:
-        # 排除 templates 或 guides 等本身是教學性質的範本檔案（可視需求擴充）
-        if "template" in file_path.lower():
+        filename = os.path.basename(file_path).lower()
+        # 排除 README.md、templates 或 guides 等檔案
+        if filename == "readme.md" or "template" in filename:
             continue
         if not process_file(file_path):
             success = False

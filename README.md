@@ -1,11 +1,3 @@
----
-title: Linetra — 專業 LINE 通報與期限追蹤管理平台
-version: v1.0
-date: 2026-05-24
-status: In Development
-author: Linetra Dev Team
----
-
 # Linetra
 
 ### 專業 LINE 通報與期限追蹤管理平台 (Professional LINE Report & Deadline Tracking System)
@@ -17,6 +9,7 @@ author: Linetra Dev Team
 | **建立日期 (Created Date)** | 2026-05-24                 |
 | **最後更新 (Last Updated)** | 2026-05-24                 |
 | **主要作者 (Author)**       | Linetra Dev Team           |
+| **授權條款 (License)**      | [MIT License](LICENSE)     |
 
 ---
 
@@ -52,17 +45,17 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 快速開始 (Getting Started)
 
-_(此部分將於開發環境建置完成後更新)_
-
-1. **環境變數設定**: 複製 `.env.example` 並填入 Google OAuth 憑證與資料庫連線字串。
-2. **安裝套件**: `npm install`
-3. **資料庫遷移**: `npx prisma migrate dev`
-4. **啟動開發伺服器**: `npm run dev`
+1. **Git Hooks 安裝**: 
+   ```powershell
+   powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git-hooks/install_hooks.ps1 -Force
+   ```
+2. **環境變數設定**: 複製 `.env.example` 並填入憑證。
+3. **後續步驟**: 待後續開發環境建置指南更新。
 
 ---
 
 ## 開發者與版本資訊 (Development Info)
 
 - **版本**: v1.0 (MVP 階段)
-- **授權**: MIT License (或依需求調整)
+- **授權**: [MIT License](LICENSE)
 - **文件**: [產品需求文件 (PRD)](docs/product/prd.md)
