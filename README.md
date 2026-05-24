@@ -1,0 +1,68 @@
+---
+title: Linetra — 專業 LINE 通報與期限追蹤管理平台
+version: v1.0
+date: 2026-05-24
+status: In Development
+author: Linetra Dev Team
+---
+
+# Linetra
+
+### 專業 LINE 通報與期限追蹤管理平台 (Professional LINE Report & Deadline Tracking System)
+
+| 屬性 (Metadata)             | 內容 (Content)             |
+| :-------------------------- | :------------------------- |
+| **專案版本 (Version)**      | `v1.0 (MVP)`               |
+| **開發狀態 (Status)**       | 開發中 (In Development)    |
+| **建立日期 (Created Date)** | 2026-05-24                 |
+| **最後更新 (Last Updated)** | 2026-05-24                 |
+| **主要作者 (Author)**       | Linetra Dev Team           |
+
+---
+
+Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決在 LINE 群組中進行案件通報時常見的「格式不一致」、「追蹤困難」以及「期限管理混亂」等痛點。透過標準化模板與智慧追蹤系統，將零散的訊息轉化為可管理的結構化資料。
+
+---
+
+## 核心功能 (Key Features)
+
+- **標準化通報產生器 (Standardized Report Generator)**：提供 5 種行政專用模板（一般案件、處務會議、市長週報、面報、公告通知），一鍵產生格式化文字。
+- **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，符合行政實務需求。
+- **案件生命週期追蹤 (Case Lifecycle Tracking)**：透過狀態機 (State Machine) 管理案件，包含待辦 (Pending)、已完成 (Completed)、逾期 (Overdue) 及封存 (Archived)。
+- **智慧提醒系統 (Rule-based Reminder System)**：基於瀏覽器通知 (Browser Notification)，在期限到達前自動觸發提醒，降低案件遺漏風險。
+- **視覺化管理 (Visual Management)**：提供待辦清單 (Pending List) 與行事曆視圖 (Calendar View)，直覺掌握工作負荷。
+
+## 技術架構 (Technical Architecture)
+
+- **前端 (Frontend)**: Vue 3 (TypeScript) + Tailwind CSS (或依開發規範調整)
+- **後端 (Backend)**: Python
+- **資料庫 (Database)**: PostgreSQL
+- **驗證 (Authentication)**: Google OAuth 2.0 + JWT (HttpOnly Cookie)
+- **排程 (Scheduler)**: Cron Job (每 10 分鐘掃描提醒與逾期狀態)
+
+## 核心術語 (Glossary)
+
+| 術語             | 英文對應            | 定義                                       |
+| :--------------- | :------------------ | :----------------------------------------- |
+| **通報**         | **Report**          | 發送至 LINE 群組的行政通知文字             |
+| **案件**         | **Case / Record**   | 系統中被儲存並持續追蹤的紀錄實體           |
+| **真實截止時間** | **Actual Due**      | 最終、不可逾越的硬性截止時間               |
+| **對外通知期限** | **Announced Due**   | 對下屬單位公告的期限，通常早於真實截止時間 |
+| **重要旗標**     | **Importance Flag** | 標記為重要案件，觸發 `@All 【重要】` 前綴  |
+
+## 快速開始 (Getting Started)
+
+_(此部分將於開發環境建置完成後更新)_
+
+1. **環境變數設定**: 複製 `.env.example` 並填入 Google OAuth 憑證與資料庫連線字串。
+2. **安裝套件**: `npm install`
+3. **資料庫遷移**: `npx prisma migrate dev`
+4. **啟動開發伺服器**: `npm run dev`
+
+---
+
+## 開發者與版本資訊 (Development Info)
+
+- **版本**: v1.0 (MVP 階段)
+- **授權**: MIT License (或依需求調整)
+- **文件**: [產品需求文件 (PRD)](docs/product/prd.md)
