@@ -7,13 +7,22 @@
 | **專案版本 (Version)**      | `v1.0 (MVP)`               |
 | **開發狀態 (Status)**       | 開發中 (In Development)    |
 | **建立日期 (Created Date)** | 2026-05-24                 |
-| **最後更新 (Last Updated)** | 2026-05-24                 |
+| **最後更新 (Last Updated)** | 2026-05-28                 |
 | **主要作者 (Author)**       | Linetra Dev Team           |
 | **授權條款 (License)**      | [MIT License](LICENSE)     |
 
 ---
 
 Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決在 LINE 群組中進行案件通報時常見的「格式不一致」、「追蹤困難」以及「期限管理混亂」等痛點。透過標準化模板與智慧追蹤系統，將零散的訊息轉化為可管理的結構化資料。
+
+## 專案文件 (Documentation)
+
+- **[產品需求文件 (PRD)](docs/product/prd.md)**: 定義核心功能、狀態機與時間模型。
+- **[系統架構設計 (Architecture)](docs/architecture/system_architecture.md)**: 基於 Supabase 的 Serverless 方案說明。
+- **[資料庫實作與安全 (DB & RLS)](docs/architecture/database_implementation.md)**: SQL Schema、RLS 政策與索引優化。
+- **[自動化任務設計 (Edge Functions)](docs/architecture/edge_functions_design.md)**: 逾期掃描與提醒系統邏輯。
+- **[前端架構規範 (Frontend Spec)](docs/development/frontend_spec.md)**: Vue 3 專案結構、型別與模板引擎實作。
+- **[視覺規範 (Visual Identity)](docs/design/visual_identity.md)**: 色彩計畫、字體與 Tailwind CSS 組件規範。
 
 ---
 
@@ -25,13 +34,18 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 - **智慧提醒系統 (Rule-based Reminder System)**：基於瀏覽器通知 (Browser Notification)，在期限到達前自動觸發提醒，降低案件遺漏風險。
 - **視覺化管理 (Visual Management)**：提供待辦清單 (Pending List) 與行事曆視圖 (Calendar View)，直覺掌握工作負荷。
 
-## 技術架構 (Technical Architecture)
+## 技術架構 (Technical Architecture - Zero-Cost Serverless)
 
-- **前端 (Frontend)**: Vue 3 (TypeScript) + Tailwind CSS (或依開發規範調整)
-- **後端 (Backend)**: Python
-- **資料庫 (Database)**: PostgreSQL
-- **驗證 (Authentication)**: Google OAuth 2.0 + JWT (HttpOnly Cookie)
-- **排程 (Scheduler)**: Cron Job (每 10 分鐘掃描提醒與逾期狀態)
+本專案採用 **Serverless / BaaS** 架構，以達成個人使用的「零成本維護」目標。
+
+- **前端 (Frontend)**: Vue 3 (Vite + TypeScript) + Tailwind CSS
+- **託管平台 (Hosting)**: Vercel / Cloudflare Pages (靜態託管)
+- **後端與資料庫 (BaaS)**: **Supabase**
+  - **Auth**: Google OAuth 2.0 (50,000 MAU)
+  - **Database**: PostgreSQL with Row Level Security (RLS)
+  - **Edge Functions**: Deno (處理 Cron Jobs / 逾期掃描)
+  - **Storage**: (未來擴充附件管理使用)
+
 
 ## 核心術語 (Glossary)
 

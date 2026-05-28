@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-05-25
+date: 2026-05-29
 status: Active
 author: Linetra Dev Team
 ---
@@ -50,5 +50,37 @@ author: Linetra Dev Team
 - tools/git-hooks/install_hooks.ps1
 - tools/git-hooks/post_commit_log_helper.py
 - tools/git-hooks/pre_commit_markdown_helper.py
+
+---
+
+### [2026-05-25 00:06:22 +0800] feat(root): add linetra-standard skill and organize tools/skills directory
+- Create tools/skills directory for project-specific Gemini CLI skills
+- Add linetra-standard skill with project-compliant YAML headers
+- Add packaged .skill file and documentation
+
+**變更檔案 (Changed Files):**
+- docs/COMMIT_LOG.md
+- tools/skills/README.md
+- tools/skills/linetra-standard.skill
+- tools/skills/linetra-standard/SKILL.md
+- tools/skills/linetra-standard/references/commit_standards.md
+- tools/skills/linetra-standard/references/markdown_standards.md
+
+---
+
+### [2026-05-29 00:06:19 +0800] docs: finalize core technical specifications for development
+- Add Database Implementation & RLS Policies docs
+- Add Edge Functions & Cron Job Design docs
+- Add Frontend Architecture & Specs docs
+- Add Visual Identity & Design System docs
+- Update README.md with technical doc links and Serverless architecture
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/COMMIT_LOG.md
+- docs/architecture/database_implementation.md
+- docs/architecture/edge_functions_design.md
+- docs/design/visual_identity.md
+- docs/development/frontend_spec.md
 
 ---
