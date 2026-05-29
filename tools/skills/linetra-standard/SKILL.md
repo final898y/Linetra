@@ -3,7 +3,7 @@ name: linetra-standard
 description: Linetra 專案開發規範。適用於 Linetra 儲存庫中的所有作業，包含 Commit 格式驗證、Markdown 標準化、目錄結構規範及自動化日誌管理。
 title: Linetra — Standard Skill Instructions
 version: v1.0
-date: 2026-05-25
+date: 2026-05-29
 status: Active
 author: Linetra Dev Team
 ---
@@ -23,7 +23,7 @@ author: Linetra Dev Team
 - **操作流程**：
     1. 準備提交前，執行 `git diff --staged` 確認內容。
     2. 撰寫符合規範的訊息。
-    3. 提交後確認 `docs/COMMIT_LOG.md` 是否已由 Hook 自動更新。
+    3. 提交後確認 `docs/product/COMMIT_LOG.md` 是否已由 Hook 自動更新。
 
 ### 3. Markdown 文件標準
 - 所有 `.md` 檔案（`README.md` 除外）必須包含 YAML Header 及 Metadata 表格。
@@ -42,4 +42,4 @@ author: Linetra Dev Team
 
 ## 常用工具指令
 - **安裝 Hooks**：`powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git-hooks/install_hooks.ps1 -Force`
-- **查看日誌**：`cat docs/COMMIT_LOG.md`
+- **查看日誌**：`cat docs/product/COMMIT_LOG.md`

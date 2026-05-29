@@ -7,7 +7,7 @@
 | **專案版本 (Version)**      | `v1.0 (MVP)`               |
 | **開發狀態 (Status)**       | 開發中 (In Development)    |
 | **建立日期 (Created Date)** | 2026-05-24                 |
-| **最後更新 (Last Updated)** | 2026-05-28                 |
+| **最後更新 (Last Updated)** | 2026-05-29                 |
 | **主要作者 (Author)**       | Linetra Dev Team           |
 | **授權條款 (License)**      | [MIT License](LICENSE)     |
 
@@ -17,12 +17,13 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 專案文件 (Documentation)
 
+- **[產品架構與規範指南 (Standard)](docs/guides/project_architecture_guidelines.md)**: 專案目錄結構、Git 分支與 Commit 規範。
 - **[產品需求文件 (PRD)](docs/product/prd.md)**: 定義核心功能、狀態機與時間模型。
 - **[系統架構設計 (Architecture)](docs/architecture/system_architecture.md)**: 基於 Supabase 的 Serverless 方案說明。
-- **[資料庫實作與安全 (DB & RLS)](docs/architecture/database_implementation.md)**: SQL Schema、RLS 政策與索引優化。
+- **[資料庫設計 (Database Design)](docs/architecture/database_design.md)**: SQL Schema、RLS 政策與索引優化。
 - **[自動化任務設計 (Edge Functions)](docs/architecture/edge_functions_design.md)**: 逾期掃描與提醒系統邏輯。
-- **[前端架構規範 (Frontend Spec)](docs/development/frontend_spec.md)**: Vue 3 專案結構、型別與模板引擎實作。
-- **[視覺規範 (Visual Identity)](docs/design/visual_identity.md)**: 色彩計畫、字體與 Tailwind CSS 組件規範。
+- **[前端開發規範 (Frontend Guide)](docs/guides/frontend_spec.md)**: Vue 3 專案結構、型別與模板引擎實作。
+- **[視覺識別規範 (Visual Identity)](docs/product/visual_identity.md)**: 色彩計畫、字體與 Tailwind CSS 組件規範。
 
 ---
 

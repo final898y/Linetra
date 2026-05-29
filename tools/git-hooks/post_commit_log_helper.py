@@ -14,7 +14,7 @@ from datetime import datetime
 # 強制使用 UTF-8 輸出
 sys.stdout.reconfigure(encoding="utf-8")
 
-LOG_FILE = "docs/COMMIT_LOG.md"
+LOG_FILE = "docs/product/COMMIT_LOG.md"
 
 def get_latest_commit_info():
     """

@@ -80,6 +80,7 @@ author: Linetra Dev Team
 - docs/COMMIT_LOG.md
 - docs/architecture/database_implementation.md
 - docs/architecture/edge_functions_design.md
+- docs/architecture/system_architecture.md
 - docs/design/visual_identity.md
 - docs/development/frontend_spec.md
 
