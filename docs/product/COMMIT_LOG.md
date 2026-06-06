@@ -109,3 +109,34 @@ author: Linetra Dev Team
 - tools/skills/linetra-standard/SKILL.md
 
 ---
+
+### [2026-06-06 10:18:52 +0800] docs(guides): sync architecture guidelines with serverless design
+1. Update directory structure to reflect Supabase/Serverless architecture (replacing Python/FastAPI with supabase/).
+2. Sync version to v1.1 and update metadata table.
+3. Update commit scopes and branch management strategies.
+4. Refresh visual identity guidelines to v2.1 based on latest design system.
+5. Ensure all documents follow linetra-standard (Traditional Chinese, no emojis).
+
+**變更檔案 (Changed Files):**
+- docs/guides/project_architecture_guidelines.md
+- docs/product/COMMIT_LOG.md
+- docs/product/visual_identity.md
+
+---
+
+### [2026-06-06 14:30:00 +0800] feat(frontend): bootstrap vue3 application with tailwind v4 and spec v1.1
+1. Bootstrap Vue 3 application using Vite and TypeScript.
+2. Upgrade to Tailwind CSS v4 using @tailwindcss/vite and CSS-based theme configuration.
+3. Install core dependencies: vue-router, pinia.
+4. Establish project directory structure (api, router, stores, views, etc.).
+5. Update frontend_spec.md to version v1.1 with detailed dev setup and coding standards.
+6. Create vue3-ts-eslint-prettier-setup.md as a detailed configuration guide.
+7. Implement baseline App.vue with Dual-tone design system (Cream & Dark).
+
+**變更檔案 (Changed Files):**
+- docs/guides/frontend_spec.md
+- docs/guides/vue3-ts-eslint-prettier-setup.md
+- frontend/
+- docs/product/COMMIT_LOG.md
+
+---

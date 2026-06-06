@@ -1,57 +1,111 @@
 ---
 title: Linetra — 前端架構與實作規範 (Frontend Architecture & Specs)
-version: v1.0
-date: 2026-05-29
+version: v1.1
+date: 2026-06-06
 status: Active
 author: Linetra Dev Team
 ---
 
 # Linetra — 前端架構與實作規範 (Frontend Architecture & Specs)
 
-本文件定義 Linetra 前端應用程式 (Vue 3 + TypeScript) 的技術架構、型別規範與實作細節。
+本文件定義 Linetra 前端應用程式的技術架構、型別規範與實作細節。
 
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
-| **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-05-29 |
-| **技術棧** | Vue 3, Vite, TypeScript, Pinia, Tailwind CSS |
+| **技術棧 (Tech Stack)** | Vue 3 (Composition API), Vite, TypeScript |
+| **狀態管理 (State)** | Pinia |
+| **路由 (Routing)** | Vue Router 4 |
+| **樣式 (Styling)** | Tailwind CSS |
+| **程式碼規範 (Linting)** | ESLint + Prettier |
 
 ---
 
-## 1. 專案目錄結構 (Project Structure)
+## 1. 開發環境與工具配置 (Development Setup)
+
+### 1.1 Vite 配置
+*   使用 `@` 作為 `src` 目錄的別名 (Alias)。
+*   開發伺服器預設埠位：`3000`。
+*   啟用 `compression` 插件進行生產環境構建優化。
+
+### 1.2 程式碼品質控制 (Linting & Formatting)
+*   **ESLint**: 採用 `eslint-config-vue-typescript` 規範，嚴格執行 `no-explicit-any`。
+*   **Prettier**: 
+    *   `semi: false` (不使用分號)
+    *   `singleQuote: true` (使用單引號)
+    *   `printWidth: 100`
+    *   `trailingComma: 'es5'`
+*   **EditorConfig**: 統一縮進為 2 個空格。
+
+---
+
+## 2. 專案目錄結構 (Project Structure)
 
 遵循模組化與職責分離原則：
 
 ```text
 src/
-├── api/            # Supabase Client 封裝與特定 API 呼叫
+├── api/            # Supabase Client 封裝與特定 API 呼叫 (Service Layer)
 ├── assets/         # 靜態資源 (Images, Global CSS)
-├── components/     # 原子組件與公用組件 (BaseButton, BaseModal)
-│   ├── layout/     # 佈局相關組件 (Navbar, Sidebar)
-│   └── reports/    # 案件相關業務組件 (CaseCard, ReportForm)
+├── components/     # 組件庫
+│   ├── base/       # 原子組件 (BaseButton.vue, BaseInput.vue)
+│   ├── layout/     # 佈局組件 (Navbar.vue, Sidebar.vue)
+│   └── common/     # 業務通用組件 (CaseCard.vue, ReportForm.vue)
 ├── composables/    # 共享邏輯 (useAuth, useNotifications, useRelativeTime)
-├── stores/         # Pinia 狀態管理 (auth.ts, reports.ts, ui.ts)
+├── router/         # 路由配置 (index.ts, guards.ts)
+├── stores/         # Pinia 狀態管理 (auth.ts, reports.ts)
 ├── types/          # TypeScript 型別定義 (database.types.ts, models.ts)
-├── views/          # 頁面組件 (Home.vue, Login.vue, Calendar.vue)
-└── utils/          # 工具函式 (formatters.ts, validators.ts)
+├── views/          # 頁面組件 (HomeView.vue, LoginView.vue)
+├── utils/          # 工具函式 (formatters.ts, validators.ts)
+└── App.vue         # 根組件
 ```
 
 ---
 
-## 2. 狀態管理 (State Management - Pinia)
+## 3. 路由設計 (Routing - Vue Router)
 
-### 2.1 `useAuthStore`
-*   **State**: `user`, `session`, `loading`.
-*   **Actions**: `signInWithGoogle()`, `signOut()`, `refreshUser()`.
+### 3.1 路由模組化
+*   路徑命名：使用 `kebab-case` (例如 `/report-detail/:id`)。
+*   懶加載 (Lazy Loading)：所有頁面組件應使用動態導入 `() => import('@/views/...')`。
 
-### 2.2 `useReportStore`
-*   **State**: `reports[]`, `currentReport`, `filters`.
-*   **Actions**: `fetchReports()`, `createReport()`, `updateStatus()`, `deleteReport()`.
-*   **Getters**: `pendingReports`, `overdueCount`, `calendarEvents`.
+### 3.2 導航守衛 (Navigation Guards)
+*   `requiresAuth`: 需檢查 `useAuthStore` 中的 `session` 狀態。
+*   `guestOnly`: 已登錄用戶訪問登錄頁時重定向至首頁。
 
 ---
 
-## 3. 型別定義 (Type Definitions)
+## 4. 狀態管理 (State Management - Pinia)
+
+### 4.1 核心 Store
+*   **`useAuthStore`**: 管理用戶 Session、設定檔與權限。
+*   **`useReportStore`**: 管理案件列表、篩選器與快取。
+*   **`useUIStore`**: 管理全域 Modal、Toast 與 Loading 狀態。
+
+### 4.2 實作規範
+*   優先使用 `Setup Stores` 語法 (`defineStore('id', () => { ... })`) 以保持與 Composition API 一致。
+*   禁止在組件中直接修改 Store 的 State，應透過 Actions 進行。
+
+---
+
+## 5. 樣式規範 (Styling - Tailwind CSS)
+
+*   **實作優先**: 優先使用 Tailwind Utility Classes，減少撰寫自定義 CSS。
+*   **命名慣例**: 若需自定義類別，遵循 BEM 規範。
+*   **設計系統**: 在 `tailwind.config.js` 中定義 Linetra 品牌色系 (Primary, Secondary, Accent)。
+*   **組件化**: 複雜的 Tailwind 組合應封裝成 Vue 組件，而非過度使用 `@apply`。
+
+---
+
+## 6. 組件開發規範 (Component Standards)
+
+*   **SFC 結構**: 嚴格遵守 `<script setup lang="ts">` -> `<template>` -> `<style scoped>` 的順序。
+*   **Props/Emits**: 
+    *   使用 `defineProps<{ ... }>()` 定義具備型別的屬性。
+    *   使用 `defineEmits<{ (e: 'change', id: number): void }>()` 定義事件。
+*   **邏輯抽離**: 超過 100 行的業務邏輯應考慮抽離至 `composables/`。
+
+---
+
+## 7. 型別定義 (Type Definitions)
 
 應利用 `supabase-js` 產生的型別為 Source of Truth：
 
@@ -74,51 +128,33 @@ export enum TemplateType {
 
 ---
 
-## 4. 模板引擎設計 (Template Engine)
+## 8. 模板引擎設計 (Template Engine)
 
-將 PRD 中的 T1-T5 邏輯封裝為獨立的服務層，不與 UI 耦合。
+將 PRD 中的 T1-T5 邏輯封裝為獨立的服務層。
 
-### 4.1 實作方式
+### 8.1 實作方式
 ```typescript
 // src/utils/templateGenerator.ts
 export const generateLineText = (report: Report, items: ReportItem[]): string => {
   const lines: string[] = [];
-  
-  // 1. 重要標記
-  if (report.importance_flag) lines.push('@All 【重要】');
-  
-  // 2. 標題
-  lines.push(report.template_type === 'announcement' ? '【 公 告 通 知 】' : '【 案 件 通 報 】');
-  lines.push('~~~~~~~~~~~~~~~~~~~~~~~~~~');
-
-  // 3. 根據模板類型插入特定欄位 (Switch Case)
-  // ... 實作各模板邏輯 ...
-
+  // ... 實作邏輯 ...
   return lines.join('\n');
 }
 ```
 
 ---
 
-## 5. 時間處理規範 (Time Handling)
+## 9. 時間處理與 UI/UX 規範
 
-嚴格執行 PRD 第六章規範：
-*   **儲存**: 一律轉為 `ISO 8601 UTC` 字串。
-*   **顯示**: 使用 `dayjs` 或原生 `Intl` 轉換為使用者時區。
-*   **相對時間**: 實作 `useRelativeTime` composable，將 `announced_due_at` 轉換為「今天下班前」、「下週二」等行政友善文字。
-
----
-
-## 6. UI/UX 實作細節 (MVP)
-
-*   **表單驗證**: 使用 `Vee-validate` 或簡單的 `ref` 綁定，落實 `announced_due < actual_due` 的警告機制。
-*   **行事曆**: 使用 `FullCalendar` 或 `v-calendar` 整合，以 `announced_due_at` 為主要時間軸。
-*   **通知授權**: 實作「延遲 3 秒」彈窗引導流程，防止瀏覽器預設封鎖。
-*   **樂觀更新 (Optimistic UI)**: 在標記案件完成時，先更新本地 Store 狀態，同步發送 API，若失敗則回滾並彈出 Toast。
+*   **時間儲存**: 一律使用 `ISO 8601 UTC`。
+*   **時間顯示**: 使用 `dayjs` 處理時區與格式化。
+*   **相對時間**: 實作 `useRelativeTime` composable。
+*   **表單驗證**: 使用 `Vee-validate` + `Zod` 進行嚴格校驗。
+*   **樂觀更新 (Optimistic UI)**: 提升操作流暢感。
 
 ---
 
-## 7. Supabase Client 封裝
+## 10. API 與 Supabase Client
 
 ```typescript
 // src/api/supabase.ts
@@ -130,4 +166,4 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
 ```
-建議所有的資料操作透過 `src/api/` 下的模組進行，例如 `src/api/reports.ts`，以便於單元測試與 Mock。
+建議所有的資料操作透過 `src/api/` 下的模組進行。

@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* 雙色調基礎 (Dual-tone) */
+  --color-cream-bg: #f2ede8;
+  --color-cream-surface: #ede7e0;
+  --color-cream-hover: #e5ddd4;
+  --color-cream-border: #d9d0c7;
+  --color-cream-text: #1a1714;
+  --color-cream-muted: #a8998d;
+
+  --color-dark-bg: #1a1820;
+  --color-dark-surface: #221f2b;
+  --color-dark-elevated: #2c2838;
+  --color-dark-border: #38334a;
+  --color-dark-text: #f5f2ff;
+  --color-dark-muted: #6b6080;
+
+  /* 品牌主色 (Violet) */
+  --color-brand: #a78bfa;
+  --color-brand-hover: #c4b5fd;
+  --color-brand-active: #8b5cf6;
+  --color-brand-subtle: rgba(167, 139, 250, 0.15);
+
+  /* 語意狀態 (Semantic) */
+  --color-status-pending: #a78bfa;
+  --color-status-completed: #34d399;
+  --color-status-overdue: #fb7185;
+  --color-status-warning: #fbbf24;
+  --color-status-archived: #78716c;
+
+  /* 字體與其它 */
+  --font-sans:
+    'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --tracking-tightest: -0.03em;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-cream-text bg-cream-bg;
+  }
+}
+
+/* Custom Scrollbar for Dark Mode */
+.dark-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.dark-scrollbar::-webkit-scrollbar-track {
+  background: #1a1820;
+}
+.dark-scrollbar::-webkit-scrollbar-thumb {
+  background: #38334a;
+  border-radius: 3px;
+}
+.dark-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #4a4560;
+}
