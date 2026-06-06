@@ -60,9 +60,11 @@ const statusColors = {
           </p>
           <p
             class="text-sm font-bold"
-            :class="getRemainingTimeColor(report.announced_due_at, report.status === 'completed')"
+            :class="
+              getRemainingTimeColor(report.announced_due_at || null, report.status === 'completed')
+            "
           >
-            {{ formatRelative(report.announced_due_at) }}
+            {{ formatRelative(report.announced_due_at || null) }}
           </p>
         </div>
         <button

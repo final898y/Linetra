@@ -16,25 +16,32 @@ export const useReportStore = defineStore('report', () => {
         .order('announced_due_at', { ascending: true })
 
       if (status && status !== 'all') {
-        query = query.eq('status', status)
+        query = query.eq('status', status as ReportStatus)
       } else {
         query = query.neq('status', 'archived')
       }
 
       const { data, error } = await query
       if (error) throw error
-      reports.value = data || []
+      reports.value = (data as Report[]) || []
     } finally {
       loading.value = false
     }
   }
 
   const createReport = async (reportData: ReportInsert) => {
-    const { data, error } = await supabase.from('reports').insert(reportData).select().single()
+    const { data, error } = await supabase
+      .from('reports')
+      .insert(reportData)
+      .select()
+      .single()
 
     if (error) throw error
-    reports.value.unshift(data)
-    return data
+    const newReport = data as Report
+    if (newReport) {
+      reports.value.unshift(newReport)
+    }
+    return newReport
   }
 
   const createReportItems = async (items: ReportItemInsert[]) => {
@@ -44,7 +51,10 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const updateStatus = async (id: string, status: ReportStatus) => {
-    const { error } = await supabase.from('reports').update({ status }).eq('id', id)
+    const { error } = await supabase
+      .from('reports')
+      .update({ status })
+      .eq('id', id)
 
     if (error) throw error
 

@@ -5,6 +5,8 @@ import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 
+import type { ReportItemInsert, ReportInsert } from '@/types/models'
+
 const router = useRouter()
 const reportStore = useReportStore()
 const authStore = useAuthStore()
@@ -19,16 +21,16 @@ const form = reactive({
   importance_flag: false,
 })
 
-const items = ref([
-  { item_type: 'submission_method' as const, content: '', sort_order: 1 },
-  { item_type: 'detail' as const, content: '', sort_order: 1 },
+const items = ref<Partial<ReportItemInsert>[]>([
+  { item_type: 'submission_method', content: '', sort_order: 1 },
+  { item_type: 'detail', content: '', sort_order: 2 },
 ])
 
 const addItem = (type: 'submission_method' | 'detail' | 'note') => {
   items.value.push({
     item_type: type,
     content: '',
-    sort_order: items.value.filter((i) => i.item_type === type).length + 1,
+    sort_order: items.value.length + 1,
   })
 }
 
@@ -37,7 +39,7 @@ const removeItem = (index: number) => {
 }
 
 const previewText = computed(() => {
-  return generateLineText(form, items.value)
+  return generateLineText(form, items.value as ReportItemInsert[])
 })
 
 const isSubmitting = ref(false)
@@ -45,6 +47,7 @@ const showPreview = ref(false)
 
 const handleCopyAndSave = async () => {
   if (!form.subject) return alert('請填寫案由')
+  if (!authStore.user) return alert('請先登入')
 
   isSubmitting.value = true
   try {
@@ -52,20 +55,26 @@ const handleCopyAndSave = async () => {
     await navigator.clipboard.writeText(previewText.value)
 
     // 2. Save to Supabase
-    const reportData = {
+    const reportData: ReportInsert = {
       ...form,
-      user_id: authStore.user?.id,
+      user_id: authStore.user.id,
       formatted_content: previewText.value,
       status: 'pending',
+      department: form.department || null,
+      actual_due_at: form.actual_due_at || null,
+      announced_due_at: form.announced_due_at || null,
     }
 
     const savedReport = await reportStore.createReport(reportData)
+    if (!savedReport) throw new Error('Failed to create report')
 
     // 3. Save Items
-    const reportItems = items.value
-      .filter((i) => i.content.trim() !== '')
-      .map((i) => ({
-        ...i,
+    const reportItems: ReportItemInsert[] = items.value
+      .filter((i) => i.content && i.content.trim() !== '')
+      .map((i, index) => ({
+        item_type: i.item_type || 'detail',
+        content: i.content || '',
+        sort_order: index + 1,
         report_id: savedReport.id,
       }))
 

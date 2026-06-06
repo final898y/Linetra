@@ -1,78 +1,106 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
-
 export interface Database {
   public: {
     Tables: {
       reports: {
         Row: {
-          id: string
-          user_id: string
-          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
-          department: string | null
-          subject: string
-          formatted_content: string | null
           actual_due_at: string | null
           announced_due_at: string | null
-          sent_at: string | null
-          importance_flag: boolean
-          status: 'pending' | 'completed' | 'overdue' | 'archived'
           created_at: string
+          department: string | null
+          formatted_content: string | null
+          id: string
+          importance_flag: boolean
+          sent_at: string | null
+          status: 'pending' | 'completed' | 'overdue' | 'archived'
+          subject: string
+          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at: string
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
-          department?: string | null
-          subject: string
-          formatted_content?: string | null
           actual_due_at?: string | null
           announced_due_at?: string | null
-          sent_at?: string | null
-          importance_flag?: boolean
-          status?: 'pending' | 'completed' | 'overdue' | 'archived'
           created_at?: string
+          department?: string | null
+          formatted_content?: string | null
+          id?: string
+          importance_flag?: boolean
+          sent_at?: string | null
+          status?: 'pending' | 'completed' | 'overdue' | 'archived'
+          subject: string
+          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at?: string
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          template_type?: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
-          department?: string | null
-          subject?: string
-          formatted_content?: string | null
           actual_due_at?: string | null
           announced_due_at?: string | null
-          sent_at?: string | null
-          importance_flag?: boolean
-          status?: 'pending' | 'completed' | 'overdue' | 'archived'
           created_at?: string
+          department?: string | null
+          formatted_content?: string | null
+          id?: string
+          importance_flag?: boolean
+          sent_at?: string | null
+          status?: 'pending' | 'completed' | 'overdue' | 'archived'
+          subject?: string
+          template_type?: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at?: string
+          user_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: "reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       report_items: {
         Row: {
-          id: string
-          report_id: string
-          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
           content: string
+          id: string
+          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          report_id: string
           sort_order: number
         }
         Insert: {
-          id?: string
-          report_id: string
-          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
           content: string
+          id?: string
+          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          report_id: string
           sort_order: number
         }
         Update: {
-          id?: string
-          report_id?: string
-          item_type?: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
           content?: string
+          id?: string
+          item_type?: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          report_id?: string
           sort_order?: number
         }
+        Relationships: [
+          {
+            foreignKeyName: "report_items_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "reports"
+            referencedColumns: ["id"]
+          }
+        ]
       }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
     }
   }
 }

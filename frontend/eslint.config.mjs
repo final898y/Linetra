@@ -6,6 +6,9 @@ import {
 import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfigWithVueTs(
+  {
+    ignores: ["dist/**/*", "node_modules/**/*"],
+  },
   pluginVue.configs["flat/essential"],
   vueTsConfigs.recommended,
   eslintConfigPrettier,
