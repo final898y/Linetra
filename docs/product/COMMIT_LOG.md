@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-05-29
+date: 2026-06-06
 status: Active
 author: Linetra Dev Team
 ---
@@ -83,5 +83,29 @@ author: Linetra Dev Team
 - docs/architecture/system_architecture.md
 - docs/design/visual_identity.md
 - docs/development/frontend_spec.md
+
+---
+
+### [2026-05-29 23:51:23 +0800] docs: restructure directory according to architecture guidelines
+1. Reorganize docs/ into product, architecture, guides, and api categories.
+2. Relocate COMMIT_LOG.md to docs/product/ and update post-commit hook.
+3. Move guidelines and frontend specs to docs/guides/.
+4. Update linetra-standard skill and README.md with new file paths.
+5. Initialize compliant skeleton files for OpenAPI, state machine, and user stories.
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/api/openapi.yaml
+- docs/architecture/database_design.md
+- docs/architecture/state_machine.md
+- docs/guides/frontend_spec.md
+- docs/guides/local_setup.md
+- docs/guides/project_architecture_guidelines.md
+- docs/product/COMMIT_LOG.md
+- docs/product/user_stories.md
+- docs/product/visual_identity.md
+- tools/git-hooks/post_commit_log_helper.py
+- tools/skills/linetra-standard.skill
+- tools/skills/linetra-standard/SKILL.md
 
 ---
