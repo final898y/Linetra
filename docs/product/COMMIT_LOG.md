@@ -140,3 +140,33 @@ author: Linetra Dev Team
 - docs/product/COMMIT_LOG.md
 
 ---
+
+### [2026-06-06 15:45:00 +0800] feat(frontend): implement core auth, routing, and report management
+1. Implement Supabase Auth Layer with `useAuthStore` and `LoginView` (Google OAuth).
+2. Configure Vue Router with navigation guards (Auth/Guest) and `MainLayout`.
+3. Develop `useReportStore` for report CRUD and `useTimeFormatter` for relative time logic.
+4. Implement `useReportTemplate` for generating standardized LINE report text.
+5. Create `DashboardView` for report listing and `ReportCreateView` for report submission.
+6. Provide `supabase_setup_guide.md` for database initialization (Tables, RLS, Triggers).
+7. Fix ESLint errors and ensure TypeScript type safety across all stores and views.
+
+**變更檔案 (Changed Files):**
+- docs/guides/frontend_implementation_plan.md
+- docs/guides/supabase_setup_guide.md
+- frontend/src/api/supabase.ts
+- frontend/src/stores/auth.ts
+- frontend/src/stores/reports.ts
+- frontend/src/router/index.ts
+- frontend/src/router/routes.ts
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/src/composables/useReportTemplate.ts
+- frontend/src/views/LoginView.vue
+- frontend/src/views/DashboardView.vue
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/components/layout/MainLayout.vue
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- docs/product/COMMIT_LOG.md
+
+---
