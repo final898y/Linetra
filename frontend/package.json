@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "lint": "eslint . --fix",
     "format": "prettier --write 'src/**/*.{ts,vue,scss,css}'",
-    "style": "npm run format && npm run lint"
+    "style": "npm run format && npm run lint",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.107.0",
@@ -26,15 +28,20 @@
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.12.3",
     "@vitejs/plugin-vue": "^6.0.6",
+    "@vitest/ui": "^4.1.8",
+    "@vue/test-utils": "^2.4.11",
     "@vue/tsconfig": "^0.9.1",
     "eslint": "^10.4.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.9.2",
     "globals": "^17.6.0",
+    "happy-dom": "^20.10.2",
+    "jsdom": "^29.1.1",
     "prettier": "3.8.3",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.12",
+    "vitest": "^4.1.8",
     "vue-tsc": "^3.2.8"
   }
 }

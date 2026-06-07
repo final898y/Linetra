@@ -11,19 +11,22 @@ export const useAuthStore = defineStore('auth', () => {
   const initialize = async () => {
     loading.value = true
 
-    // Get initial session
+    // 監聽狀態變更 (優先綁定，確保不會遺漏)
+    supabase.auth.onAuthStateChange((_event, newSession) => {
+      session.value = newSession
+      user.value = newSession?.user ?? null
+      loading.value = false // 在這裡設置 loading 為 false
+    })
+
+    // 獲取初始 session
     const { data } = await supabase.auth.getSession()
     session.value = data.session
     user.value = data.session?.user ?? null
 
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange((_event, newSession) => {
-      session.value = newSession
-      user.value = newSession?.user ?? null
+    // 如果沒有 session，直接設定 loading 為 false，否則等待 listener 觸發
+    if (!data.session) {
       loading.value = false
-    })
-
-    loading.value = false
+    }
   }
 
   const signInWithGoogle = async () => {

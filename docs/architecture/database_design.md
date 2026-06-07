@@ -1,7 +1,7 @@
 ---
 title: Linetra — 資料庫實作與安全政策 (Database Implementation & RLS)
 version: v1.0
-date: 2026-05-29
+date: 2026-06-07
 status: Draft
 author: Linetra Dev Team
 ---
@@ -13,7 +13,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-05-29 |
+| **最後更新 (Last Updated)** | 2026-06-07 |
 | **狀態 (Status)** | 草案 (Draft) |
 
 ---
@@ -29,7 +29,6 @@ author: Linetra Dev Team
 | 欄位名 | 資料型別 | 約束 (Constraints) | 說明 |
 | :--- | :--- | :--- | :--- |
 | `id` | `uuid` | `PRIMARY KEY`, `REFERENCES auth.users` | 關聯 Supabase Auth |
-| `google_id` | `varchar(255)` | `UNIQUE` | 來源 Google 的 ID |
 | `email` | `text` | `NOT NULL` | |
 | `name` | `text` | | 顯示名稱 |
 | `avatar_url` | `text` | | |

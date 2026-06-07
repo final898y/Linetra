@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const authStore = useAuthStore()
+const isProcessing = ref(false)
 
 const handleLogin = async () => {
+  isProcessing.value = true // 鎖定按鈕
   try {
     await authStore.signInWithGoogle()
   } catch (error) {
+    isProcessing.value = false // 失敗才解鎖
     console.error('Login failed:', error)
   }
 }
@@ -22,10 +26,11 @@ const handleLogin = async () => {
       <p class="text-lg text-cream-muted mb-12">標準化 LINE 通報格式，讓行政追蹤變得簡單而優雅。</p>
 
       <button
+        :disabled="isProcessing"
         @click="handleLogin"
-        class="w-full flex items-center justify-center gap-3 bg-cream-text text-dark-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-cream-text/10"
+        class="w-full flex items-center justify-center gap-3 bg-cream-text text-dark-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-cream-text/10 disabled:opacity-70"
       >
-        <svg class="w-6 h-6" viewBox="0 0 24 24">
+        <svg v-if="!isProcessing" class="w-6 h-6" viewBox="0 0 24 24">
           <path
             fill="currentColor"
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -43,7 +48,7 @@ const handleLogin = async () => {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        以 Google 帳號登入
+        {{ isProcessing ? '登入處理中...' : '以 Google 帳號登入' }}
       </button>
 
       <p class="mt-8 text-sm text-cream-muted italic">Design inspired by Throxy</p>

@@ -56,7 +56,6 @@ CREATE TYPE report_item_type AS ENUM (
 ```sql
 CREATE TABLE public.users (
   id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
-  google_id varchar(255) UNIQUE,
   email text NOT NULL,
   name text,
   avatar_url text,
