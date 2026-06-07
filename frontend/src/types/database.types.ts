@@ -49,12 +49,12 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "reports_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: 'reports_user_id_fkey'
+            columns: ['user_id']
             isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
         ]
       }
       report_items: {
@@ -81,12 +81,12 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "report_items_report_id_fkey"
-            columns: ["report_id"]
+            foreignKeyName: 'report_items_report_id_fkey'
+            columns: ['report_id']
             isOneToOne: false
-            referencedRelation: "reports"
-            referencedColumns: ["id"]
-          }
+            referencedRelation: 'reports'
+            referencedColumns: ['id']
+          },
         ]
       }
     }

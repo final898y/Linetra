@@ -24,7 +24,8 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
       },
       {
         item_type: 'link',
-        content: 'https://docs.google.com/spreadsheets/d/1oaWz0Q3MNVgLg8vlyP4eTFUhvGQB2FImqHsTscltRpM/edit?gid=1569821820#gid=1569821820',
+        content:
+          'https://docs.google.com/spreadsheets/d/1oaWz0Q3MNVgLg8vlyP4eTFUhvGQB2FImqHsTscltRpM/edit?gid=1569821820#gid=1569821820',
         isCustomizable: true,
       },
     ],
@@ -36,7 +37,8 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     items: [
       {
         item_type: 'link',
-        content: 'https://docs.google.com/spreadsheets/d/1oaWz0Q3MNVgLg8vlyP4eTFUhvGQB2FImqHsTscltRpM/edit?gid=1569821820#gid=1569821820',
+        content:
+          'https://docs.google.com/spreadsheets/d/1oaWz0Q3MNVgLg8vlyP4eTFUhvGQB2FImqHsTscltRpM/edit?gid=1569821820#gid=1569821820',
         isCustomizable: true,
       },
     ],

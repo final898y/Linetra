@@ -2,14 +2,14 @@
 
 ### 專業 LINE 通報與期限追蹤管理平台 (Professional LINE Report & Deadline Tracking System)
 
-| 屬性 (Metadata)             | 內容 (Content)             |
-| :-------------------------- | :------------------------- |
-| **專案版本 (Version)**      | `v1.0 (MVP)`               |
-| **開發狀態 (Status)**       | 開發中 (In Development)    |
-| **建立日期 (Created Date)** | 2026-05-24                 |
-| **最後更新 (Last Updated)** | 2026-05-29                 |
-| **主要作者 (Author)**       | Linetra Dev Team           |
-| **授權條款 (License)**      | [MIT License](LICENSE)     |
+| 屬性 (Metadata)             | 內容 (Content)          |
+| :-------------------------- | :---------------------- |
+| **專案版本 (Version)**      | `v1.0 (MVP)`            |
+| **開發狀態 (Status)**       | 開發中 (In Development) |
+| **建立日期 (Created Date)** | 2026-05-24              |
+| **最後更新 (Last Updated)** | 2026-05-29              |
+| **主要作者 (Author)**       | Linetra Dev Team        |
+| **授權條款 (License)**      | [MIT License](LICENSE)  |
 
 ---
 
@@ -47,7 +47,6 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
   - **Edge Functions**: Deno (處理 Cron Jobs / 逾期掃描)
   - **Storage**: (未來擴充附件管理使用)
 
-
 ## 核心術語 (Glossary)
 
 | 術語             | 英文對應            | 定義                                       |
@@ -56,11 +55,11 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 | **案件**         | **Case / Record**   | 系統中被儲存並持續追蹤的紀錄實體           |
 | **真實截止時間** | **Actual Due**      | 最終、不可逾越的硬性截止時間               |
 | **對外通知期限** | **Announced Due**   | 對下屬單位公告的期限，通常早於真實截止時間 |
-| **重要旗標**     | **Importance Flag** | 標記為重要案件，觸發 `@All 【重要】` 前綴  |
+| **重要旗標**     | **Importance Flag** | 標記為重要案件，觸發 `【重要】` 前綴       |
 
 ## 快速開始 (Getting Started)
 
-1. **Git Hooks 安裝**: 
+1. **Git Hooks 安裝**:
    ```powershell
    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git-hooks/install_hooks.ps1 -Force
    ```

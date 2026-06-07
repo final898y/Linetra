@@ -2,6 +2,14 @@
 import { ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter, useRoute } from 'vue-router'
+import {
+  Bars3Icon,
+  XMarkIcon,
+  BellIcon,
+  Squares2X2Icon,
+  PlusIcon,
+  CalendarIcon,
+} from '@heroicons/vue/24/outline'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -10,9 +18,9 @@ const route = useRoute()
 const isMobileMenuOpen = ref(false)
 
 const navigation = [
-  { name: '案件看板', href: '/', icon: 'dashboard' },
-  { name: '建立通報', href: '/reports/new', icon: 'add' },
-  { name: '行事曆', href: '/calendar', icon: 'calendar' },
+  { name: '案件看板', href: '/', icon: Squares2X2Icon },
+  { name: '建立通報', href: '/reports/new', icon: PlusIcon },
+  { name: '行事曆', href: '/calendar', icon: CalendarIcon },
 ]
 
 const handleSignOut = async () => {
@@ -25,7 +33,7 @@ watch(
   () => route.path,
   () => {
     isMobileMenuOpen.value = false
-  },
+  }
 )
 
 // 監聽選單狀態，控制 body 滾動
@@ -49,7 +57,7 @@ watch(isMobileMenuOpen, (val) => {
           @click="isMobileMenuOpen = true"
           class="p-2 -ml-2 text-cream-text hover:bg-cream-hover rounded-lg transition-colors"
         >
-          <span class="text-xl">☰</span>
+          <Bars3Icon class="size-6" />
         </button>
         <h1 class="text-xl font-extrabold tracking-tightest text-cream-text">LINETRA</h1>
       </div>
@@ -80,7 +88,7 @@ watch(isMobileMenuOpen, (val) => {
           @click="isMobileMenuOpen = false"
           class="md:hidden p-2 text-cream-muted hover:text-cream-text transition-colors"
         >
-          ✕
+          <XMarkIcon class="size-6" />
         </button>
       </div>
 
@@ -96,6 +104,7 @@ watch(isMobileMenuOpen, (val) => {
               : 'text-cream-muted hover:bg-cream-hover hover:text-cream-text',
           ]"
         >
+          <component :is="item.icon" class="size-5" />
           {{ item.name }}
         </router-link>
       </nav>
@@ -137,7 +146,7 @@ watch(isMobileMenuOpen, (val) => {
           <button
             class="w-8 h-8 rounded-full bg-cream-surface border border-cream-border flex items-center justify-center text-cream-muted hover:bg-cream-hover transition-colors"
           >
-            <span class="text-xs">🔔</span>
+            <BellIcon class="size-5" />
           </button>
         </div>
       </header>

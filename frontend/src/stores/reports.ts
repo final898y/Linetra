@@ -30,11 +30,7 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const createReport = async (reportData: ReportInsert) => {
-    const { data, error } = await supabase
-      .from('reports')
-      .insert(reportData)
-      .select()
-      .single()
+    const { data, error } = await supabase.from('reports').insert(reportData).select().single()
 
     if (error) throw error
     const newReport = data as Report
@@ -51,10 +47,7 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const updateStatus = async (id: string, status: ReportStatus) => {
-    const { error } = await supabase
-      .from('reports')
-      .update({ status })
-      .eq('id', id)
+    const { error } = await supabase.from('reports').update({ status }).eq('id', id)
 
     if (error) throw error
 
@@ -82,10 +75,7 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const deleteReportItems = async (reportId: string) => {
-    const { error } = await supabase
-      .from('report_items')
-      .delete()
-      .eq('report_id', reportId)
+    const { error } = await supabase.from('report_items').delete().eq('report_id', reportId)
 
     if (error) throw error
   }

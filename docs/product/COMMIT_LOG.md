@@ -254,3 +254,40 @@ author: Linetra Dev Team
 - frontend/vitest.config.ts
 
 ---
+
+### [2026-06-07 12:55:00 +0800] feat(frontend): implement RWD layout and Strategy-based report generation
+
+1. Implement RWD design for `MainLayout.vue` with mobile drawer, hamburger menu, and backdrop overlay.
+2. Refactor report generation logic using Strategy Pattern in `useReportStrategies.ts` to support extensible templates (General, Meeting, Weekly, Briefing, Announcement).
+3. Enhance `ReportCreateView.vue` with dynamic tabs, template-specific fields, and real-time LINE preview.
+4. Implement "Stay and Update" (Upsert) logic for report submission to allow continuous editing without page redirect.
+5. Add "Default vs Custom" toggle for template fields (link, time) with `localStorage` persistence.
+6. Expand `useReportStore` with `updateReport` and `deleteReportItems` methods for database synchronization.
+7. Add comprehensive Vitest unit tests for report strategies and template selectors, achieving 100% logic coverage.
+8. Optimize type safety by eliminating `any` types and fixing TypeScript compiler errors in frontend views.
+
+**變更檔案 (Changed Files):**
+
+- frontend/src/style.css
+- frontend/src/components/layout/MainLayout.vue
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/composables/useReportTemplate.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/stores/reports.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
+- docs/product/COMMIT_LOG.md
+
+### [2026-06-07 13:35:54 +0800] style(frontend): fix ESLint warnings and improve type safety in tests
+- Remove unused ChatBubbleBottomCenterTextIcon in ReportCreateView
+- Replace 'any' with proper Report type in ReportCard.spec.ts
+- Replace @ts-ignore with @ts-expect-error in useReportTemplate.spec.ts
+- Ensure workspace passes npm run lint
+
+**變更檔案 (Changed Files):**
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/components/common/ReportCard.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
+
+---

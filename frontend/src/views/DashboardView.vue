@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { useReportStore } from '@/stores/reports'
 import ReportCard from '@/components/common/ReportCard.vue'
+import { SparklesIcon, FunnelIcon, ClockIcon } from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
 
@@ -22,13 +23,15 @@ onMounted(() => {
       <div class="flex gap-2">
         <!-- Filters placeholder -->
         <button
-          class="px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover"
+          class="flex items-center gap-2 px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
         >
+          <FunnelIcon class="size-4" />
           全部案件
         </button>
         <button
-          class="px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:bg-cream-hover"
+          class="flex items-center gap-2 px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:bg-cream-hover transition-colors"
         >
+          <ClockIcon class="size-4" />
           即將到期
         </button>
       </div>
@@ -44,7 +47,7 @@ onMounted(() => {
       v-else-if="reportStore.reports.length === 0"
       class="bg-cream-surface border border-dashed border-cream-border rounded-3xl p-20 text-center"
     >
-      <p class="text-4xl mb-4">🎉</p>
+      <SparklesIcon class="size-12 text-brand mx-auto mb-4" />
       <h3 class="text-xl font-bold text-cream-text">目前沒有待辦案件</h3>
       <p class="text-cream-muted mt-2">點擊左側「建立通報」來開始您的第一個任務。</p>
     </div>

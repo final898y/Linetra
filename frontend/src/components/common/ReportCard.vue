@@ -2,6 +2,7 @@
 import type { Report } from '@/types/models'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
 import { useReportStore } from '@/stores/reports'
+import { CheckIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
   report: Report
@@ -73,7 +74,7 @@ const statusColors = {
           class="w-8 h-8 rounded-lg bg-cream-bg border border-cream-border flex items-center justify-center hover:bg-brand hover:text-white hover:border-brand transition-all"
           title="標記完成"
         >
-          ✓
+          <CheckIcon class="size-5" />
         </button>
       </div>
     </div>
