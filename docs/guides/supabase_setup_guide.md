@@ -1,7 +1,7 @@
 ---
 title: Linetra — Supabase 資料庫初始化與設定指南
 version: v1.0
-date: 2026-06-06
+date: 2026-06-07
 status: Active
 author: Linetra Dev Team
 ---
@@ -218,12 +218,12 @@ WHERE status = 'pending';
 
 ```env
 VITE_SUPABASE_URL=你的_SUPABASE_專案_URL
-VITE_SUPABASE_ANON_KEY=你的_SUPABASE_ANON_KEY
+VITE_SUPABASE_PUBLISHABLE_KEY=你的_SUPABASE_PUBLISHABLE_KEY
 ```
 
 ---
 
-###  檢查清單
+### 檢查清單
 
 1. [ ] 是否已執行 Types 建立？
 2. [ ] 是否已執行 Tables 與 RLS Policies？

@@ -15,7 +15,10 @@ const handleLogin = async () => {
 <template>
   <div class="min-h-screen flex flex-col items-center justify-center bg-cream-bg px-6">
     <div class="max-w-md w-full text-center">
-      <h1 class="text-5xl font-extrabold tracking-tightest text-cream-text mb-6">LINETRA</h1>
+      <!-- Added Logo -->
+      <img src="/logo.svg" alt="Linetra Logo" class="w-24 h-24 mx-auto mb-8" />
+      
+      <h1 class="text-4xl font-extrabold tracking-tight text-cream-text mb-4">LINETRA</h1>
       <p class="text-lg text-cream-muted mb-12">標準化 LINE 通報格式，讓行政追蹤變得簡單而優雅。</p>
 
       <button
