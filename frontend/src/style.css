@@ -43,7 +43,16 @@
 @layer base {
   body {
     @apply font-sans antialiased text-cream-text bg-cream-bg;
+    /* 防止選單開啟時背景滾動 */
+    &.overflow-hidden {
+      overflow: hidden;
+    }
   }
+}
+
+/* 抽屜式選單過渡效果 */
+.drawer-transition {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Custom Scrollbar for Dark Mode */

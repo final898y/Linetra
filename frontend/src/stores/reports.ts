@@ -64,12 +64,40 @@ export const useReportStore = defineStore('report', () => {
     }
   }
 
+  const updateReport = async (id: string, reportData: Partial<ReportInsert>) => {
+    const { data, error } = await supabase
+      .from('reports')
+      .update(reportData)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) throw error
+    const updatedReport = data as Report
+    const index = reports.value.findIndex((r) => r.id === id)
+    if (index !== -1 && updatedReport) {
+      reports.value[index] = updatedReport
+    }
+    return updatedReport
+  }
+
+  const deleteReportItems = async (reportId: string) => {
+    const { error } = await supabase
+      .from('report_items')
+      .delete()
+      .eq('report_id', reportId)
+
+    if (error) throw error
+  }
+
   return {
     reports,
     loading,
     fetchReports,
     createReport,
+    updateReport,
     createReportItems,
+    deleteReportItems,
     updateStatus,
   }
 })

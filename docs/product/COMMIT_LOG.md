@@ -1,12 +1,13 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-06
+date: 2026-06-07
 status: Active
 author: Linetra Dev Team
 ---
 
 # Linetra 專案提交日誌 (Commit Log)
+
 此檔案由 Git Hook 自動更新，記錄每次提交的詳細內容。
 
 ---
@@ -14,6 +15,7 @@ author: Linetra Dev Team
 ### [2026-05-24 12:44:13 +0800] chore: initialize project structure and setup Git pre-commit hook
 
 **變更檔案 (Changed Files):**
+
 - .gitignore
 - README.md
 - docs/product/prd.md
@@ -24,18 +26,21 @@ author: Linetra Dev Team
 ---
 
 ### [2026-05-24 18:29:31 +0800] fix(git-hooks): resolve pre-commit hook failure on Windows pwsh
+
 - Simplify python detection logic in pre-commit hook shell script
 - Use English messages in hook to avoid encoding issues in Windows Git Bash
 - Standardize line endings (LF) for pre-commit file
 - Optimize helper script by removing debug prints and improving UTF-8 handling
 
 **變更檔案 (Changed Files):**
+
 - tools/git-hooks/install_hooks.ps1
 - tools/git-hooks/pre_commit_markdown_helper.py
 
 ---
 
 ### [2026-05-24 23:53:27 +0800] feat(git-hooks): add commit-msg and post-commit hooks and MIT license
+
 - Add commit-msg hook to validate conventional commit messages
 - Add post-commit hook to automate commit logging in docs/COMMIT_LOG.md
 - Add MIT License and update README.md
@@ -43,6 +48,7 @@ author: Linetra Dev Team
 - Exclude README.md from pre-commit markdown standardization
 
 **變更檔案 (Changed Files):**
+
 - LICENSE
 - README.md
 - docs/COMMIT_LOG.md
@@ -54,11 +60,13 @@ author: Linetra Dev Team
 ---
 
 ### [2026-05-25 00:06:22 +0800] feat(root): add linetra-standard skill and organize tools/skills directory
+
 - Create tools/skills directory for project-specific Gemini CLI skills
 - Add linetra-standard skill with project-compliant YAML headers
 - Add packaged .skill file and documentation
 
 **變更檔案 (Changed Files):**
+
 - docs/COMMIT_LOG.md
 - tools/skills/README.md
 - tools/skills/linetra-standard.skill
@@ -69,6 +77,7 @@ author: Linetra Dev Team
 ---
 
 ### [2026-05-29 00:06:19 +0800] docs: finalize core technical specifications for development
+
 - Add Database Implementation & RLS Policies docs
 - Add Edge Functions & Cron Job Design docs
 - Add Frontend Architecture & Specs docs
@@ -76,6 +85,7 @@ author: Linetra Dev Team
 - Update README.md with technical doc links and Serverless architecture
 
 **變更檔案 (Changed Files):**
+
 - README.md
 - docs/COMMIT_LOG.md
 - docs/architecture/database_implementation.md
@@ -87,6 +97,7 @@ author: Linetra Dev Team
 ---
 
 ### [2026-05-29 23:51:23 +0800] docs: restructure directory according to architecture guidelines
+
 1. Reorganize docs/ into product, architecture, guides, and api categories.
 2. Relocate COMMIT_LOG.md to docs/product/ and update post-commit hook.
 3. Move guidelines and frontend specs to docs/guides/.
@@ -94,6 +105,7 @@ author: Linetra Dev Team
 5. Initialize compliant skeleton files for OpenAPI, state machine, and user stories.
 
 **變更檔案 (Changed Files):**
+
 - README.md
 - docs/api/openapi.yaml
 - docs/architecture/database_design.md
@@ -111,6 +123,7 @@ author: Linetra Dev Team
 ---
 
 ### [2026-06-06 10:18:52 +0800] docs(guides): sync architecture guidelines with serverless design
+
 1. Update directory structure to reflect Supabase/Serverless architecture (replacing Python/FastAPI with supabase/).
 2. Sync version to v1.1 and update metadata table.
 3. Update commit scopes and branch management strategies.
@@ -118,6 +131,7 @@ author: Linetra Dev Team
 5. Ensure all documents follow linetra-standard (Traditional Chinese, no emojis).
 
 **變更檔案 (Changed Files):**
+
 - docs/guides/project_architecture_guidelines.md
 - docs/product/COMMIT_LOG.md
 - docs/product/visual_identity.md
@@ -125,6 +139,7 @@ author: Linetra Dev Team
 ---
 
 ### [2026-06-06 14:30:00 +0800] feat(frontend): bootstrap vue3 application with tailwind v4 and spec v1.1
+
 1. Bootstrap Vue 3 application using Vite and TypeScript.
 2. Upgrade to Tailwind CSS v4 using @tailwindcss/vite and CSS-based theme configuration.
 3. Install core dependencies: vue-router, pinia.
@@ -134,6 +149,7 @@ author: Linetra Dev Team
 7. Implement baseline App.vue with Dual-tone design system (Cream & Dark).
 
 **變更檔案 (Changed Files):**
+
 - docs/guides/frontend_spec.md
 - docs/guides/vue3-ts-eslint-prettier-setup.md
 - frontend/
@@ -142,6 +158,7 @@ author: Linetra Dev Team
 ---
 
 ### [2026-06-06 15:45:00 +0800] feat(frontend): implement core auth, routing, and report management
+
 1. Implement Supabase Auth Layer with `useAuthStore` and `LoginView` (Google OAuth).
 2. Configure Vue Router with navigation guards (Auth/Guest) and `MainLayout`.
 3. Develop `useReportStore` for report CRUD and `useTimeFormatter` for relative time logic.
@@ -151,6 +168,7 @@ author: Linetra Dev Team
 7. Fix ESLint errors and ensure TypeScript type safety across all stores and views.
 
 **變更檔案 (Changed Files):**
+
 - docs/guides/frontend_implementation_plan.md
 - docs/guides/supabase_setup_guide.md
 - frontend/src/api/supabase.ts
@@ -168,5 +186,71 @@ author: Linetra Dev Team
 - frontend/src/types/database.types.ts
 - frontend/src/types/models.ts
 - docs/product/COMMIT_LOG.md
+
+---
+
+### [2026-06-06 23:08:36 +0800] refactor(frontend): enhance type safety with Zod and strict Database types
+
+- Add Zod schemas for runtime validation in `frontend/src/types/schemas.ts`
+- Implement strict typing for database rows and inserts
+- Refactor `useReportStore` to use type-safe queries
+- Update `ReportCreateView.vue` and `ReportCard.vue` with improved prop types
+
+**變更檔案 (Changed Files):**
+
+- AGENTS.md
+- frontend/eslint.config.mjs
+- frontend/package-lock.json
+- frontend/package.json
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/stores/reports.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/types/schemas.ts
+- frontend/src/views/ReportCreateView.vue
+
+---
+
+### [2026-06-07 10:02:05 +0800] feat(auth): integrate logo and refine login page design
+
+- Add logo.svg to LoginView and improve layout for a landing page feel
+- Remove default template files and unused icons
+- Update Supabase environment variable name to VITE_SUPABASE_PUBLISHABLE_KEY and sync with documentation
+
+**變更檔案 (Changed Files):**
+
+- docs/guides/frontend_spec.md
+- docs/guides/supabase_setup_guide.md
+- frontend/.env.example
+- frontend/public/favicon.svg
+- frontend/public/icons.svg
+- frontend/public/logo.svg
+- frontend/src/api/supabase.ts
+- frontend/src/assets/hero.png
+- frontend/src/assets/vite.svg
+- frontend/src/assets/vue.svg
+- frontend/src/components/HelloWorld.vue
+- frontend/src/views/LoginView.vue
+
+---
+
+### [2026-06-07 10:27:37 +0800] feat(test,auth,db): add vitest, optimize auth loading, and refine db schema
+
+- Add Vitest and configure unit tests in frontend/tests/
+- Implement loading state management in authStore
+- Add isProcessing state in LoginView for better UX
+- Remove google_id from users table and update documentation
+
+**變更檔案 (Changed Files):**
+
+- docs/architecture/database_design.md
+- docs/guides/supabase_setup_guide.md
+- frontend/package-lock.json
+- frontend/package.json
+- frontend/src/stores/auth.ts
+- frontend/src/views/LoginView.vue
+- frontend/tests/components/common/ReportCard.spec.ts
+- frontend/tests/stores/auth.spec.ts
+- frontend/vitest.config.ts
 
 ---

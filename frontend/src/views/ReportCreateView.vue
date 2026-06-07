@@ -1,19 +1,33 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, reactive, computed, watch } from 'vue'
 import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 
-import type { ReportItemInsert, ReportInsert } from '@/types/models'
+import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 
-const router = useRouter()
+import type { ReportItemInsert, ReportInsert, TemplateType } from '@/types/models'
+
 const reportStore = useReportStore()
 const authStore = useAuthStore()
 const { generateLineText } = useReportTemplate()
 
+// Tabs state
+const tabs = [
+  { id: 'general', name: '一般模式' },
+  { id: 'template', name: '模板模式' },
+  { id: 'announcement', name: '公告模式' },
+] as const
+
+const activeTab = ref<(typeof tabs)[number]['id']>('general')
+const currentReportId = ref<string | null>(null)
+
+// Template specific state
+const currentTemplate = ref<TemplateType>('meeting')
+const useDefaultValue = reactive<Record<string, boolean>>({}) // 追蹤哪些欄位使用預設值
+
 const form = reactive({
-  template_type: 'general' as const,
+  template_type: 'general' as TemplateType,
   department: '',
   subject: '',
   actual_due_at: '',
@@ -21,12 +35,97 @@ const form = reactive({
   importance_flag: false,
 })
 
-const items = ref<Partial<ReportItemInsert>[]>([
-  { item_type: 'submission_method', content: '', sort_order: 1 },
-  { item_type: 'detail', content: '', sort_order: 2 },
-])
+const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
 
-const addItem = (type: 'submission_method' | 'detail' | 'note') => {
+// Default values and logic
+const updateMode = (tabId: (typeof tabs)[number]['id']) => {
+  activeTab.value = tabId
+  currentReportId.value = null // 切換模式時重置，視為新案件
+  if (tabId === 'general') {
+    form.template_type = 'general'
+    form.subject = ''
+    items.value = [
+      { item_type: 'submission_method', content: '紙本核章', sort_order: 1 },
+      { item_type: 'detail', content: '', sort_order: 2 },
+    ]
+  } else if (tabId === 'template') {
+    applyTemplate(currentTemplate.value)
+  } else if (tabId === 'announcement') {
+    form.template_type = 'announcement'
+    form.subject = ''
+    items.value = [{ item_type: 'detail', content: '', sort_order: 1 }]
+  }
+}
+
+const applyTemplate = (type: TemplateType) => {
+  const config = REPORT_TEMPLATES[type]
+  if (!config) return
+
+  form.template_type = type
+  currentTemplate.value = type
+  form.subject = config.defaultSubject
+
+  items.value = config.items.map((item, idx) => {
+    const key = `${type}_${item.item_type}`
+    // 如果之前沒設過，預設為 true (使用預設值)
+    if (useDefaultValue[key] === undefined) useDefaultValue[key] = true
+
+    const savedCustomValue = localStorage.getItem(`custom_val_${key}`)
+    
+    return {
+      ...item,
+      content: useDefaultValue[key] ? item.content : (savedCustomValue || item.content),
+      sort_order: idx + 1
+    }
+  })
+}
+
+// 切換預設/自定義
+const toggleDefault = (item: Partial<ReportItemInsert & { isCustomizable?: boolean }>) => {
+  const key = `${currentTemplate.value}_${item.item_type}`
+  useDefaultValue[key] = !useDefaultValue[key]
+
+  if (useDefaultValue[key]) {
+    // 恢復預設
+    const config = REPORT_TEMPLATES[currentTemplate.value]
+    const original = config?.items.find((i) => i.item_type === item.item_type)
+    if (original) item.content = original.content
+  }
+}
+
+
+// 監聽 items 變化，自動儲存使用者的自定義內容
+watch(
+  items,
+  (newItems) => {
+    if (activeTab.value !== 'template') return
+    const type = currentTemplate.value
+    newItems.forEach((item) => {
+      const key = `${type}_${item.item_type}`
+      if (item.isCustomizable && !useDefaultValue[key]) {
+        localStorage.setItem(`custom_val_${key}`, item.content || '')
+      }
+    })
+  },
+  { deep: true }
+)
+
+// Watchers
+watch(
+  activeTab,
+  (newTab) => {
+    updateMode(newTab)
+  },
+  { immediate: true }
+)
+
+watch(currentTemplate, (newType) => {
+  if (activeTab.value === 'template') {
+    applyTemplate(newType)
+  }
+})
+
+const addItem = (type: ReportItemInsert['item_type']) => {
   items.value.push({
     item_type: type,
     content: '',
@@ -39,11 +138,16 @@ const removeItem = (index: number) => {
 }
 
 const previewText = computed(() => {
-  return generateLineText(form, items.value as ReportItemInsert[])
+  // For announcement, we might use a dedicated content field or combine items
+  const reportData: Partial<ReportInsert> = { ...form }
+  if (form.template_type === 'announcement') {
+    reportData.formatted_content = items.value.find((i) => i.item_type === 'detail')?.content || ''
+  }
+  return generateLineText(reportData, items.value as ReportItemInsert[])
 })
 
 const isSubmitting = ref(false)
-const showPreview = ref(false)
+const showPreview = ref(true)
 
 const handleCopyAndSave = async () => {
   if (!form.subject) return alert('請填寫案由')
@@ -55,7 +159,7 @@ const handleCopyAndSave = async () => {
     await navigator.clipboard.writeText(previewText.value)
 
     // 2. Save to Supabase
-    const reportData: ReportInsert = {
+    const reportData: Partial<ReportInsert> = {
       ...form,
       user_id: authStore.user.id,
       formatted_content: previewText.value,
@@ -65,25 +169,39 @@ const handleCopyAndSave = async () => {
       announced_due_at: form.announced_due_at || null,
     }
 
-    const savedReport = await reportStore.createReport(reportData)
-    if (!savedReport) throw new Error('Failed to create report')
+    let reportId = currentReportId.value
+    if (reportId) {
+      // Update existing report
+      await reportStore.updateReport(reportId, reportData)
+      // Clear old items
+      await reportStore.deleteReportItems(reportId)
+    } else {
+      // Create new report
+      const savedReport = await reportStore.createReport(reportData as ReportInsert)
+      if (!savedReport) throw new Error('Failed to create report')
+      reportId = savedReport.id
+      currentReportId.value = reportId
+    }
 
     // 3. Save Items
     const reportItems: ReportItemInsert[] = items.value
       .filter((i) => i.content && i.content.trim() !== '')
       .map((i, index) => ({
-        item_type: i.item_type || 'detail',
+        item_type: (i.item_type || 'detail') as ReportItemInsert['item_type'],
         content: i.content || '',
         sort_order: index + 1,
-        report_id: savedReport.id,
+        report_id: reportId!,
       }))
 
     if (reportItems.length > 0) {
       await reportStore.createReportItems(reportItems)
     }
 
-    alert('已複製並儲存成功！')
-    router.push('/')
+    alert(
+      currentReportId.value
+        ? '已複製通報文字，並同步更新資料庫！'
+        : '已複製通報文字，並成功建立案件！'
+    )
   } catch (error) {
     console.error('Failed to save:', error)
     alert('發生錯誤，請稍後再試')
@@ -91,25 +209,93 @@ const handleCopyAndSave = async () => {
     isSubmitting.value = false
   }
 }
+
+const getItemLabel = (type: string) => {
+  const labels: Record<string, string> = {
+    submission_method: '繳交方式',
+    detail: '內容說明',
+    note: '備註項目',
+    meeting_time: '會議時間',
+    link: '雲端連結',
+    agenda: '報告事項',
+  }
+  return labels[type] || '項目'
+}
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto space-y-8 pb-20">
-    <div class="flex justify-between items-center">
-      <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">建立新通報</h2>
-      <div class="flex gap-4">
+  <div class="max-w-5xl mx-auto space-y-8 pb-20">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">建立新通報</h2>
+        <p class="text-cream-muted text-sm mt-1">選擇模式並填寫資訊，系統將自動產生 LINE 格式</p>
+      </div>
+      <div class="flex bg-cream-surface p-1 rounded-xl border border-cream-border">
         <button
-          @click="showPreview = !showPreview"
-          class="text-sm font-bold text-brand hover:underline"
+          v-for="tab in tabs"
+          :key="tab.id"
+          @click="updateMode(tab.id)"
+          class="px-4 py-2 text-sm font-bold rounded-lg transition-all"
+          :class="
+            activeTab === tab.id
+              ? 'bg-cream-bg text-brand shadow-sm'
+              : 'text-cream-muted hover:text-cream-text'
+          "
         >
-          {{ showPreview ? '隱藏預覽' : '顯示預覽' }}
+          {{ tab.name }}
         </button>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       <!-- Form Section -->
-      <div class="space-y-6">
+      <div class="lg:col-span-7 space-y-6">
+        <!-- Template Selection (Only for Template Mode) -->
+        <section
+          v-if="activeTab === 'template'"
+          class="bg-cream-surface border border-cream-border rounded-2xl p-6"
+        >
+          <label class="block text-xs font-bold text-cream-muted uppercase tracking-widest mb-3"
+            >選擇具體模板</label
+          >
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button
+              @click="currentTemplate = 'meeting'"
+              class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
+              :class="
+                currentTemplate === 'meeting'
+                  ? 'border-brand bg-brand/5 text-brand'
+                  : 'border-cream-border text-cream-muted hover:border-cream-muted'
+              "
+            >
+              處務會議
+            </button>
+            <button
+              @click="currentTemplate = 'weekly_report'"
+              class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
+              :class="
+                currentTemplate === 'weekly_report'
+                  ? 'border-brand bg-brand/5 text-brand'
+                  : 'border-cream-border text-cream-muted hover:border-cream-muted'
+              "
+            >
+              市長週報
+            </button>
+            <button
+              @click="currentTemplate = 'briefing'"
+              class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
+              :class="
+                currentTemplate === 'briefing'
+                  ? 'border-brand bg-brand/5 text-brand'
+                  : 'border-cream-border text-cream-muted hover:border-cream-muted'
+              "
+            >
+              市長面報
+            </button>
+          </div>
+        </section>
+
+        <!-- Basic Info -->
         <section class="bg-cream-surface border border-cream-border rounded-2xl p-6 space-y-4">
           <h3
             class="text-xs font-bold text-cream-muted uppercase tracking-widest border-b border-cream-border pb-2"
@@ -120,45 +306,32 @@ const handleCopyAndSave = async () => {
           <div class="space-y-4 pt-2">
             <div>
               <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                >案由 (必填)</label
+                >案由 / 標題 (必填)</label
               >
               <input
                 v-model="form.subject"
                 type="text"
-                placeholder="例如：本週處務會議資料填報"
                 class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
               />
             </div>
 
-            <div>
-              <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                >通報單位</label
-              >
-              <input
-                v-model="form.department"
-                type="text"
-                placeholder="例如：主計處"
-                class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
+            <div v-if="activeTab !== 'announcement'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                  >公告期限</label
+                  >通報單位</label
                 >
                 <input
-                  v-model="form.announced_due_at"
-                  type="datetime-local"
+                  v-model="form.department"
+                  type="text"
                   class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
                 />
               </div>
               <div>
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                  >真實截止</label
+                  >繳交期限</label
                 >
                 <input
-                  v-model="form.actual_due_at"
+                  v-model="form.announced_due_at"
                   type="datetime-local"
                   class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
                 />
@@ -170,58 +343,106 @@ const handleCopyAndSave = async () => {
                 v-model="form.importance_flag"
                 type="checkbox"
                 id="importance"
-                class="w-5 h-5 rounded border-cream-border text-brand focus:ring-brand"
+                class="w-5 h-5 rounded border-cream-border text-brand focus:ring-brand cursor-pointer"
               />
-              <label for="importance" class="text-sm font-bold text-status-overdue"
+              <label for="importance" class="text-sm font-bold text-status-overdue cursor-pointer"
                 >標記為重要案件 (@All)</label
               >
             </div>
           </div>
         </section>
 
-        <!-- Dynamic Items -->
+        <!-- Dynamic Items / Content -->
         <section class="bg-cream-surface border border-cream-border rounded-2xl p-6 space-y-4">
           <div class="flex justify-between items-center border-b border-cream-border pb-2">
             <h3 class="text-xs font-bold text-cream-muted uppercase tracking-widest">
-              通報內容項目
+              {{ activeTab === 'announcement' ? '公告內容' : '通報細節' }}
             </h3>
-            <div class="flex gap-2">
+            <div v-if="activeTab === 'general'" class="flex gap-2">
               <button
                 @click="addItem('submission_method')"
                 class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
               >
-                + 繳交方式
+                + 方式
               </button>
               <button
                 @click="addItem('detail')"
                 class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
               >
-                + 詳細說明
+                + 說明
+              </button>
+              <button
+                @click="addItem('note')"
+                class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
+              >
+                + 備註
               </button>
             </div>
           </div>
 
           <div class="space-y-4 pt-2">
-            <div v-for="(item, index) in items" :key="index" class="flex gap-2 items-start">
-              <div class="flex-1">
-                <span
-                  class="text-[10px] font-bold text-cream-muted uppercase tracking-tighter mb-1 block"
+            <div v-for="(item, index) in items" :key="index" class="space-y-1">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] font-bold text-cream-muted uppercase tracking-tighter">{{
+                    getItemLabel(item.item_type!)
+                  }}</span>
+                  <!-- 預設/自定義切換按鈕 -->
+                  <button
+                    v-if="item.isCustomizable"
+                    @click="toggleDefault(item)"
+                    class="text-[9px] px-1.5 py-0.5 rounded border font-bold transition-all"
+                    :class="
+                      useDefaultValue[`${currentTemplate}_${item.item_type}`]
+                        ? 'bg-brand text-white border-brand'
+                        : 'bg-cream-surface text-cream-muted border-cream-border'
+                    "
+                  >
+                    {{
+                      useDefaultValue[`${currentTemplate}_${item.item_type}`] ? '預設值' : '自定義'
+                    }}
+                  </button>
+                </div>
+                <button
+                  v-if="
+                    activeTab === 'general' ||
+                    (activeTab === 'template' && item.item_type === 'note')
+                  "
+                  @click="removeItem(index)"
+                  class="text-xs text-status-overdue hover:underline"
                 >
-                  {{ item.item_type === 'submission_method' ? '繳交方式' : '詳細說明' }}
-                </span>
-                <input
-                  v-model="item.content"
-                  type="text"
-                  class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
-                />
+                  刪除
+                </button>
               </div>
-              <button
-                @click="removeItem(index)"
-                class="mt-5 text-cream-muted hover:text-status-overdue"
-              >
-                ×
-              </button>
+
+              <textarea
+                v-if="item.item_type === 'detail' || item.item_type === 'agenda'"
+                v-model="item.content"
+                rows="4"
+                class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
+              ></textarea>
+              <input
+                v-else
+                v-model="item.content"
+                type="text"
+                :readonly="
+                  item.isCustomizable && useDefaultValue[`${currentTemplate}_${item.item_type}`]
+                "
+                class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
+                :class="{
+                  'opacity-60 cursor-not-allowed bg-cream-surface':
+                    item.isCustomizable && useDefaultValue[`${currentTemplate}_${item.item_type}`],
+                }"
+              />
             </div>
+
+            <button
+              v-if="activeTab === 'template'"
+              @click="addItem('note')"
+              class="w-full py-2 border-2 border-dashed border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:border-brand hover:text-brand transition-all"
+            >
+              + 增加自定義備註
+            </button>
           </div>
         </section>
 
@@ -230,23 +451,38 @@ const handleCopyAndSave = async () => {
           :disabled="isSubmitting"
           class="w-full bg-cream-text text-dark-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-cream-text/10 disabled:opacity-50"
         >
-          {{ isSubmitting ? '處理中...' : '複製通報並建立案件' }}
+          {{ isSubmitting ? '處理中...' : '產生通報文字並建立案件' }}
         </button>
       </div>
 
       <!-- Preview Section -->
-      <div v-if="showPreview" class="sticky top-24 h-fit">
-        <h3 class="text-xs font-bold text-cream-muted uppercase tracking-widest mb-4">
-          LINE 預覽效果
-        </h3>
-        <div
-          class="bg-[#F0F2F5] rounded-2xl p-6 font-mono text-sm whitespace-pre-wrap border border-cream-border shadow-inner"
-        >
-          {{ previewText }}
+      <div class="lg:col-span-5">
+        <div class="sticky top-24 space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-cream-muted uppercase tracking-widest">
+              LINE 預覽效果
+            </h3>
+            <button
+              @click="showPreview = !showPreview"
+              class="text-[10px] font-bold text-brand hover:underline"
+            >
+              {{ showPreview ? '隱藏' : '顯示' }}
+            </button>
+          </div>
+
+          <div v-if="showPreview" class="relative">
+            <div class="absolute -top-2 -left-2 w-4 h-4 bg-brand rotate-45 rounded-sm"></div>
+            <div
+              class="bg-cream-surface rounded-2xl p-6 font-mono text-sm whitespace-pre-wrap break-words overflow-hidden border border-cream-border shadow-sm min-h-[400px]"
+            >
+              {{ previewText }}
+            </div>
+          </div>
+
+          <p class="text-[10px] text-cream-muted text-center italic">
+            ※ 點擊「產生」按鈕後將自動複製以上文字至剪貼簿
+          </p>
         </div>
-        <p class="mt-4 text-[10px] text-cream-muted text-center italic">
-          ※ 點擊按鈕後將自動複製以上文字至剪貼簿
-        </p>
       </div>
     </div>
   </div>
