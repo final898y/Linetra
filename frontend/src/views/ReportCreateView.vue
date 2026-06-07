@@ -3,6 +3,12 @@ import { ref, reactive, computed, watch } from 'vue'
 import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
+import {
+  PlusIcon,
+  TrashIcon,
+  DocumentTextIcon,
+  ArrowPathIcon,
+} from '@heroicons/vue/24/outline'
 
 import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 
@@ -36,6 +42,28 @@ const form = reactive({
 })
 
 const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
+
+// 項目排序權重定義，確保 UI 與產出邏輯一致
+const ITEM_ORDER_WEIGHTS: Record<string, number> = {
+  submission_method: 10,
+  detail: 20,
+  meeting_time: 30,
+  link: 40,
+  agenda: 50,
+  note: 100,
+}
+
+// 自動排序後的項目列表
+const sortedItems = computed(() => {
+  // 回傳包含原始索引的對象，以便刪除操作
+  return [...items.value]
+    .map((item, originalIndex) => ({ item, originalIndex }))
+    .sort((a, b) => {
+      const weightA = ITEM_ORDER_WEIGHTS[a.item.item_type || ''] || 999
+      const weightB = ITEM_ORDER_WEIGHTS[b.item.item_type || ''] || 999
+      return weightA - weightB
+    })
+})
 
 // Default values and logic
 const updateMode = (tabId: (typeof tabs)[number]['id']) => {
@@ -71,11 +99,11 @@ const applyTemplate = (type: TemplateType) => {
     if (useDefaultValue[key] === undefined) useDefaultValue[key] = true
 
     const savedCustomValue = localStorage.getItem(`custom_val_${key}`)
-    
+
     return {
       ...item,
-      content: useDefaultValue[key] ? item.content : (savedCustomValue || item.content),
-      sort_order: idx + 1
+      content: useDefaultValue[key] ? item.content : savedCustomValue || item.content,
+      sort_order: idx + 1,
     }
   })
 }
@@ -92,7 +120,6 @@ const toggleDefault = (item: Partial<ReportItemInsert & { isCustomizable?: boole
     if (original) item.content = original.content
   }
 }
-
 
 // 監聽 items 變化，自動儲存使用者的自定義內容
 watch(
@@ -346,7 +373,7 @@ const getItemLabel = (type: string) => {
                 class="w-5 h-5 rounded border-cream-border text-brand focus:ring-brand cursor-pointer"
               />
               <label for="importance" class="text-sm font-bold text-status-overdue cursor-pointer"
-                >標記為重要案件 (@All)</label
+                >標記為重要案件</label
               >
             </div>
           </div>
@@ -361,27 +388,34 @@ const getItemLabel = (type: string) => {
             <div v-if="activeTab === 'general'" class="flex gap-2">
               <button
                 @click="addItem('submission_method')"
-                class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
+                class="flex items-center gap-1 text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
               >
-                + 方式
+                <PlusIcon class="size-3" />
+                方式
               </button>
               <button
                 @click="addItem('detail')"
-                class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
+                class="flex items-center gap-1 text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
               >
-                + 說明
+                <PlusIcon class="size-3" />
+                說明
               </button>
               <button
                 @click="addItem('note')"
-                class="text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
+                class="flex items-center gap-1 text-[10px] font-bold text-brand bg-brand/10 px-2 py-1 rounded-md"
               >
-                + 備註
+                <PlusIcon class="size-3" />
+                備註
               </button>
             </div>
           </div>
 
           <div class="space-y-4 pt-2">
-            <div v-for="(item, index) in items" :key="index" class="space-y-1">
+            <div
+              v-for="{ item, originalIndex } in sortedItems"
+              :key="originalIndex"
+              class="space-y-1"
+            >
               <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] font-bold text-cream-muted uppercase tracking-tighter">{{
@@ -408,10 +442,11 @@ const getItemLabel = (type: string) => {
                     activeTab === 'general' ||
                     (activeTab === 'template' && item.item_type === 'note')
                   "
-                  @click="removeItem(index)"
-                  class="text-xs text-status-overdue hover:underline"
+                  @click="removeItem(originalIndex)"
+                  class="text-status-overdue p-1 hover:bg-rose-50 rounded-md transition-colors"
+                  title="刪除項目"
                 >
-                  刪除
+                  <TrashIcon class="size-4" />
                 </button>
               </div>
 
@@ -434,14 +469,35 @@ const getItemLabel = (type: string) => {
                     item.isCustomizable && useDefaultValue[`${currentTemplate}_${item.item_type}`],
                 }"
               />
+
+              <!-- 繳交方式快速選項 -->
+              <div
+                v-if="item.item_type === 'submission_method'"
+                class="flex flex-wrap gap-1.5 mt-2"
+              >
+                <button
+                  v-for="opt in ['紙本核章', '線上表單', '檔案回傳']"
+                  :key="opt"
+                  @click="item.content = opt"
+                  class="text-[9px] px-2 py-0.5 rounded-full border transition-all font-bold"
+                  :class="
+                    item.content === opt
+                      ? 'bg-brand/20 text-brand border-brand'
+                      : 'bg-cream-bg text-cream-muted border-cream-border hover:border-cream-muted'
+                  "
+                >
+                  {{ opt }}
+                </button>
+              </div>
             </div>
 
             <button
               v-if="activeTab === 'template'"
               @click="addItem('note')"
-              class="w-full py-2 border-2 border-dashed border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:border-brand hover:text-brand transition-all"
+              class="w-full py-2 border-2 border-dashed border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:border-brand hover:text-brand transition-all flex items-center justify-center gap-2"
             >
-              + 增加自定義備註
+              <PlusIcon class="size-4" />
+              增加自定義備註
             </button>
           </div>
         </section>
@@ -449,8 +505,10 @@ const getItemLabel = (type: string) => {
         <button
           @click="handleCopyAndSave"
           :disabled="isSubmitting"
-          class="w-full bg-cream-text text-dark-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-cream-text/10 disabled:opacity-50"
+          class="w-full bg-cream-text text-dark-text py-4 rounded-2xl font-bold text-lg hover:opacity-90 transition-all shadow-xl shadow-cream-text/10 disabled:opacity-50 flex items-center justify-center gap-3"
         >
+          <DocumentTextIcon v-if="!isSubmitting" class="size-6" />
+          <ArrowPathIcon v-else class="size-6 animate-spin" />
           {{ isSubmitting ? '處理中...' : '產生通報文字並建立案件' }}
         </button>
       </div>

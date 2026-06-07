@@ -29,7 +29,7 @@ describe('useReportTemplate', () => {
   })
 
   it('should fallback to general strategy if type is unknown', () => {
-    // @ts-ignore
+    // @ts-expect-error - testing invalid type fallback
     const result = generateLineText({ template_type: 'invalid' }, [])
     expect(strategies.general.generate).toHaveBeenCalled()
     expect(result).toBe('general_output')
