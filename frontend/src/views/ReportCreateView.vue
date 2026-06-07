@@ -1,22 +1,52 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
-import {
-  PlusIcon,
-  TrashIcon,
-  DocumentTextIcon,
-  ArrowPathIcon,
-} from '@heroicons/vue/24/outline'
+import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
 
 import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 
-import type { ReportItemInsert, ReportInsert, TemplateType } from '@/types/models'
+import type { ReportItemInsert, ReportInsert, TemplateType, ReportItem } from '@/types/models'
 
 const reportStore = useReportStore()
 const authStore = useAuthStore()
 const { generateLineText } = useReportTemplate()
+const route = useRoute()
+
+onMounted(async () => {
+  const reportId = route.params.id as string
+  if (reportId) {
+    currentReportId.value = reportId
+    const report = await reportStore.fetchReportById(reportId)
+    const reportItems = await reportStore.fetchReportItemsById(reportId)
+
+    // Load form data
+    form.template_type = report.template_type as TemplateType
+    form.department = report.department || ''
+    form.subject = report.subject
+    form.actual_due_at = report.actual_due_at ? report.actual_due_at.substring(0, 16) : ''
+    form.announced_due_at = report.announced_due_at ? report.announced_due_at.substring(0, 16) : ''
+    form.importance_flag = report.importance_flag || false
+
+    // Load items
+    items.value = reportItems.map((item: ReportItem) => ({
+      ...item,
+      isCustomizable: true,
+    }))
+
+    // Set active tab based on template type
+    if (form.template_type === 'announcement') {
+      activeTab.value = 'announcement'
+    } else if (form.template_type === 'general') {
+      activeTab.value = 'general'
+    } else {
+      activeTab.value = 'template'
+      currentTemplate.value = form.template_type as TemplateType
+    }
+  }
+})
 
 // Tabs state
 const tabs = [

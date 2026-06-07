@@ -1,13 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/api/supabase'
-import type { Report, ReportInsert, ReportItemInsert, ReportStatus } from '@/types/models'
+import type {
+  Report,
+  ReportInsert,
+  ReportItemInsert,
+  ReportStatus,
+  TemplateType,
+  ReportItem,
+} from '@/types/models'
 
 export const useReportStore = defineStore('report', () => {
   const reports = ref<Report[]>([])
   const loading = ref(false)
 
-  const fetchReports = async (status?: string) => {
+  const fetchReports = async (status?: string, templateType?: string) => {
     loading.value = true
     try {
       let query = supabase
@@ -21,12 +28,32 @@ export const useReportStore = defineStore('report', () => {
         query = query.neq('status', 'archived')
       }
 
+      if (templateType && templateType !== 'all') {
+        query = query.eq('template_type', templateType as TemplateType)
+      }
+
       const { data, error } = await query
       if (error) throw error
       reports.value = (data as Report[]) || []
     } finally {
       loading.value = false
     }
+  }
+
+  const fetchReportById = async (id: string) => {
+    const { data, error } = await supabase.from('reports').select('*').eq('id', id).single()
+    if (error) throw error
+    return data as Report
+  }
+
+  const fetchReportItemsById = async (reportId: string) => {
+    const { data, error } = await supabase
+      .from('report_items')
+      .select('*')
+      .eq('report_id', reportId)
+      .order('sort_order', { ascending: true })
+    if (error) throw error
+    return data as ReportItem[]
   }
 
   const createReport = async (reportData: ReportInsert) => {
@@ -84,6 +111,8 @@ export const useReportStore = defineStore('report', () => {
     reports,
     loading,
     fetchReports,
+    fetchReportById,
+    fetchReportItemsById,
     createReport,
     updateReport,
     createReportItems,

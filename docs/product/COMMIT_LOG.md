@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-07
+date: 2026-06-08
 status: Active
 author: Linetra Dev Team
 ---
@@ -289,5 +289,28 @@ author: Linetra Dev Team
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/components/common/ReportCard.spec.ts
 - frontend/tests/composables/useReportTemplate.spec.ts
+
+---
+
+### [2026-06-07 13:36:12 +0800] feat(frontend): integrate Heroicons and enhance UI/UX
+- Replace all emojis and ASCII icons with Heroicons across components
+- Add submission method quick-select chips in ReportCreateView
+- Implement automatic UI sorting for dynamic report items
+- Refactor report templates into a standalone config file
+- Optimize Dashboard empty state with SparklesIcon
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/product/COMMIT_LOG.md
+- docs/product/prd.md
+- frontend/package-lock.json
+- frontend/package.json
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/components/layout/MainLayout.vue
+- frontend/src/config/reportTemplates.ts
+- frontend/src/stores/reports.ts
+- frontend/src/types/database.types.ts
+- frontend/src/views/DashboardView.vue
+- frontend/src/views/LoginView.vue
 
 ---
