@@ -314,3 +314,18 @@ author: Linetra Dev Team
 - frontend/src/views/LoginView.vue
 
 ---
+
+### [2026-06-08 00:21:56 +0800] feat(frontend): implement report editing functionality
+- Add fetchReportById and fetchReportItemsById to report store
+- Update ReportCreateView to support editing via route parameter
+- Define report-edit route
+- Add edit button and navigation in DashboardView
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/router/routes.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/src/views/ReportCreateView.vue
+
+---
