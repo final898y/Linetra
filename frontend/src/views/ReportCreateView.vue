@@ -404,7 +404,8 @@ const getItemLabel = (type: string) => {
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                  <label
+                    class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                     >實際截止時間 (內控)</label
                   >
                   <input
@@ -414,7 +415,8 @@ const getItemLabel = (type: string) => {
                   />
                 </div>
                 <div>
-                  <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                  <label
+                    class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                     >對外通報期限</label
                   >
                   <input

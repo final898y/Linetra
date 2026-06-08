@@ -6,15 +6,15 @@ import type {
   ReportInsert,
   ReportItemInsert,
   ReportStatus,
-  TemplateType,
   ReportItem,
 } from '@/types/models'
+import type { FilterOptions } from '@/composables/useReportFilters'
 
 export const useReportStore = defineStore('report', () => {
   const reports = ref<Report[]>([])
   const loading = ref(false)
 
-  const fetchReports = async (status?: string, templateType?: string) => {
+  const fetchReports = async (options?: FilterOptions) => {
     loading.value = true
     try {
       let query = supabase
@@ -22,14 +22,16 @@ export const useReportStore = defineStore('report', () => {
         .select('*')
         .order('announced_due_at', { ascending: true })
 
-      if (status && status !== 'all') {
-        query = query.eq('status', status as ReportStatus)
+      // 處理狀態多選 (若無選擇，預設排除 archived/deleted)
+      if (options?.statuses && options.statuses.length > 0) {
+        query = query.in('status', options.statuses)
       } else {
         query = query.not('status', 'in', '("archived","deleted")')
       }
 
-      if (templateType && templateType !== 'all') {
-        query = query.eq('template_type', templateType as TemplateType)
+      // 處理模板多選
+      if (options?.templateTypes && options.templateTypes.length > 0) {
+        query = query.in('template_type', options.templateTypes)
       }
 
       const { data, error } = await query

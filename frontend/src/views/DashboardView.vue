@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useReportStore } from '@/stores/reports'
-import { REPORT_TEMPLATES } from '@/config/reportTemplates'
+import { useReportFilters } from '@/composables/useReportFilters'
 import ReportCard from '@/components/common/ReportCard.vue'
-import { SparklesIcon, ClockIcon } from '@heroicons/vue/24/outline'
+import ReportFilterPanel from '@/components/common/ReportFilterPanel.vue'
+import { SparklesIcon, FunnelIcon } from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
-const selectedTemplateType = ref('all')
+const { filterOptions } = useReportFilters()
+const isFilterOpen = ref(false)
 
 const applyFilters = () => {
-  reportStore.fetchReports(undefined, selectedTemplateType.value)
+  reportStore.fetchReports(filterOptions.value)
+  isFilterOpen.value = false
 }
 
 onMounted(() => {
@@ -26,28 +29,17 @@ onMounted(() => {
           Pending Reports
         </p>
       </div>
-      <div class="flex gap-2">
-        <!-- Template Filter -->
-        <select
-          v-model="selectedTemplateType"
-          @change="applyFilters"
-          class="px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
-        >
-          <option value="all">全部類型</option>
-          <option v-for="(template, key) in REPORT_TEMPLATES" :key="key" :value="key">
-            {{ template.name }}
-          </option>
-        </select>
-
-        <!-- Existing Filters placeholder -->
-        <button
-          class="flex items-center gap-2 px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-muted hover:bg-cream-hover transition-colors"
-        >
-          <ClockIcon class="size-4" />
-          即將到期
-        </button>
-      </div>
+      <button
+        @click="isFilterOpen = !isFilterOpen"
+        class="flex items-center gap-2 px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
+      >
+        <FunnelIcon class="size-4" />
+        篩選
+      </button>
     </div>
+
+    <!-- Filter Panel -->
+    <ReportFilterPanel v-if="isFilterOpen" @apply="applyFilters" />
 
     <!-- Loading State -->
     <div v-if="reportStore.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -60,8 +52,8 @@ onMounted(() => {
       class="bg-cream-surface border border-dashed border-cream-border rounded-3xl p-20 text-center"
     >
       <SparklesIcon class="size-12 text-brand mx-auto mb-4" />
-      <h3 class="text-xl font-bold text-cream-text">目前沒有待辦案件</h3>
-      <p class="text-cream-muted mt-2">點擊左側「建立通報」來開始您的第一個任務。</p>
+      <h3 class="text-xl font-bold text-cream-text">目前沒有符合條件的案件</h3>
+      <p class="text-cream-muted mt-2">嘗試調整篩選條件或點擊左側「建立通報」。</p>
     </div>
 
     <!-- Report List -->

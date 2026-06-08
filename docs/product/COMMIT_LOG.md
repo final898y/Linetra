@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-08
+date: 2026-06-09
 status: Active
 author: Linetra Dev Team
 ---
@@ -338,6 +338,40 @@ author: Linetra Dev Team
 **變更檔案 (Changed Files):**
 - docs/product/COMMIT_LOG.md
 - frontend/.gitignore
+- frontend/src/views/ReportDetailView.vue
+
+---
+
+### [2026-06-08 20:28:47 +0800] feat(frontend): enhance due date logic and fix date formatting
+
+- Add actual_due_at (internal control) field to ReportCreateView
+- Implement auto-calculation for announced_due_at that skips weekends
+- Fix useTimeFormatter to correctly distinguish between 'This Week' and 'Next Week' using calendar weeks
+- Update date formatting to include MM/DD(週X) for better clarity
+- Display actual_due_at in ReportDetailView
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/views/ReportDetailView.vue
+
+---
+
+### [2026-06-08 23:18:10 +0800] feat(report): add deleted status and fix missing env white-screen issue
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/architecture/database_design.md
+- docs/guides/supabase_setup_guide.md
+- docs/product/prd.md
+- frontend/src/App.vue
+- frontend/src/api/supabase.ts
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/src/stores/reports.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/schemas.ts
 - frontend/src/views/ReportDetailView.vue
 
 ---
