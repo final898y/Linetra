@@ -16,6 +16,10 @@ export const useTimeFormatter = () => {
     const now = dayjs()
     const target = dayjs(dateStr)
     const diffDays = target.startOf('day').diff(now.startOf('day'), 'day')
+    
+    // 判斷是否為同一個日曆週 (dayjs 預設週日為一週開始)
+    const isSameWeek = target.isSame(now, 'week')
+    const isNextWeek = target.isSame(now.add(1, 'week'), 'week')
 
     if (target.isBefore(now)) {
       const days = now.diff(target, 'day')
@@ -24,22 +28,26 @@ export const useTimeFormatter = () => {
 
     const timeStr = target.format('HH:mm')
     const weekStr = target.format('週dd')
+    const mmdd = target.format('MM/DD')
 
     if (diffDays === 0) {
-      if (timeStr === '12:00') return '今天中午前'
-      if (timeStr >= '17:00' && timeStr <= '18:00') return '今天下班前'
-      return `今天 ${timeStr} 前`
+      if (timeStr === '12:00') return `今天 ${mmdd}(${weekStr}) 中午前`
+      if (timeStr >= '17:00' && timeStr <= '18:00') return `今天 ${mmdd}(${weekStr}) 下班前`
+      return `今天 ${mmdd}(${weekStr}) ${timeStr} 前`
     }
 
     if (diffDays === 1) {
-      return `明天（${weekStr}）${timeStr} 前`
+      return `明天 ${mmdd}(${weekStr}) ${timeStr} 前`
     }
 
-    if (diffDays >= 2 && diffDays <= 6) {
-      return `下${weekStr} ${timeStr} 前`
+    let prefix = ''
+    if (isSameWeek) {
+      prefix = '本週 '
+    } else if (isNextWeek) {
+      prefix = '下週 '
     }
 
-    return `${target.format('MM/DD')}（${weekStr}）${timeStr} 前`
+    return `${prefix}${mmdd}(${weekStr}) ${timeStr} 前`
   }
 
   const getRemainingTimeColor = (dateStr: string | null, isCompleted: boolean): string => {

@@ -75,18 +75,27 @@ const handleComplete = async () => {
         </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-4 pt-6 border-t border-cream-border/50">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-cream-border/50">
         <div>
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">狀態</p>
-          <p class="text-sm font-bold text-brand">{{ report.status }}</p>
+          <p class="text-sm font-bold text-brand uppercase">{{ report.status }}</p>
         </div>
         <div>
-          <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">截止時間</p>
+          <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">對外期限</p>
           <p
             class="text-sm font-bold"
             :class="getRemainingTimeColor(report.announced_due_at, report.status === 'completed')"
           >
             {{ formatRelative(report.announced_due_at) }}
+          </p>
+        </div>
+        <div v-if="report.actual_due_at">
+          <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">實際截止 (內控)</p>
+          <p
+            class="text-sm font-bold"
+            :class="getRemainingTimeColor(report.actual_due_at, report.status === 'completed')"
+          >
+            {{ formatRelative(report.actual_due_at) }}
           </p>
         </div>
       </div>

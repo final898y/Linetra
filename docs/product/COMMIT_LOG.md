@@ -329,3 +329,15 @@ author: Linetra Dev Team
 - frontend/src/views/ReportCreateView.vue
 
 ---
+
+### [2026-06-08 00:31:31 +0800] feat(frontend): implement ReportDetailView
+- Update ReportDetailView to fetch and display report details
+- Add navigation to report edit view
+- Add complete status update functionality
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/.gitignore
+- frontend/src/views/ReportDetailView.vue
+
+---

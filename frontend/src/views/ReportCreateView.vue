@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import dayjs from 'dayjs'
 import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
@@ -181,6 +182,23 @@ watch(currentTemplate, (newType) => {
     applyTemplate(newType)
   }
 })
+
+// 當「實際截止時間」變動時，若「對外期限」為空，自動預設為前一個工作日 (跳過週六、週日)
+watch(
+  () => form.actual_due_at,
+  (newVal) => {
+    if (newVal && !form.announced_due_at) {
+      let targetDate = dayjs(newVal).subtract(1, 'day')
+
+      // 如果減 1 天後是週六 (6) 或週日 (0)，則持續往前回推直到週五
+      while (targetDate.day() === 0 || targetDate.day() === 6) {
+        targetDate = targetDate.subtract(1, 'day')
+      }
+
+      form.announced_due_at = targetDate.format('YYYY-MM-DDTHH:mm')
+    }
+  }
+)
 
 const addItem = (type: ReportItemInsert['item_type']) => {
   items.value.push({
@@ -372,7 +390,7 @@ const getItemLabel = (type: string) => {
               />
             </div>
 
-            <div v-if="activeTab !== 'announcement'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div v-if="activeTab !== 'announcement'" class="space-y-4 pt-2">
               <div>
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                   >通報單位</label
@@ -383,15 +401,28 @@ const getItemLabel = (type: string) => {
                   class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
                 />
               </div>
-              <div>
-                <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                  >繳交期限</label
-                >
-                <input
-                  v-model="form.announced_due_at"
-                  type="datetime-local"
-                  class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
-                />
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                    >實際截止時間 (內控)</label
+                  >
+                  <input
+                    v-model="form.actual_due_at"
+                    type="datetime-local"
+                    class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                    >對外通報期限</label
+                  >
+                  <input
+                    v-model="form.announced_due_at"
+                    type="datetime-local"
+                    class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
+                  />
+                </div>
               </div>
             </div>
 
