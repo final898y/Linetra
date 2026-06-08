@@ -1,7 +1,7 @@
 ---
 title: Linetra — Supabase 資料庫初始化與設定指南
 version: v1.0
-date: 2026-06-07
+date: 2026-06-08
 status: Active
 author: Linetra Dev Team
 ---
@@ -31,7 +31,8 @@ CREATE TYPE report_status AS ENUM (
   'pending',
   'completed',
   'overdue',
-  'archived'
+  'archived',
+  'deleted'
 );
 
 -- 提醒項目類型

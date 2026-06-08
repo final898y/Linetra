@@ -31,7 +31,7 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 - **標準化通報產生器 (Standardized Report Generator)**：提供 5 種行政專用模板（一般案件、處務會議、市長週報、面報、公告通知），一鍵產生格式化文字。
 - **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，符合行政實務需求。
-- **案件生命週期追蹤 (Case Lifecycle Tracking)**：透過狀態機 (State Machine) 管理案件，包含待辦 (Pending)、已完成 (Completed)、逾期 (Overdue) 及封存 (Archived)。
+- **案件生命週期追蹤 (Case Lifecycle Tracking)**：透過狀態機 (State Machine) 管理案件，包含待辦 (Pending)、已完成 (Completed)、逾期 (Overdue)、封存 (Archived) 及已刪除 (Deleted)。
 - **智慧提醒系統 (Rule-based Reminder System)**：基於瀏覽器通知 (Browser Notification)，在期限到達前自動觸發提醒，降低案件遺漏風險。
 - **視覺化管理 (Visual Management)**：提供待辦清單 (Pending List) 與行事曆視圖 (Calendar View)，直覺掌握工作負荷。
 

@@ -11,7 +11,7 @@ export interface Database {
           id: string
           importance_flag: boolean
           sent_at: string | null
-          status: 'pending' | 'completed' | 'overdue' | 'archived'
+          status: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
           template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at: string
@@ -26,7 +26,7 @@ export interface Database {
           id?: string
           importance_flag?: boolean
           sent_at?: string | null
-          status?: 'pending' | 'completed' | 'overdue' | 'archived'
+          status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
           template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at?: string
@@ -41,7 +41,7 @@ export interface Database {
           id?: string
           importance_flag?: boolean
           sent_at?: string | null
-          status?: 'pending' | 'completed' | 'overdue' | 'archived'
+          status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject?: string
           template_type?: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
           updated_at?: string

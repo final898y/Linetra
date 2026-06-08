@@ -9,7 +9,7 @@ export const TemplateTypeSchema = z.enum([
   'announcement',
 ])
 
-export const ReportStatusSchema = z.enum(['pending', 'completed', 'overdue', 'archived'])
+export const ReportStatusSchema = z.enum(['pending', 'completed', 'overdue', 'archived', 'deleted'])
 
 export const ItemTypeSchema = z.enum([
   'submission_method',

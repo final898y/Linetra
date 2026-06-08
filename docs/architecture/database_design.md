@@ -1,7 +1,7 @@
 ---
 title: Linetra — 資料庫實作與安全政策 (Database Implementation & RLS)
 version: v1.0
-date: 2026-06-07
+date: 2026-06-08
 status: Draft
 author: Linetra Dev Team
 ---
@@ -13,7 +13,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-06-07 |
+| **最後更新 (Last Updated)** | 2026-06-08 |
 | **狀態 (Status)** | 草案 (Draft) |
 
 ---
@@ -48,7 +48,7 @@ author: Linetra Dev Team
 | `announced_due_at` | `timestamptz` | | 對外通知期限 |
 | `sent_at` | `timestamptz` | | 第一次複製的時間 |
 | `importance_flag` | `boolean` | `DEFAULT false` | |
-| `status` | `text` | `DEFAULT 'pending'`, `CHECK (status IN (...))` | `pending`, `completed`, `overdue`, `archived` |
+| `status` | `text` | `DEFAULT 'pending'`, `CHECK (status IN (...))` | `pending`, `completed`, `overdue`, `archived`, `deleted` |
 | `created_at` | `timestamptz` | `DEFAULT now()` | |
 | `updated_at` | `timestamptz` | `DEFAULT now()` | |
 

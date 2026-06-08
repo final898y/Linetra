@@ -25,7 +25,7 @@ export const useReportStore = defineStore('report', () => {
       if (status && status !== 'all') {
         query = query.eq('status', status as ReportStatus)
       } else {
-        query = query.neq('status', 'archived')
+        query = query.not('status', 'in', '("archived","deleted")')
       }
 
       if (templateType && templateType !== 'all') {

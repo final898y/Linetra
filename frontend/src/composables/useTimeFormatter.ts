@@ -16,7 +16,7 @@ export const useTimeFormatter = () => {
     const now = dayjs()
     const target = dayjs(dateStr)
     const diffDays = target.startOf('day').diff(now.startOf('day'), 'day')
-    
+
     // 判斷是否為同一個日曆週 (dayjs 預設週日為一週開始)
     const isSameWeek = target.isSame(now, 'week')
     const isNextWeek = target.isSame(now.add(1, 'week'), 'week')
@@ -50,8 +50,8 @@ export const useTimeFormatter = () => {
     return `${prefix}${mmdd}(${weekStr}) ${timeStr} 前`
   }
 
-  const getRemainingTimeColor = (dateStr: string | null, isCompleted: boolean): string => {
-    if (isCompleted) return 'text-status-archived'
+  const getRemainingTimeColor = (dateStr: string | null, isNeutral: boolean): string => {
+    if (isNeutral) return 'text-status-archived'
     if (!dateStr) return 'text-cream-muted'
 
     const now = dayjs()

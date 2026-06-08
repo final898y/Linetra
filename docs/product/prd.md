@@ -1,7 +1,7 @@
 ---
 title: LINE 通報追蹤管理平台 — 產品需求文件 (PRD)
 version: v2.0
-date: 2026-06-07
+date: 2026-06-08
 status: Approved
 author: Product Manager
 ---
@@ -16,7 +16,7 @@ author: Product Manager
 | **文件版本 (Version)**        | `v2.0`                         |
 | **文件狀態 (Status)**         | 已核准 (Approved)              |
 | **建立日期 (Created Date)**   | 2026-05-24                     |
-| **最後更新 (Last Updated)**   | 2026-06-07                     |
+| **最後更新 (Last Updated)**   | 2026-06-08                     |
 | **主要作者 (Author)**         | Product Manager                |
 | **產品階段 (Target Stage)**   | 最小可行性產品 (MVP)           |
 | **目標平台 (Platform)**       | 網頁應用程式 (Web Application) |
@@ -789,7 +789,7 @@ https://docs.google.com/...
 | announced_due_at  | TIMESTAMPTZ                                                         | UTC；公告通知可空                                        |
 | sent_at           | TIMESTAMPTZ                                                         | UTC；第一次複製時記錄                                    |
 | importance_flag   | BOOLEAN                                                             | 預設 false                                               |
-| status            | ENUM('pending','completed','overdue','archived')                    | 預設 'pending'                                           |
+| status            | ENUM('pending','completed','overdue','archived','deleted')          | 預設 'pending'                                           |
 | created_at        | TIMESTAMPTZ                                                         | UTC                                                      |
 | updated_at        | TIMESTAMPTZ                                                         | UTC                                                      |
 

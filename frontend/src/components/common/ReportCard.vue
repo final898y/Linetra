@@ -20,6 +20,7 @@ const statusColors = {
   completed: 'bg-status-completed/10 text-status-completed border-status-completed/20',
   overdue: 'bg-status-overdue/10 text-status-overdue border-status-overdue/20',
   archived: 'bg-status-archived/10 text-status-archived border-status-archived/20',
+  deleted: 'bg-status-overdue/5 text-status-overdue/70 border-status-overdue/10 grayscale',
 }
 </script>
 
@@ -62,7 +63,10 @@ const statusColors = {
           <p
             class="text-sm font-bold"
             :class="
-              getRemainingTimeColor(report.announced_due_at || null, report.status === 'completed')
+              getRemainingTimeColor(
+                report.announced_due_at || null,
+                report.status === 'completed' || report.status === 'deleted'
+              )
             "
           >
             {{ formatRelative(report.announced_due_at || null) }}
