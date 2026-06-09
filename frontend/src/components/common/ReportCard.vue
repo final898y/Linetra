@@ -8,11 +8,16 @@ const props = defineProps<{
   report: Report
 }>()
 
-const { formatRelative, getRemainingTimeColor } = useTimeFormatter()
+const { formatRelative, formatFull, getRemainingTimeColor } = useTimeFormatter()
 const reportStore = useReportStore()
 
 const handleComplete = async () => {
-  await reportStore.updateStatus(props.report.id, 'completed')
+  try {
+    await reportStore.updateStatus(props.report.id, 'completed')
+  } catch (error) {
+    console.error('Failed to update status:', error)
+    alert('更新狀態失敗，請稍後再試')
+  }
 }
 
 const statusColors = {
@@ -69,7 +74,10 @@ const statusColors = {
               )
             "
           >
-            {{ formatRelative(report.announced_due_at || null) }}
+            {{ formatFull(report.announced_due_at || null) }}
+            <span class="ml-2">
+              {{ formatRelative(report.announced_due_at || null) }}
+            </span>
           </p>
         </div>
         <button

@@ -375,3 +375,17 @@ author: Linetra Dev Team
 - frontend/src/views/ReportDetailView.vue
 
 ---
+
+### [2026-06-09 00:22:04 +0800] feat(dashboard): refactor filter logic with composable for multi-select support
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportFilterPanel.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/config/reportTypes.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/src/views/ReportCreateView.vue
+- frontend/vercl.json
+
+---

@@ -3,11 +3,18 @@ import 'dayjs/locale/zh-tw'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import calendar from 'dayjs/plugin/calendar'
 import weekday from 'dayjs/plugin/weekday'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 
 dayjs.extend(relativeTime)
 dayjs.extend(calendar)
 dayjs.extend(weekday)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+
+// 預設使用當地時區
 dayjs.locale('zh-tw')
+dayjs.tz.setDefault(dayjs.tz.guess())
 
 export const useTimeFormatter = () => {
   const formatRelative = (dateStr: string | null): string => {
@@ -26,28 +33,24 @@ export const useTimeFormatter = () => {
       return days === 0 ? '今天已過期' : `已逾期 ${days} 天`
     }
 
-    const timeStr = target.format('HH:mm')
     const weekStr = target.format('週dd')
-    const mmdd = target.format('MM/DD')
 
     if (diffDays === 0) {
-      if (timeStr === '12:00') return `今天 ${mmdd}(${weekStr}) 中午前`
-      if (timeStr >= '17:00' && timeStr <= '18:00') return `今天 ${mmdd}(${weekStr}) 下班前`
-      return `今天 ${mmdd}(${weekStr}) ${timeStr} 前`
+      return `今天(${weekStr})`
     }
 
     if (diffDays === 1) {
-      return `明天 ${mmdd}(${weekStr}) ${timeStr} 前`
+      return `明天(${weekStr})`
     }
 
     let prefix = ''
     if (isSameWeek) {
-      prefix = '本週 '
+      prefix = '本週'
     } else if (isNextWeek) {
-      prefix = '下週 '
+      prefix = '下週'
     }
 
-    return `${prefix}${mmdd}(${weekStr}) ${timeStr} 前`
+    return prefix ? `${prefix}(${weekStr})` : `(${weekStr})`
   }
 
   const getRemainingTimeColor = (dateStr: string | null, isNeutral: boolean): string => {
@@ -64,8 +67,15 @@ export const useTimeFormatter = () => {
     return 'text-status-completed' // 3天以上綠色
   }
 
+  const formatFull = (dateStr: string | null): string => {
+    if (!dateStr) return '-'
+    // dayjs(dateStr) 會自動將帶有時區標記的 ISO 字串轉為當地時間顯示
+    return dayjs(dateStr).format('YYYY/MM/DD HH:mm')
+  }
+
   return {
     formatRelative,
+    formatFull,
     getRemainingTimeColor,
   }
 }

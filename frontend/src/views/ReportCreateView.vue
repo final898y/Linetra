@@ -2,7 +2,12 @@
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { useReportStore } from '@/stores/reports'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 import { useAuthStore } from '@/stores/auth'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
@@ -27,8 +32,12 @@ onMounted(async () => {
     form.template_type = report.template_type as TemplateType
     form.department = report.department || ''
     form.subject = report.subject
-    form.actual_due_at = report.actual_due_at ? report.actual_due_at.substring(0, 16) : ''
-    form.announced_due_at = report.announced_due_at ? report.announced_due_at.substring(0, 16) : ''
+    form.actual_due_at = report.actual_due_at
+      ? dayjs(report.actual_due_at).format('YYYY-MM-DDTHH:mm')
+      : ''
+    form.announced_due_at = report.announced_due_at
+      ? dayjs(report.announced_due_at).format('YYYY-MM-DDTHH:mm')
+      : ''
     form.importance_flag = report.importance_flag || false
 
     // Load items
@@ -240,8 +249,10 @@ const handleCopyAndSave = async () => {
       formatted_content: previewText.value,
       status: 'pending',
       department: form.department || null,
-      actual_due_at: form.actual_due_at || null,
-      announced_due_at: form.announced_due_at || null,
+      actual_due_at: form.actual_due_at ? dayjs.tz(form.actual_due_at).toISOString() : null,
+      announced_due_at: form.announced_due_at
+        ? dayjs.tz(form.announced_due_at).toISOString()
+        : null,
     }
 
     let reportId = currentReportId.value

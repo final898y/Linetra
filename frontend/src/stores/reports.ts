@@ -76,13 +76,17 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const updateStatus = async (id: string, status: ReportStatus) => {
-    const { error } = await supabase.from('reports').update({ status }).eq('id', id)
+    try {
+      const { error } = await supabase.from('reports').update({ status }).eq('id', id)
+      if (error) throw error
 
-    if (error) throw error
-
-    const index = reports.value.findIndex((r) => r.id === id)
-    if (index !== -1) {
-      reports.value[index].status = status
+      const index = reports.value.findIndex((r) => r.id === id)
+      if (index !== -1) {
+        reports.value[index].status = status
+      }
+    } catch (error) {
+      console.error('Error updating status:', error)
+      throw error
     }
   }
 
