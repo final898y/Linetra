@@ -16,7 +16,7 @@ const applyFilters = () => {
 }
 
 onMounted(() => {
-  reportStore.fetchReports()
+  reportStore.fetchReports(filterOptions.value)
 })
 </script>
 

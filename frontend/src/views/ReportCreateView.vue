@@ -137,10 +137,12 @@ const updateMode = (tabId: (typeof tabs)[number]['id']) => {
       { item_type: 'detail', content: '', sort_order: 2 },
     ]
   } else if (tabId === 'template') {
+    form.department = '' // 模板模式不顯示通報單位，清空
     applyTemplate(currentTemplate.value)
   } else if (tabId === 'announcement') {
     form.template_type = 'announcement'
     form.subject = ''
+    form.department = '' // 公告模式不顯示通報單位，清空
     items.value = [{ item_type: 'detail', content: '', sort_order: 1 }]
   }
 }
@@ -430,7 +432,7 @@ const getItemLabel = (type: string) => {
             </div>
 
             <div v-if="activeTab !== 'announcement'" class="space-y-4 pt-2">
-              <div>
+              <div v-if="activeTab === 'general'">
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                   >通報單位</label
                 >

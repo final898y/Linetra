@@ -407,3 +407,15 @@ author: Linetra Dev Team
 - frontend/tests/composables/useTimeFormatter.spec.ts
 
 ---
+
+### [2026-06-09 22:17:36 +0800] feat(report): enhance ReportCreateView with status editing and better UX
+- Add status editing capability in ReportCreateView with manual toggle buttons
+- Refactor edit mode detection to prevent state reset and data overwriting
+- Optimize deadline auto-fill logic to trigger on @change instead of watch
+- Update UI to show 'Edit Case' title and context-specific action buttons
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/views/ReportCreateView.vue
+
+---
