@@ -4,11 +4,15 @@ import type { ReportStatus, TemplateType } from '@/types/models'
 export interface FilterOptions {
   statuses: ReportStatus[]
   templateTypes: TemplateType[]
+  sortOrder: 'asc' | 'desc'
+  hideAnnouncements: boolean
 }
 
 // 從 localStorage 載入初始值
 const STORAGE_KEY_STATUS = 'linetra_filter_statuses'
 const STORAGE_KEY_TEMPLATE = 'linetra_filter_templates'
+const STORAGE_KEY_SORT = 'linetra_filter_sort'
+const STORAGE_KEY_HIDE_ANNOUNCEMENTS = 'linetra_filter_hide_announcements'
 
 const loadFromStorage = <T>(key: string, defaultValue: T): T => {
   const stored = localStorage.getItem(key)
@@ -23,6 +27,8 @@ const loadFromStorage = <T>(key: string, defaultValue: T): T => {
 
 const selectedStatuses = ref<ReportStatus[]>(loadFromStorage(STORAGE_KEY_STATUS, []))
 const selectedTemplateTypes = ref<TemplateType[]>(loadFromStorage(STORAGE_KEY_TEMPLATE, []))
+const sortOrder = ref<'asc' | 'desc'>(loadFromStorage(STORAGE_KEY_SORT, 'asc'))
+const hideAnnouncements = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_ANNOUNCEMENTS, false))
 
 // 監聽變動並存入 localStorage
 watch(
@@ -40,6 +46,14 @@ watch(
   },
   { deep: true }
 )
+
+watch(sortOrder, (newVal) => {
+  localStorage.setItem(STORAGE_KEY_SORT, JSON.stringify(newVal))
+})
+
+watch(hideAnnouncements, (newVal) => {
+  localStorage.setItem(STORAGE_KEY_HIDE_ANNOUNCEMENTS, JSON.stringify(newVal))
+})
 
 export const useReportFilters = () => {
   const toggleStatus = (status: ReportStatus) => {
@@ -63,16 +77,22 @@ export const useReportFilters = () => {
   const clearFilters = () => {
     selectedStatuses.value = []
     selectedTemplateTypes.value = []
+    sortOrder.value = 'asc'
+    hideAnnouncements.value = false
   }
 
   const filterOptions = computed<FilterOptions>(() => ({
     statuses: selectedStatuses.value,
     templateTypes: selectedTemplateTypes.value,
+    sortOrder: sortOrder.value,
+    hideAnnouncements: hideAnnouncements.value,
   }))
 
   return {
     selectedStatuses,
     selectedTemplateTypes,
+    sortOrder,
+    hideAnnouncements,
     toggleStatus,
     toggleTemplateType,
     clearFilters,

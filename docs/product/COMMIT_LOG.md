@@ -419,3 +419,16 @@ author: Linetra Dev Team
 - frontend/src/views/ReportCreateView.vue
 
 ---
+
+### [2026-06-09 22:47:33 +0800] feat(ux): improve filter persistence and refine Template mode UI
+- Implement filter persistence using localStorage in useReportFilters
+- Ensure DashboardView applies stored filters on initial load
+- Hide and clear Department field in Template and Announcement modes for cleaner UI
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/views/DashboardView.vue
+- frontend/src/views/ReportCreateView.vue
+
+---

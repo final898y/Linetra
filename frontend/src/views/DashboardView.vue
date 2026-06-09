@@ -1,19 +1,31 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useReportStore } from '@/stores/reports'
 import { useReportFilters } from '@/composables/useReportFilters'
 import ReportCard from '@/components/common/ReportCard.vue'
 import ReportFilterPanel from '@/components/common/ReportFilterPanel.vue'
-import { SparklesIcon, FunnelIcon } from '@heroicons/vue/24/outline'
+import {
+  SparklesIcon,
+  FunnelIcon,
+  BarsArrowDownIcon,
+  BarsArrowUpIcon,
+  EyeSlashIcon,
+  EyeIcon,
+} from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
-const { filterOptions } = useReportFilters()
+const { filterOptions, sortOrder, hideAnnouncements } = useReportFilters()
 const isFilterOpen = ref(false)
 
 const applyFilters = () => {
   reportStore.fetchReports(filterOptions.value)
   isFilterOpen.value = false
 }
+
+// 當排序或隱藏開關變動時，立即更新列表
+watch([sortOrder, hideAnnouncements], () => {
+  reportStore.fetchReports(filterOptions.value)
+})
 
 onMounted(() => {
   reportStore.fetchReports(filterOptions.value)
@@ -22,20 +34,49 @@ onMounted(() => {
 
 <template>
   <div class="space-y-8">
-    <div class="flex justify-between items-end">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
       <div>
         <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">待辦案件</h2>
         <p class="text-cream-muted mt-2 text-sm uppercase tracking-widest font-bold">
           Pending Reports
         </p>
       </div>
-      <button
-        @click="isFilterOpen = !isFilterOpen"
-        class="flex items-center gap-2 px-4 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
-      >
-        <FunnelIcon class="size-4" />
-        篩選
-      </button>
+
+      <div class="flex items-center gap-2">
+        <!-- Sort Toggle -->
+        <button
+          @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+          class="flex items-center gap-1.5 px-3 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
+          :title="sortOrder === 'asc' ? '最近優先' : '最遠優先'"
+        >
+          <BarsArrowDownIcon v-if="sortOrder === 'asc'" class="size-4" />
+          <BarsArrowUpIcon v-else class="size-4" />
+          {{ sortOrder === 'asc' ? '最近' : '最遠' }}
+        </button>
+
+        <!-- Hide Announcements Toggle -->
+        <button
+          @click="hideAnnouncements = !hideAnnouncements"
+          class="flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-bold transition-all"
+          :class="
+            hideAnnouncements
+              ? 'bg-status-overdue/10 border-status-overdue/20 text-status-overdue'
+              : 'bg-cream-surface border-cream-border text-cream-text hover:bg-cream-hover'
+          "
+        >
+          <EyeSlashIcon v-if="hideAnnouncements" class="size-4" />
+          <EyeIcon v-else class="size-4" />
+          {{ hideAnnouncements ? '隱藏公告' : '顯示公告' }}
+        </button>
+
+        <button
+          @click="isFilterOpen = !isFilterOpen"
+          class="flex items-center gap-1.5 px-3 py-2 bg-cream-surface border border-cream-border rounded-xl text-xs font-bold text-cream-text hover:bg-cream-hover transition-colors"
+        >
+          <FunnelIcon class="size-4" />
+          篩選
+        </button>
+      </div>
     </div>
 
     <!-- Filter Panel -->

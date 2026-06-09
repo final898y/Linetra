@@ -20,7 +20,7 @@ export const useReportStore = defineStore('report', () => {
       let query = supabase
         .from('reports')
         .select('*')
-        .order('announced_due_at', { ascending: true })
+        .order('announced_due_at', { ascending: options?.sortOrder === 'desc' ? false : true })
 
       // 處理狀態多選 (若無選擇，預設排除 archived/deleted)
       if (options?.statuses && options.statuses.length > 0) {
@@ -32,6 +32,11 @@ export const useReportStore = defineStore('report', () => {
       // 處理模板多選
       if (options?.templateTypes && options.templateTypes.length > 0) {
         query = query.in('template_type', options.templateTypes)
+      }
+
+      // 處理隱藏公告
+      if (options?.hideAnnouncements) {
+        query = query.neq('template_type', 'announcement')
       }
 
       const { data, error } = await query
