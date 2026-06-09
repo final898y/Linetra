@@ -1,32 +1,45 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { useReportStore } from '@/stores/reports'
+import { useAuthStore } from '@/stores/auth'
+import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import { useReportForm } from '@/composables/useReportForm'
+import type {
+  ReportItem,
+  ReportStatus,
+  TemplateType,
+  ReportInsert,
+  ReportItemInsert,
+} from '@/types/models'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
-import { useAuthStore } from '@/stores/auth'
-import { useReportTemplate } from '@/composables/useReportTemplate'
-import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
-
-import { REPORT_TEMPLATES } from '@/config/reportTemplates'
-
-import type {
-  ReportItemInsert,
-  ReportInsert,
-  TemplateType,
-  ReportItem,
-  ReportStatus,
-} from '@/types/models'
 
 const reportStore = useReportStore()
 const authStore = useAuthStore()
-const { generateLineText } = useReportTemplate()
 const route = useRoute()
-const isInitializing = ref(false)
+const {
+  tabs,
+  activeTab,
+  currentReportId,
+  currentTemplate,
+  useDefaultValue,
+  form,
+  items,
+  sortedItems,
+  isInitializing,
+  updateMode,
+  applyTemplate,
+  toggleDefault,
+  addItem,
+  removeItem,
+  previewText,
+  getItemLabel,
+} = useReportForm()
 
 onMounted(async () => {
   const reportId = route.params.id as string
@@ -66,152 +79,10 @@ onMounted(async () => {
         activeTab.value = 'template'
       }
     } finally {
-      // 延遲結束初始化，確保 watch 已經被處理
       setTimeout(() => {
         isInitializing.value = false
       }, 0)
     }
-  }
-})
-
-// Tabs state
-const tabs = [
-  { id: 'general', name: '一般模式' },
-  { id: 'template', name: '模板模式' },
-  { id: 'announcement', name: '公告模式' },
-] as const
-
-const activeTab = ref<(typeof tabs)[number]['id']>('general')
-const currentReportId = ref<string | null>(null)
-
-// Template specific state
-const currentTemplate = ref<TemplateType>('meeting')
-const useDefaultValue = reactive<Record<string, boolean>>({}) // 追蹤哪些欄位使用預設值
-
-const form = reactive({
-  template_type: 'general' as TemplateType,
-  department: '',
-  subject: '',
-  actual_due_at: '',
-  announced_due_at: '',
-  importance_flag: false,
-  status: 'pending' as ReportStatus,
-})
-
-const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
-
-// 項目排序權重定義，確保 UI 與產出邏輯一致
-const ITEM_ORDER_WEIGHTS: Record<string, number> = {
-  submission_method: 10,
-  detail: 20,
-  meeting_time: 30,
-  link: 40,
-  agenda: 50,
-  note: 100,
-}
-
-// 自動排序後的項目列表
-const sortedItems = computed(() => {
-  // 回傳包含原始索引的對象，以便刪除操作
-  return [...items.value]
-    .map((item, originalIndex) => ({ item, originalIndex }))
-    .sort((a, b) => {
-      const weightA = ITEM_ORDER_WEIGHTS[a.item.item_type || ''] || 999
-      const weightB = ITEM_ORDER_WEIGHTS[b.item.item_type || ''] || 999
-      return weightA - weightB
-    })
-})
-
-// Default values and logic
-const updateMode = (tabId: (typeof tabs)[number]['id']) => {
-  activeTab.value = tabId
-
-  // 如果正在初始化，不要重置資料
-  if (isInitializing.value) return
-
-  if (tabId === 'general') {
-    form.template_type = 'general'
-    form.subject = ''
-    items.value = [
-      { item_type: 'submission_method', content: '紙本核章', sort_order: 1 },
-      { item_type: 'detail', content: '', sort_order: 2 },
-    ]
-  } else if (tabId === 'template') {
-    form.department = '' // 模板模式不顯示通報單位，清空
-    applyTemplate(currentTemplate.value)
-  } else if (tabId === 'announcement') {
-    form.template_type = 'announcement'
-    form.subject = ''
-    form.department = '' // 公告模式不顯示通報單位，清空
-    items.value = [{ item_type: 'detail', content: '', sort_order: 1 }]
-  }
-}
-
-const applyTemplate = (type: TemplateType) => {
-  const config = REPORT_TEMPLATES[type]
-  if (!config) return
-
-  form.template_type = type
-  currentTemplate.value = type
-  form.subject = config.defaultSubject
-
-  items.value = config.items.map((item, idx) => {
-    const key = `${type}_${item.item_type}`
-    // 如果之前沒設過，預設為 true (使用預設值)
-    if (useDefaultValue[key] === undefined) useDefaultValue[key] = true
-
-    const savedCustomValue = localStorage.getItem(`custom_val_${key}`)
-
-    return {
-      ...item,
-      content: useDefaultValue[key] ? item.content : savedCustomValue || item.content,
-      sort_order: idx + 1,
-    }
-  })
-}
-
-// 切換預設/自定義
-const toggleDefault = (item: Partial<ReportItemInsert & { isCustomizable?: boolean }>) => {
-  const key = `${currentTemplate.value}_${item.item_type}`
-  useDefaultValue[key] = !useDefaultValue[key]
-
-  if (useDefaultValue[key]) {
-    // 恢復預設
-    const config = REPORT_TEMPLATES[currentTemplate.value]
-    const original = config?.items.find((i) => i.item_type === item.item_type)
-    if (original) item.content = original.content
-  }
-}
-
-// 監聽 items 變化，自動儲存使用者的自定義內容
-watch(
-  items,
-  (newItems) => {
-    if (activeTab.value !== 'template') return
-    const type = currentTemplate.value
-    newItems.forEach((item) => {
-      const key = `${type}_${item.item_type}`
-      if (item.isCustomizable && !useDefaultValue[key]) {
-        localStorage.setItem(`custom_val_${key}`, item.content || '')
-      }
-    })
-  },
-  { deep: true }
-)
-
-// Watchers
-watch(
-  activeTab,
-  (newTab) => {
-    updateMode(newTab)
-  },
-  { immediate: true }
-)
-
-watch(currentTemplate, (newType) => {
-  if (isInitializing.value) return
-  if (activeTab.value === 'template') {
-    applyTemplate(newType)
   }
 })
 
@@ -222,7 +93,6 @@ const handleActualDueChange = () => {
   if (form.actual_due_at && !form.announced_due_at) {
     let targetDate = dayjs(form.actual_due_at).subtract(1, 'day')
 
-    // 如果減 1 天後是週六 (6) 或週日 (0)，則持續往前回推直到週五
     while (targetDate.day() === 0 || targetDate.day() === 6) {
       targetDate = targetDate.subtract(1, 'day')
     }
@@ -230,27 +100,6 @@ const handleActualDueChange = () => {
     form.announced_due_at = targetDate.format('YYYY-MM-DDTHH:mm')
   }
 }
-
-const addItem = (type: ReportItemInsert['item_type']) => {
-  items.value.push({
-    item_type: type,
-    content: '',
-    sort_order: items.value.length + 1,
-  })
-}
-
-const removeItem = (index: number) => {
-  items.value.splice(index, 1)
-}
-
-const previewText = computed(() => {
-  // For announcement, we might use a dedicated content field or combine items
-  const reportData: Partial<ReportInsert> = { ...form }
-  if (form.template_type === 'announcement') {
-    reportData.formatted_content = items.value.find((i) => i.item_type === 'detail')?.content || ''
-  }
-  return generateLineText(reportData, items.value as ReportItemInsert[])
-})
 
 const isSubmitting = ref(false)
 const showPreview = ref(true)
@@ -261,11 +110,9 @@ const handleCopyAndSave = async () => {
 
   isSubmitting.value = true
   try {
-    // 1. Copy to clipboard
     await navigator.clipboard.writeText(previewText.value)
 
-    // 2. Save to Supabase
-    const reportData: Partial<ReportInsert> = {
+    const reportData: ReportInsert = {
       ...form,
       user_id: authStore.user.id,
       formatted_content: previewText.value,
@@ -279,23 +126,25 @@ const handleCopyAndSave = async () => {
 
     let reportId = currentReportId.value
     if (reportId) {
-      // Update existing report
       await reportStore.updateReport(reportId, reportData)
-      // Clear old items
       await reportStore.deleteReportItems(reportId)
     } else {
-      // Create new report
-      const savedReport = await reportStore.createReport(reportData as ReportInsert)
+      const savedReport = await reportStore.createReport(reportData)
       if (!savedReport) throw new Error('Failed to create report')
       reportId = savedReport.id
       currentReportId.value = reportId
     }
 
-    // 3. Save Items
     const reportItems: ReportItemInsert[] = items.value
       .filter((i) => i.content && i.content.trim() !== '')
       .map((i, index) => ({
-        item_type: (i.item_type || 'detail') as ReportItemInsert['item_type'],
+        item_type: (i.item_type || 'detail') as
+          | 'submission_method'
+          | 'detail'
+          | 'note'
+          | 'agenda'
+          | 'link'
+          | 'meeting_time',
         content: i.content || '',
         sort_order: index + 1,
         report_id: reportId!,
@@ -316,18 +165,6 @@ const handleCopyAndSave = async () => {
   } finally {
     isSubmitting.value = false
   }
-}
-
-const getItemLabel = (type: string) => {
-  const labels: Record<string, string> = {
-    submission_method: '繳交方式',
-    detail: '內容說明',
-    note: '備註項目',
-    meeting_time: '會議時間',
-    link: '雲端連結',
-    agenda: '報告事項',
-  }
-  return labels[type] || '項目'
 }
 </script>
 
@@ -376,37 +213,19 @@ const getItemLabel = (type: string) => {
           >
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <button
-              @click="currentTemplate = 'meeting'"
+              v-for="tmpl in ['meeting', 'weekly_report', 'briefing'] as const"
+              :key="tmpl"
+              @click="applyTemplate(tmpl)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
               :class="
-                currentTemplate === 'meeting'
+                currentTemplate === tmpl
                   ? 'border-brand bg-brand/5 text-brand'
                   : 'border-cream-border text-cream-muted hover:border-cream-muted'
               "
             >
-              處務會議
-            </button>
-            <button
-              @click="currentTemplate = 'weekly_report'"
-              class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
-              :class="
-                currentTemplate === 'weekly_report'
-                  ? 'border-brand bg-brand/5 text-brand'
-                  : 'border-cream-border text-cream-muted hover:border-cream-muted'
-              "
-            >
-              市長週報
-            </button>
-            <button
-              @click="currentTemplate = 'briefing'"
-              class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
-              :class="
-                currentTemplate === 'briefing'
-                  ? 'border-brand bg-brand/5 text-brand'
-                  : 'border-cream-border text-cream-muted hover:border-cream-muted'
-              "
-            >
-              市長面報
+              {{
+                tmpl === 'meeting' ? '處務會議' : tmpl === 'weekly_report' ? '市長週報' : '市長面報'
+              }}
             </button>
           </div>
         </section>
@@ -556,7 +375,6 @@ const getItemLabel = (type: string) => {
                   <span class="text-[10px] font-bold text-cream-muted uppercase tracking-tighter">{{
                     getItemLabel(item.item_type!)
                   }}</span>
-                  <!-- 預設/自定義切換按鈕 -->
                   <button
                     v-if="item.isCustomizable"
                     @click="toggleDefault(item)"
@@ -604,8 +422,6 @@ const getItemLabel = (type: string) => {
                     item.isCustomizable && useDefaultValue[`${currentTemplate}_${item.item_type}`],
                 }"
               />
-
-              <!-- 繳交方式快速選項 -->
               <div
                 v-if="item.item_type === 'submission_method'"
                 class="flex flex-wrap gap-1.5 mt-2"

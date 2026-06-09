@@ -446,3 +446,14 @@ author: Linetra Dev Team
 - frontend/src/views/DashboardView.vue
 
 ---
+
+### [2026-06-09 23:23:18 +0800] test(core): add missing unit tests for ReportFilters and ReportStore
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/composables/useTimeFormatter.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
