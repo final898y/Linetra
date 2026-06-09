@@ -14,46 +14,62 @@ import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons
 
 import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 
-import type { ReportItemInsert, ReportInsert, TemplateType, ReportItem } from '@/types/models'
+import type {
+  ReportItemInsert,
+  ReportInsert,
+  TemplateType,
+  ReportItem,
+  ReportStatus,
+} from '@/types/models'
 
 const reportStore = useReportStore()
 const authStore = useAuthStore()
 const { generateLineText } = useReportTemplate()
 const route = useRoute()
+const isInitializing = ref(false)
 
 onMounted(async () => {
   const reportId = route.params.id as string
   if (reportId) {
-    currentReportId.value = reportId
-    const report = await reportStore.fetchReportById(reportId)
-    const reportItems = await reportStore.fetchReportItemsById(reportId)
+    isInitializing.value = true
+    try {
+      currentReportId.value = reportId
+      const report = await reportStore.fetchReportById(reportId)
+      const reportItems = await reportStore.fetchReportItemsById(reportId)
 
-    // Load form data
-    form.template_type = report.template_type as TemplateType
-    form.department = report.department || ''
-    form.subject = report.subject
-    form.actual_due_at = report.actual_due_at
-      ? dayjs(report.actual_due_at).format('YYYY-MM-DDTHH:mm')
-      : ''
-    form.announced_due_at = report.announced_due_at
-      ? dayjs(report.announced_due_at).format('YYYY-MM-DDTHH:mm')
-      : ''
-    form.importance_flag = report.importance_flag || false
+      // Load form data
+      form.template_type = report.template_type as TemplateType
+      form.department = report.department || ''
+      form.subject = report.subject
+      form.actual_due_at = report.actual_due_at
+        ? dayjs(report.actual_due_at).format('YYYY-MM-DDTHH:mm')
+        : ''
+      form.announced_due_at = report.announced_due_at
+        ? dayjs(report.announced_due_at).format('YYYY-MM-DDTHH:mm')
+        : ''
+      form.importance_flag = report.importance_flag || false
+      form.status = report.status as ReportStatus
 
-    // Load items
-    items.value = reportItems.map((item: ReportItem) => ({
-      ...item,
-      isCustomizable: true,
-    }))
+      // Load items
+      items.value = reportItems.map((item: ReportItem) => ({
+        ...item,
+        isCustomizable: true,
+      }))
 
-    // Set active tab based on template type
-    if (form.template_type === 'announcement') {
-      activeTab.value = 'announcement'
-    } else if (form.template_type === 'general') {
-      activeTab.value = 'general'
-    } else {
-      activeTab.value = 'template'
-      currentTemplate.value = form.template_type as TemplateType
+      // Set template and tab based on data
+      if (form.template_type === 'announcement') {
+        activeTab.value = 'announcement'
+      } else if (form.template_type === 'general') {
+        activeTab.value = 'general'
+      } else {
+        currentTemplate.value = form.template_type as TemplateType
+        activeTab.value = 'template'
+      }
+    } finally {
+      // 延遲結束初始化，確保 watch 已經被處理
+      setTimeout(() => {
+        isInitializing.value = false
+      }, 0)
     }
   }
 })
@@ -79,6 +95,7 @@ const form = reactive({
   actual_due_at: '',
   announced_due_at: '',
   importance_flag: false,
+  status: 'pending' as ReportStatus,
 })
 
 const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
@@ -108,7 +125,10 @@ const sortedItems = computed(() => {
 // Default values and logic
 const updateMode = (tabId: (typeof tabs)[number]['id']) => {
   activeTab.value = tabId
-  currentReportId.value = null // 切換模式時重置，視為新案件
+
+  // 如果正在初始化，不要重置資料
+  if (isInitializing.value) return
+
   if (tabId === 'general') {
     form.template_type = 'general'
     form.subject = ''
@@ -187,27 +207,27 @@ watch(
 )
 
 watch(currentTemplate, (newType) => {
+  if (isInitializing.value) return
   if (activeTab.value === 'template') {
     applyTemplate(newType)
   }
 })
 
-// 當「實際截止時間」變動時，若「對外期限」為空，自動預設為前一個工作日 (跳過週六、週日)
-watch(
-  () => form.actual_due_at,
-  (newVal) => {
-    if (newVal && !form.announced_due_at) {
-      let targetDate = dayjs(newVal).subtract(1, 'day')
+// 當「實際截止時間」完成輸入時，若「對外期限」為空，自動預設為前一個工作日 (跳過週六、週日)
+const handleActualDueChange = () => {
+  if (isInitializing.value) return
 
-      // 如果減 1 天後是週六 (6) 或週日 (0)，則持續往前回推直到週五
-      while (targetDate.day() === 0 || targetDate.day() === 6) {
-        targetDate = targetDate.subtract(1, 'day')
-      }
+  if (form.actual_due_at && !form.announced_due_at) {
+    let targetDate = dayjs(form.actual_due_at).subtract(1, 'day')
 
-      form.announced_due_at = targetDate.format('YYYY-MM-DDTHH:mm')
+    // 如果減 1 天後是週六 (6) 或週日 (0)，則持續往前回推直到週五
+    while (targetDate.day() === 0 || targetDate.day() === 6) {
+      targetDate = targetDate.subtract(1, 'day')
     }
+
+    form.announced_due_at = targetDate.format('YYYY-MM-DDTHH:mm')
   }
-)
+}
 
 const addItem = (type: ReportItemInsert['item_type']) => {
   items.value.push({
@@ -247,7 +267,7 @@ const handleCopyAndSave = async () => {
       ...form,
       user_id: authStore.user.id,
       formatted_content: previewText.value,
-      status: 'pending',
+      status: form.status,
       department: form.department || null,
       actual_due_at: form.actual_due_at ? dayjs.tz(form.actual_due_at).toISOString() : null,
       announced_due_at: form.announced_due_at
@@ -313,8 +333,16 @@ const getItemLabel = (type: string) => {
   <div class="max-w-5xl mx-auto space-y-8 pb-20">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">建立新通報</h2>
-        <p class="text-cream-muted text-sm mt-1">選擇模式並填寫資訊，系統將自動產生 LINE 格式</p>
+        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">
+          {{ currentReportId ? '編輯案件' : '建立新通報' }}
+        </h2>
+        <p class="text-cream-muted text-sm mt-1">
+          {{
+            currentReportId
+              ? '修改案件資訊並更新 LINE 格式'
+              : '選擇模式並填寫資訊，系統將自動產生 LINE 格式'
+          }}
+        </p>
       </div>
       <div class="flex bg-cream-surface p-1 rounded-xl border border-cream-border">
         <button
@@ -421,6 +449,7 @@ const getItemLabel = (type: string) => {
                   >
                   <input
                     v-model="form.actual_due_at"
+                    @change="handleActualDueChange"
                     type="datetime-local"
                     class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
                   />
@@ -449,6 +478,36 @@ const getItemLabel = (type: string) => {
               <label for="importance" class="text-sm font-bold text-status-overdue cursor-pointer"
                 >標記為重要案件</label
               >
+            </div>
+
+            <div v-if="currentReportId" class="pt-4 border-t border-cream-border/50">
+              <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-3"
+                >案件狀態</label
+              >
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="status in [
+                    'pending',
+                    'completed',
+                    'overdue',
+                    'archived',
+                  ] as ReportStatus[]"
+                  :key="status"
+                  @click="form.status = status"
+                  type="button"
+                  class="px-3 py-1.5 rounded-lg border text-xs font-bold transition-all uppercase tracking-widest"
+                  :class="
+                    form.status === status
+                      ? 'bg-cream-text text-dark-text border-cream-text shadow-sm'
+                      : 'bg-cream-bg text-cream-muted border-cream-border hover:border-cream-muted'
+                  "
+                >
+                  {{ status }}
+                </button>
+              </div>
+              <p class="text-[10px] text-cream-muted mt-2 italic">
+                ※ 編輯模式下可手動調回「pending」以恢復追蹤
+              </p>
             </div>
           </div>
         </section>
@@ -583,7 +642,13 @@ const getItemLabel = (type: string) => {
         >
           <DocumentTextIcon v-if="!isSubmitting" class="size-6" />
           <ArrowPathIcon v-else class="size-6 animate-spin" />
-          {{ isSubmitting ? '處理中...' : '產生通報文字並建立案件' }}
+          {{
+            isSubmitting
+              ? '處理中...'
+              : currentReportId
+                ? '產生通報文字並儲存變更'
+                : '產生通報文字並建立案件'
+          }}
         </button>
       </div>
 

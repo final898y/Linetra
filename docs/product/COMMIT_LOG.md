@@ -389,3 +389,21 @@ author: Linetra Dev Team
 - frontend/vercl.json
 
 ---
+
+### [2026-06-09 21:53:02 +0800] fix(report): fix timezone mismatch and enhance time display in ReportCard
+- Correct timezone handling in ReportCreateView by using dayjs.tz for local parsing
+- Convert local input time to UTC ISO string before saving to Supabase
+- Unify font style and simplify format in ReportCard deadline display
+- Add error handling and logging for status updates in ReportCard and store
+- Add unit tests for useTimeFormatter and update ReportCard tests
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/components/common/ReportCard.spec.ts
+- frontend/tests/composables/useTimeFormatter.spec.ts
+
+---
