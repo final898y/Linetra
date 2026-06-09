@@ -21,7 +21,7 @@ export const useTimeFormatter = () => {
     if (!dateStr) return '-'
 
     const now = dayjs()
-    const target = dayjs(dateStr)
+    const target = dayjs.tz(dateStr)
     const diffDays = target.startOf('day').diff(now.startOf('day'), 'day')
 
     // 判斷是否為同一個日曆週 (dayjs 預設週日為一週開始)

@@ -432,3 +432,17 @@ author: Linetra Dev Team
 - frontend/src/views/ReportCreateView.vue
 
 ---
+
+### [2026-06-09 23:07:31 +0800] feat(dashboard): expand filtering and add top-level sorting controls
+- Add sortOrder and hideAnnouncements to filter state with persistence
+- Implement real-time sorting and announcement filtering in ReportStore
+- Move sort toggle and hide-announcements switch to Dashboard top bar for better UX
+- Refactor ReportFilterPanel to focus on multi-select filters
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+
+---

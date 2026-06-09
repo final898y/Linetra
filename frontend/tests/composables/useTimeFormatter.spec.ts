@@ -22,8 +22,8 @@ describe('useTimeFormatter', () => {
 
   describe('formatRelative', () => {
     it('should return "今天" with weekday for today', () => {
-      // 使用今天稍晚的時間，確保不會觸發「已過期」邏輯
-      const today = dayjs().add(1, 'hour').format('YYYY-MM-DDTHH:mm:ss')
+      // 確保目標時間是當天的未來，並且強制使用當地時區解析，避免與實作的 dayjs.tz() 產生誤差
+      const today = dayjs().add(1, 'minute').tz().format('YYYY-MM-DDTHH:mm:ss')
       const result = formatRelative(today)
       expect(result).toContain('今天')
       expect(result).toMatch(/\(週.*\)/)
