@@ -470,3 +470,24 @@ author: Linetra Dev Team
 - frontend/tests/stores/reports.spec.ts
 
 ---
+
+### [2026-06-10 23:12:47 +0800] feat(report): improve deadline formatting and relative time display
+- Add formatDeadlineDetailed with semantic suffixes to useTimeFormatter
+
+- Update formatRelative to use '(This Week X)' and '(Next Week X)' bracket styles
+
+- Refactor report strategies to utilize detailed deadline formatting
+
+- Remove typo file vercl.json
+
+- Update unit tests for time formatting and report strategies
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
+- frontend/tests/composables/useTimeFormatter.spec.ts
+- frontend/vercl.json
+
+---

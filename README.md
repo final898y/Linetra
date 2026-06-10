@@ -4,10 +4,10 @@
 
 | 屬性 (Metadata)             | 內容 (Content)          |
 | :-------------------------- | :---------------------- |
-| **專案版本 (Version)**      | `v1.0 (MVP)`            |
+| **專案版本 (Version)**      | `v1.1`                  |
 | **開發狀態 (Status)**       | 開發中 (In Development) |
 | **建立日期 (Created Date)** | 2026-05-24              |
-| **最後更新 (Last Updated)** | 2026-05-29              |
+| **最後更新 (Last Updated)** | 2026-06-10              |
 | **主要作者 (Author)**       | Linetra Dev Team        |
 | **授權條款 (License)**      | [MIT License](LICENSE)  |
 
@@ -29,23 +29,24 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 核心功能 (Key Features)
 
-- **標準化通報產生器 (Standardized Report Generator)**：提供 5 種行政專用模板（一般案件、處務會議、市長週報、面報、公告通知），一鍵產生格式化文字。
-- **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，符合行政實務需求。
-- **案件生命週期追蹤 (Case Lifecycle Tracking)**：透過狀態機 (State Machine) 管理案件，包含待辦 (Pending)、已完成 (Completed)、逾期 (Overdue)、封存 (Archived) 及已刪除 (Deleted)。
-- **智慧提醒系統 (Rule-based Reminder System)**：基於瀏覽器通知 (Browser Notification)，在期限到達前自動觸發提醒，降低案件遺漏風險。
-- **視覺化管理 (Visual Management)**：提供待辦清單 (Pending List) 與行事曆視圖 (Calendar View)，直覺掌握工作負荷。
+- **策略模式通報產生器 (Strategy-based Report Generator)**：提供 5 種行政專用模板（一般案件、處務會議、市長週報、面報、公告通知），基於策略模式實現高度可擴充的格式化文字輸出與即時預覽。
+- **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，內建自動跳過週末的期限計算邏輯。
+- **案件生命週期追蹤 (Case Lifecycle Tracking)**：完整的案件 CRUD 與狀態管理，支援待辦 (Pending)、已完成 (Completed)、已逾期 (Overdue) 等狀態切換。
+- **多維度篩選與排序 (Advanced Filtering & Sorting)**：支援按類別、狀態進行多選篩選，並提供自定義排序與篩選偏好持久化功能 (LocalStorage)。
+- **響應式管理介面 (RWD Layout)**：全面支援行動裝置與桌機視圖，採用側邊抽屜式導覽與流體佈局，方便在手機上快速操作。
+- **智慧提醒與視覺化 (Visualization)**：提供待辦清單 (Dashboard) 與詳情檢視，協助直覺掌握工作負荷。
 
 ## 技術架構 (Technical Architecture - Zero-Cost Serverless)
 
 本專案採用 **Serverless / BaaS** 架構，以達成個人使用的「零成本維護」目標。
 
-- **前端 (Frontend)**: Vue 3 (Vite + TypeScript) + Tailwind CSS
-- **託管平台 (Hosting)**: Vercel / Cloudflare Pages (靜態託管)
+- **前端 (Frontend)**: Vue 3 (Vite + TypeScript) + Tailwind CSS v4
+- **測試 (Testing)**: Vitest (Unit Testing)
+- **託管平台 (Hosting)**: Vercel / Cloudflare Pages
 - **後端與資料庫 (BaaS)**: **Supabase**
-  - **Auth**: Google OAuth 2.0 (50,000 MAU)
+  - **Auth**: Google OAuth 2.0
   - **Database**: PostgreSQL with Row Level Security (RLS)
-  - **Edge Functions**: Deno (處理 Cron Jobs / 逾期掃描)
-  - **Storage**: (未來擴充附件管理使用)
+  - **Edge Functions**: Deno (處理逾期掃描)
 
 ## 核心術語 (Glossary)
 
@@ -70,6 +71,6 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 開發者與版本資訊 (Development Info)
 
-- **版本**: v1.0 (MVP 階段)
+- **版本**: v1.1
 - **授權**: [MIT License](LICENSE)
 - **文件**: [產品需求文件 (PRD)](docs/product/prd.md)

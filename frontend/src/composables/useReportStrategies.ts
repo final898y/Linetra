@@ -11,7 +11,7 @@ export interface ReportStrategy {
 }
 
 const { formatDeadlineDetailed } = useTimeFormatter()
-const SEPARATOR = '~~~~~~~~~~~~~~~~~~~~~~~~~~'
+const SEPARATOR = '~~~~~~~~~~~~~~~~~~~~~~'
 
 class BaseStrategy {
   protected formatHeader(report: Partial<Report>, title: string): string {
