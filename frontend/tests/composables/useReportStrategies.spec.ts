@@ -5,7 +5,7 @@ import type { ReportData } from '@/composables/useReportStrategies'
 // Mock useTimeFormatter to get consistent results
 vi.mock('@/composables/useTimeFormatter', () => ({
   useTimeFormatter: () => ({
-    formatRelative: (date: string) => `formatted_${date}`
+    formatDeadlineDetailed: (date: string) => `formatted_detailed_${date}`
   })
 }))
 
@@ -30,7 +30,7 @@ describe('Report Strategies', () => {
       const result = strategies.general.generate(data)
       expect(result).toContain('【 案 件 通 報 】')
       expect(result).toContain('案由： `測試案由`')
-      expect(result).toContain('期限： `formatted_2026-06-07T12:00:00`')
+      expect(result).toContain('期限： `formatted_detailed_2026-06-07T12:00:00`')
       expect(result).toContain('- 紙本')
       expect(result).toContain('1. 說明 1')
       expect(result).toContain('1. 備註 1')

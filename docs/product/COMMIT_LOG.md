@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-09
+date: 2026-06-10
 status: Active
 author: Linetra Dev Team
 ---
@@ -454,6 +454,19 @@ author: Linetra Dev Team
 - frontend/src/composables/useTimeFormatter.ts
 - frontend/tests/composables/useReportFilters.spec.ts
 - frontend/tests/composables/useTimeFormatter.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-09 23:38:02 +0800] refactor: extract report form logic into useReportForm composable
+- Separate business logic from UI in ReportCreateView
+- Improve maintainability and adherence to SRP
+- Fix linting and type errors in ReportCreateView and reports test
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportForm.ts
+- frontend/src/views/ReportCreateView.vue
 - frontend/tests/stores/reports.spec.ts
 
 ---

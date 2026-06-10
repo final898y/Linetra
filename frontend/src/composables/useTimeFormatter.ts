@@ -33,7 +33,8 @@ export const useTimeFormatter = () => {
       return days === 0 ? '今天已過期' : `已逾期 ${days} 天`
     }
 
-    const weekStr = target.format('週dd')
+    const dayName = target.format('dd')
+    const weekStr = `週${dayName}`
 
     if (diffDays === 0) {
       return `今天(${weekStr})`
@@ -43,14 +44,15 @@ export const useTimeFormatter = () => {
       return `明天(${weekStr})`
     }
 
-    let prefix = ''
     if (isSameWeek) {
-      prefix = '本週'
-    } else if (isNextWeek) {
-      prefix = '下週'
+      return `(本週${dayName})`
     }
 
-    return prefix ? `${prefix}(${weekStr})` : `(${weekStr})`
+    if (isNextWeek) {
+      return `(下週${dayName})`
+    }
+
+    return `(${weekStr})`
   }
 
   const getRemainingTimeColor = (dateStr: string | null, isNeutral: boolean): string => {
@@ -73,9 +75,26 @@ export const useTimeFormatter = () => {
     return dayjs(dateStr).format('YYYY/MM/DD HH:mm')
   }
 
+  const formatDeadlineDetailed = (dateStr: string | null): string => {
+    if (!dateStr) return '未設定期限'
+
+    const target = dayjs.tz(dateStr)
+    const fullDate = target.format('YYYY/MM/DD HH:mm')
+    const relative = formatRelative(dateStr)
+
+    let suffix = ''
+    const timeStr = target.format('HH:mm')
+    if (timeStr === '17:00' || timeStr === '17:30') suffix = ' 下班前'
+    else if (timeStr === '12:00') suffix = ' 中午前'
+    else if (timeStr === '09:00' || timeStr === '08:30' || timeStr === '08:00') suffix = ' 上班前'
+
+    return `${fullDate} ${relative}${suffix}`
+  }
+
   return {
     formatRelative,
     formatFull,
+    formatDeadlineDetailed,
     getRemainingTimeColor,
   }
 }

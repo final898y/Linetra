@@ -10,7 +10,7 @@ export interface ReportStrategy {
   generate(data: ReportData): string
 }
 
-const { formatRelative } = useTimeFormatter()
+const { formatDeadlineDetailed } = useTimeFormatter()
 const SEPARATOR = '~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
 class BaseStrategy {
@@ -28,9 +28,8 @@ ${SEPARATOR}`
     return notes.map((note, index) => `${index + 1}. ${note}`).join('\n')
   }
 
-  protected formatDeadline(date: string | null | undefined): string {
-    if (!date) return '未設定期限'
-    return formatRelative(date)
+  protected formatDetailedDeadline(date: string | null | undefined): string {
+    return formatDeadlineDetailed(date || null)
   }
 }
 
@@ -41,7 +40,7 @@ class GeneralStrategy extends BaseStrategy implements ReportStrategy {
 
     if (report.department) lines.push(`通報單位： ${report.department}`)
     lines.push(`案由： \`${report.subject}\``)
-    lines.push(`期限： \`${this.formatDeadline(report.announced_due_at)}\``)
+    lines.push(`期限： \`${this.formatDetailedDeadline(report.announced_due_at)}\``)
     lines.push(SEPARATOR)
 
     const methods = items.filter((i) => i.item_type === 'submission_method')
@@ -79,7 +78,7 @@ class MeetingStrategy extends BaseStrategy implements ReportStrategy {
     lines.push(this.formatHeader(report, '【 案 件 通 報 】'))
 
     lines.push(`案由： \`${report.subject}\``)
-    lines.push(`期限： \`${this.formatDeadline(report.announced_due_at)}\``)
+    lines.push(`期限： \`${this.formatDetailedDeadline(report.announced_due_at)}\``)
     lines.push(SEPARATOR)
 
     lines.push('詳細說明：')
@@ -108,7 +107,7 @@ class WeeklyStrategy extends BaseStrategy implements ReportStrategy {
     lines.push(this.formatHeader(report, '【 案 件 通 報 】'))
 
     lines.push(`案由： \`${report.subject}\``)
-    lines.push(`期限： \`${this.formatDeadline(report.announced_due_at)}\``)
+    lines.push(`期限： \`${this.formatDetailedDeadline(report.announced_due_at)}\``)
     lines.push(SEPARATOR)
 
     lines.push('繳交方式：')
@@ -138,7 +137,7 @@ class BriefingStrategy extends BaseStrategy implements ReportStrategy {
 
     lines.push('通報單位： 產發處處長')
     lines.push(`案由： \`${report.subject}\``)
-    lines.push(`期限： \`${this.formatDeadline(report.announced_due_at)}\``)
+    lines.push(`期限： \`${this.formatDetailedDeadline(report.announced_due_at)}\``)
     lines.push(SEPARATOR)
 
     lines.push('繳交方式：')
