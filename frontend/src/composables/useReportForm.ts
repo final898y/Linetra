@@ -196,5 +196,11 @@ export const useReportForm = () => {
         form.tags.splice(index, 1)
       }
     },
+    addCustomTag: (tag: string) => {
+      const trimmedTag = tag.trim()
+      if (trimmedTag && !form.tags.includes(trimmedTag)) {
+        form.tags.push(trimmedTag)
+      }
+    },
   }
 }

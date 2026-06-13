@@ -41,7 +41,16 @@ const {
   getItemLabel,
   commonTags,
   toggleTag,
+  addCustomTag,
 } = useReportForm()
+
+const customTagInput = ref('')
+const handleAddCustomTag = () => {
+  if (customTagInput.value) {
+    addCustomTag(customTagInput.value)
+    customTagInput.value = ''
+  }
+}
 
 onMounted(async () => {
   const reportId = route.params.id as string
@@ -260,9 +269,10 @@ const handleCopyAndSave = async () => {
 
             <div>
               <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
-                >標籤 (多選)</label
+                >標籤 (多選 / 可自行輸入)</label
               >
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap gap-2 items-center">
+                <!-- 預設標籤 -->
                 <button
                   v-for="tag in commonTags"
                   :key="tag"
@@ -272,11 +282,34 @@ const handleCopyAndSave = async () => {
                   :class="
                     form.tags.includes(tag)
                       ? 'bg-brand/20 text-brand border-brand'
-                      : 'bg-cream-bg text-cream-muted border-cream-border hover:border-cream-muted'
+                      : 'bg-cream-bg text-cream-muted border-cream-border hover:border-brand'
                   "
                 >
                   {{ tag }}
                 </button>
+
+                <!-- 已加入但不在預設清單中的自定義標籤 -->
+                <button
+                  v-for="tag in form.tags.filter((t) => !commonTags.includes(t))"
+                  :key="tag"
+                  @click="toggleTag(tag)"
+                  type="button"
+                  class="px-3 py-1.5 rounded-lg border-2 border-dashed border-brand/40 bg-brand/5 text-brand text-xs font-bold transition-all flex items-center gap-1"
+                >
+                  {{ tag }}
+                  <span class="text-[10px] opacity-50">×</span>
+                </button>
+
+                <!-- 自定義輸入框 -->
+                <div class="relative min-w-[120px]">
+                  <input
+                    v-model="customTagInput"
+                    @keydown.enter.prevent="handleAddCustomTag"
+                    type="text"
+                    placeholder="+ 自定義標籤"
+                    class="w-full bg-transparent border-b border-cream-border px-2 py-1 text-xs text-cream-text focus:border-brand focus:outline-none placeholder:text-cream-muted/50"
+                  />
+                </div>
               </div>
             </div>
 

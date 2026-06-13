@@ -502,3 +502,32 @@ author: Linetra Dev Team
 - frontend/src/composables/useReportStrategies.ts
 
 ---
+
+### [2026-06-13 23:26:56 +0800] feat(report): add internal remarks, multi-select tags, and temporary task template
+- Update PRD and Database Design to support remarks (TEXT) and tags (TEXT[])
+- Implement TaskStrategy for a new minimal 'task' report template
+- Add tag selection UI and internal remarks textarea to the report creation form
+- Implement multi-select tag filtering in the dashboard and filter panel
+- Display tags on report cards and in the detail view
+- Centralize COMMON_TAGS constant in reportTypes.ts for maintainability
+- Synchronize frontend TypeScript definitions with the updated database schema
+
+**變更檔案 (Changed Files):**
+- docs/architecture/database_design.md
+- docs/guides/supabase_setup_guide.md
+- docs/product/COMMIT_LOG.md
+- docs/product/prd.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/components/common/ReportFilterPanel.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/config/reportTypes.ts
+- frontend/src/stores/reports.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/views/ReportDetailView.vue
+
+---
