@@ -57,6 +57,17 @@ const statusColors = {
       >
         {{ report.department }}
       </p>
+
+      <!-- Tags display -->
+      <div v-if="report.tags && report.tags.length > 0" class="flex flex-wrap gap-1 mb-4">
+        <span
+          v-for="tag in report.tags"
+          :key="tag"
+          class="text-[9px] font-bold px-1.5 py-0.5 bg-cream-bg text-cream-muted border border-cream-border rounded"
+        >
+          #{{ tag }}
+        </span>
+      </div>
     </div>
 
     <div class="mt-6 pt-4 border-t border-cream-border/50">

@@ -13,6 +13,7 @@ export const TemplateType = {
   Weekly: 'weekly_report',
   Briefing: 'briefing',
   Announcement: 'announcement',
+  Task: 'task',
 } as const
 
 export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType]

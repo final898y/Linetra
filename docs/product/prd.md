@@ -1,7 +1,7 @@
 ---
 title: LINE 通報追蹤管理平台 — 產品需求文件 (PRD)
 version: v2.0
-date: 2026-06-08
+date: 2026-06-13
 status: Approved
 author: Product Manager
 ---
@@ -16,7 +16,7 @@ author: Product Manager
 | **文件版本 (Version)**        | `v2.0`                         |
 | **文件狀態 (Status)**         | 已核准 (Approved)              |
 | **建立日期 (Created Date)**   | 2026-05-24                     |
-| **最後更新 (Last Updated)**   | 2026-06-08                     |
+| **最後更新 (Last Updated)**   | 2026-06-13                     |
 | **主要作者 (Author)**         | Product Manager                |
 | **產品階段 (Target Stage)**   | 最小可行性產品 (MVP)           |
 | **目標平台 (Platform)**       | 網頁應用程式 (Web Application) |
@@ -777,16 +777,18 @@ https://docs.google.com/...
 
 ### 10.2 reports
 
-| 欄位              | 型別                                                                | 說明                                                     |
-| ----------------- | ------------------------------------------------------------------- | -------------------------------------------------------- |
-| id                | UUID PK                                                             | —                                                        |
-| user_id           | UUID FK → users.id                                                  | —                                                        |
-| template_type     | ENUM('general','meeting','weekly_report','briefing','announcement') | 模板類型                                                 |
-| department        | VARCHAR(100)                                                        | 通報單位（可空）                                         |
-| subject           | VARCHAR(200)                                                        | 案由                                                     |
-| formatted_content | TEXT                                                                | 最後一次產生的格式化通報文字（快取，非 source of truth） |
-| actual_due_at     | TIMESTAMPTZ                                                         | UTC；公告通知可空                                        |
-| announced_due_at  | TIMESTAMPTZ                                                         | UTC；公告通知可空                                        |
+| 欄位              | 型別                                                                       | 說明                                                     |
+| ----------------- | -------------------------------------------------------------------------- | -------------------------------------------------------- |
+| id                | UUID PK                                                                    | —                                                        |
+| user_id           | UUID FK → users.id                                                         | —                                                        |
+| template_type     | ENUM('general','meeting','weekly_report','briefing','announcement','task') | 模板類型                                                 |
+| department        | VARCHAR(100)                                                               | 通報單位（可空）                                         |
+| subject           | VARCHAR(200)                                                               | 案由                                                     |
+| remarks           | TEXT                                                                       | 內部備註 (可空)                                          |
+| tags              | TEXT[]                                                                     | 標籤陣列 (預設空陣列)                                    |
+| formatted_content | TEXT                                                                       | 最後一次產生的格式化通報文字（快取，非 source of truth） |
+| actual_due_at     | TIMESTAMPTZ                                                                | UTC；公告通知可空                                        |
+| announced_due_at  | TIMESTAMPTZ                                                                | UTC；公告通知可空                                        |
 | sent_at           | TIMESTAMPTZ                                                         | UTC；第一次複製時記錄                                    |
 | importance_flag   | BOOLEAN                                                             | 預設 false                                               |
 | status            | ENUM('pending','completed','overdue','archived','deleted')          | 預設 'pending'                                           |
@@ -1439,6 +1441,15 @@ Response 200
 
 **P4. Separation of Concerns**
 | 模組 | 責任 |
+|---|---|
+| UI（Vue 3） | 顯示、互動、表單驗證 |
+| Service 層 | 業務邏輯、狀態機 |
+| Scheduler | 提醒觸發（獨立模組） |
+| Repository 層 | DB 存取（不含業務邏輯） |
+
+**P5. Graceful Degradation**
+每個功能失敗時提供降級體驗：通知授權拒絕 → in-app Badge；DB 儲存失敗 → 不阻止複製；Clipboard 失敗 → 手動複製框。核心使用流程（產生通報 → 複製 → 貼至 LINE）不被任何非核心功能阻斷。
+
 |---|---|
 | UI（Vue 3） | 顯示、互動、表單驗證 |
 | Service 層 | 業務邏輯、狀態機 |

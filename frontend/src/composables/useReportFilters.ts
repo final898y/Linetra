@@ -4,6 +4,7 @@ import type { ReportStatus, TemplateType } from '@/types/models'
 export interface FilterOptions {
   statuses: ReportStatus[]
   templateTypes: TemplateType[]
+  tags: string[]
   sortOrder: 'asc' | 'desc'
   hideAnnouncements: boolean
 }
@@ -11,6 +12,7 @@ export interface FilterOptions {
 // 從 localStorage 載入初始值
 const STORAGE_KEY_STATUS = 'linetra_filter_statuses'
 const STORAGE_KEY_TEMPLATE = 'linetra_filter_templates'
+const STORAGE_KEY_TAGS = 'linetra_filter_tags'
 const STORAGE_KEY_SORT = 'linetra_filter_sort'
 const STORAGE_KEY_HIDE_ANNOUNCEMENTS = 'linetra_filter_hide_announcements'
 
@@ -27,6 +29,7 @@ const loadFromStorage = <T>(key: string, defaultValue: T): T => {
 
 const selectedStatuses = ref<ReportStatus[]>(loadFromStorage(STORAGE_KEY_STATUS, []))
 const selectedTemplateTypes = ref<TemplateType[]>(loadFromStorage(STORAGE_KEY_TEMPLATE, []))
+const selectedTags = ref<string[]>(loadFromStorage(STORAGE_KEY_TAGS, []))
 const sortOrder = ref<'asc' | 'desc'>(loadFromStorage(STORAGE_KEY_SORT, 'asc'))
 const hideAnnouncements = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_ANNOUNCEMENTS, false))
 
@@ -43,6 +46,14 @@ watch(
   selectedTemplateTypes,
   (newVal) => {
     localStorage.setItem(STORAGE_KEY_TEMPLATE, JSON.stringify(newVal))
+  },
+  { deep: true }
+)
+
+watch(
+  selectedTags,
+  (newVal) => {
+    localStorage.setItem(STORAGE_KEY_TAGS, JSON.stringify(newVal))
   },
   { deep: true }
 )
@@ -74,9 +85,19 @@ export const useReportFilters = () => {
     }
   }
 
+  const toggleTag = (tag: string) => {
+    const index = selectedTags.value.indexOf(tag)
+    if (index === -1) {
+      selectedTags.value.push(tag)
+    } else {
+      selectedTags.value.splice(index, 1)
+    }
+  }
+
   const clearFilters = () => {
     selectedStatuses.value = []
     selectedTemplateTypes.value = []
+    selectedTags.value = []
     sortOrder.value = 'asc'
     hideAnnouncements.value = false
   }
@@ -84,6 +105,7 @@ export const useReportFilters = () => {
   const filterOptions = computed<FilterOptions>(() => ({
     statuses: selectedStatuses.value,
     templateTypes: selectedTemplateTypes.value,
+    tags: selectedTags.value,
     sortOrder: sortOrder.value,
     hideAnnouncements: hideAnnouncements.value,
   }))
@@ -91,10 +113,12 @@ export const useReportFilters = () => {
   return {
     selectedStatuses,
     selectedTemplateTypes,
+    selectedTags,
     sortOrder,
     hideAnnouncements,
     toggleStatus,
     toggleTemplateType,
+    toggleTag,
     clearFilters,
     filterOptions,
   }

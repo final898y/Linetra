@@ -54,4 +54,10 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
       },
     ],
   },
+  task: {
+    id: 'task',
+    name: '臨時任務',
+    defaultSubject: '',
+    items: [],
+  },
 }

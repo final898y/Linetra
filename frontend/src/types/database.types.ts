@@ -10,10 +10,18 @@ export interface Database {
           formatted_content: string | null
           id: string
           importance_flag: boolean
+          remarks: string | null
+          tags: string[] | null
           sent_at: string | null
           status: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
-          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
+          template_type:
+            | 'general'
+            | 'meeting'
+            | 'weekly_report'
+            | 'briefing'
+            | 'announcement'
+            | 'task'
           updated_at: string
           user_id: string
         }
@@ -25,10 +33,18 @@ export interface Database {
           formatted_content?: string | null
           id?: string
           importance_flag?: boolean
+          remarks?: string | null
+          tags?: string[] | null
           sent_at?: string | null
           status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
-          template_type: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
+          template_type:
+            | 'general'
+            | 'meeting'
+            | 'weekly_report'
+            | 'briefing'
+            | 'announcement'
+            | 'task'
           updated_at?: string
           user_id: string
         }
@@ -40,10 +56,18 @@ export interface Database {
           formatted_content?: string | null
           id?: string
           importance_flag?: boolean
+          remarks?: string | null
+          tags?: string[] | null
           sent_at?: string | null
           status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject?: string
-          template_type?: 'general' | 'meeting' | 'weekly_report' | 'briefing' | 'announcement'
+          template_type?:
+            | 'general'
+            | 'meeting'
+            | 'weekly_report'
+            | 'briefing'
+            | 'announcement'
+            | 'task'
           updated_at?: string
           user_id?: string
         }

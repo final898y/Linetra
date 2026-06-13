@@ -84,9 +84,20 @@ const handleDelete = async () => {
     <div class="bg-cream-surface border border-cream-border rounded-2xl p-8 space-y-6">
       <div>
         <h1 class="text-3xl font-extrabold text-cream-text mb-2">{{ report.subject }}</h1>
-        <p class="text-sm font-bold text-cream-muted uppercase tracking-wider">
-          {{ report.department || '未設定單位' }}
-        </p>
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+          <p class="text-sm font-bold text-cream-muted uppercase tracking-wider">
+            {{ report.department || '未設定單位' }}
+          </p>
+          <div v-if="report.tags && report.tags.length > 0" class="flex flex-wrap gap-1">
+            <span
+              v-for="tag in report.tags"
+              :key="tag"
+              class="text-[10px] font-bold px-2 py-0.5 bg-cream-bg text-cream-muted border border-cream-border rounded-lg"
+            >
+              #{{ tag }}
+            </span>
+          </div>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-cream-border/50">
@@ -132,6 +143,18 @@ const handleDelete = async () => {
           <p class="text-[10px] font-bold text-cream-muted uppercase">{{ item.item_type }}</p>
           <p class="text-sm text-cream-text bg-cream-bg p-3 rounded-lg">{{ item.content }}</p>
         </div>
+      </div>
+
+      <!-- Internal Remarks -->
+      <div v-if="report.remarks" class="pt-6 border-t border-cream-border/50 space-y-4">
+        <h3 class="text-xs font-bold text-status-overdue uppercase tracking-widest">
+          內部備註 (僅供內部追蹤)
+        </h3>
+        <p
+          class="text-sm text-cream-text bg-cream-bg p-4 rounded-xl border border-cream-border whitespace-pre-wrap"
+        >
+          {{ report.remarks }}
+        </p>
       </div>
     </div>
   </div>

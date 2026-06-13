@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { ALL_REPORT_TYPES } from '@/config/reportTypes'
+import { ALL_REPORT_TYPES, COMMON_TAGS } from '@/config/reportTypes'
 import type { ReportStatus } from '@/types/models'
 import { useReportFilters } from '@/composables/useReportFilters'
 
-const { selectedStatuses, selectedTemplateTypes, toggleStatus, toggleTemplateType, clearFilters } =
-  useReportFilters()
+const {
+  selectedStatuses,
+  selectedTemplateTypes,
+  selectedTags,
+  toggleStatus,
+  toggleTemplateType,
+  toggleTag,
+  clearFilters,
+} = useReportFilters()
 
 const emit = defineEmits(['apply'])
 
@@ -67,6 +74,28 @@ const apply = () => {
           class="px-3 py-1 rounded-lg text-xs font-bold border transition-colors"
         >
           {{ type.name }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Tag Filters -->
+    <div class="space-y-3">
+      <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">
+        標籤篩選 (任一符合)
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-for="tag in COMMON_TAGS"
+          :key="tag"
+          @click="toggleTag(tag)"
+          :class="[
+            selectedTags.includes(tag)
+              ? 'bg-brand/20 text-brand border-brand'
+              : 'bg-cream-bg text-cream-muted border-cream-border hover:border-brand',
+          ]"
+          class="px-3 py-1 rounded-lg text-xs font-bold border transition-colors"
+        >
+          {{ tag }}
         </button>
       </div>
     </div>

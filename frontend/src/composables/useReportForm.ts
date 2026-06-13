@@ -1,5 +1,6 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { REPORT_TEMPLATES } from '@/config/reportTemplates'
+import { COMMON_TAGS } from '@/config/reportTypes'
 import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from '@/types/models'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 
@@ -11,6 +12,7 @@ export const useReportForm = () => {
     { id: 'general', name: '一般模式' },
     { id: 'template', name: '模板模式' },
     { id: 'announcement', name: '公告模式' },
+    { id: 'task', name: '任務模式' },
   ] as const
 
   const activeTab = ref<(typeof tabs)[number]['id']>('general')
@@ -23,6 +25,8 @@ export const useReportForm = () => {
     template_type: 'general' as TemplateType,
     department: '',
     subject: '',
+    remarks: '',
+    tags: [] as string[],
     actual_due_at: '',
     announced_due_at: '',
     importance_flag: false,
@@ -90,6 +94,11 @@ export const useReportForm = () => {
       form.subject = ''
       form.department = ''
       items.value = [{ item_type: 'detail', content: '', sort_order: 1 }]
+    } else if (tabId === 'task') {
+      form.template_type = 'task'
+      form.subject = ''
+      form.department = ''
+      items.value = []
     }
   }
 
@@ -177,6 +186,15 @@ export const useReportForm = () => {
         agenda: '報告事項',
       }
       return labels[type] || '項目'
+    },
+    commonTags: COMMON_TAGS,
+    toggleTag: (tag: string) => {
+      const index = form.tags.indexOf(tag)
+      if (index === -1) {
+        form.tags.push(tag)
+      } else {
+        form.tags.splice(index, 1)
+      }
     },
   }
 }

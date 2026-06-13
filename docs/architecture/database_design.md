@@ -1,7 +1,7 @@
 ---
 title: Linetra — 資料庫實作與安全政策 (Database Implementation & RLS)
 version: v1.0
-date: 2026-06-08
+date: 2026-06-13
 status: Draft
 author: Linetra Dev Team
 ---
@@ -13,7 +13,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-06-08 |
+| **最後更新 (Last Updated)** | 2026-06-13 |
 | **狀態 (Status)** | 草案 (Draft) |
 
 ---
@@ -41,9 +41,11 @@ author: Linetra Dev Team
 | :--- | :--- | :--- | :--- |
 | `id` | `uuid` | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | |
 | `user_id` | `uuid` | `NOT NULL`, `REFERENCES users(id)` | 擁有者 |
-| `template_type` | `text` | `NOT NULL`, `CHECK (template_type IN (...))` | 見 PRD 模板清單 |
+| `template_type` | `text` | `NOT NULL`, `CHECK (template_type IN ('general', 'meeting', 'weekly_report', 'briefing', 'announcement', 'task'))` | 見 PRD 模板清單 |
 | `department` | `text` | | 通報單位 |
 | `subject` | `text` | `NOT NULL` | 案由 |
+| `remarks` | `text` | | 內部備註 (不顯示於通報) |
+| `tags` | `text[]` | `DEFAULT '{}'` | 標籤 (多選) |
 | `actual_due_at` | `timestamptz` | | 真實截止時間 |
 | `announced_due_at` | `timestamptz` | | 對外通知期限 |
 | `sent_at` | `timestamptz` | | 第一次複製的時間 |

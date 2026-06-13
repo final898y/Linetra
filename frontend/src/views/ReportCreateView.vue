@@ -39,6 +39,8 @@ const {
   removeItem,
   previewText,
   getItemLabel,
+  commonTags,
+  toggleTag,
 } = useReportForm()
 
 onMounted(async () => {
@@ -211,9 +213,9 @@ const handleCopyAndSave = async () => {
           <label class="block text-xs font-bold text-cream-muted uppercase tracking-widest mb-3"
             >選擇具體模板</label
           >
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <button
-              v-for="tmpl in ['meeting', 'weekly_report', 'briefing'] as const"
+              v-for="tmpl in ['meeting', 'weekly_report', 'briefing', 'task'] as const"
               :key="tmpl"
               @click="applyTemplate(tmpl)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
@@ -224,7 +226,13 @@ const handleCopyAndSave = async () => {
               "
             >
               {{
-                tmpl === 'meeting' ? '處務會議' : tmpl === 'weekly_report' ? '市長週報' : '市長面報'
+                tmpl === 'meeting'
+                  ? '處務會議'
+                  : tmpl === 'weekly_report'
+                    ? '市長週報'
+                    : tmpl === 'briefing'
+                      ? '市長面報'
+                      : '臨時任務'
               }}
             </button>
           </div>
@@ -248,6 +256,40 @@ const handleCopyAndSave = async () => {
                 type="text"
                 class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
               />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                >標籤 (多選)</label
+              >
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="tag in commonTags"
+                  :key="tag"
+                  @click="toggleTag(tag)"
+                  type="button"
+                  class="px-3 py-1.5 rounded-lg border text-xs font-bold transition-all"
+                  :class="
+                    form.tags.includes(tag)
+                      ? 'bg-brand/20 text-brand border-brand'
+                      : 'bg-cream-bg text-cream-muted border-cream-border hover:border-cream-muted'
+                  "
+                >
+                  {{ tag }}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
+                >內部備註 (僅供內部追蹤，不顯示於通報)</label
+              >
+              <textarea
+                v-model="form.remarks"
+                rows="2"
+                placeholder="例如：誰交了、催繳紀錄..."
+                class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-3 text-sm text-cream-text focus:ring-2 focus:ring-brand focus:outline-none"
+              ></textarea>
             </div>
 
             <div v-if="activeTab !== 'announcement'" class="space-y-4 pt-2">

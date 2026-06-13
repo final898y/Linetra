@@ -34,6 +34,11 @@ export const useReportStore = defineStore('report', () => {
         query = query.in('template_type', options.templateTypes)
       }
 
+      // 處理標籤多選 (任一符合)
+      if (options?.tags && options.tags.length > 0) {
+        query = query.overlaps('tags', options.tags)
+      }
+
       // 處理隱藏公告
       if (options?.hideAnnouncements) {
         query = query.neq('template_type', 'announcement')

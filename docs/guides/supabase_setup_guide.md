@@ -1,7 +1,7 @@
 ---
 title: Linetra — Supabase 資料庫初始化與設定指南
 version: v1.0
-date: 2026-06-08
+date: 2026-06-13
 status: Active
 author: Linetra Dev Team
 ---
@@ -23,7 +23,8 @@ CREATE TYPE template_type AS ENUM (
   'meeting',
   'weekly_report',
   'briefing',
-  'announcement'
+  'announcement',
+  'task'
 );
 
 -- 案件狀態
@@ -81,6 +82,8 @@ CREATE TABLE public.reports (
   template_type template_type NOT NULL,
   department text,
   subject text NOT NULL,
+  remarks text,
+  tags text[] DEFAULT '{}',
   formatted_content text,
   actual_due_at timestamptz,
   announced_due_at timestamptz,

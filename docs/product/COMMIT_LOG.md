@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-10
+date: 2026-06-13
 status: Active
 author: Linetra Dev Team
 ---
@@ -489,5 +489,16 @@ author: Linetra Dev Team
 - frontend/tests/composables/useReportStrategies.spec.ts
 - frontend/tests/composables/useTimeFormatter.spec.ts
 - frontend/vercl.json
+
+---
+
+### [2026-06-10 23:42:28 +0800] docs: update README.md and refine report strategy separator
+- Sync README.md with latest development progress (v1.1)
+- Refine SEPARATOR length in useReportStrategies.ts for better visual balance
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportStrategies.ts
 
 ---
