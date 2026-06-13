@@ -9,4 +9,4 @@ export const ALL_REPORT_TYPES: { id: TemplateType; name: string }[] = [
   { id: 'task', name: '臨時任務' },
 ]
 
-export const COMMON_TAGS = ['會議通知', '經常性事項', '議會事項', '緊急交辦', '例行工作']
+export const COMMON_TAGS = ['會議通知', '議會事項', '需要參加']

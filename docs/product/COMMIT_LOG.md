@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-13
+date: 2026-06-14
 status: Active
 author: Linetra Dev Team
 ---
@@ -542,5 +542,21 @@ author: Linetra Dev Team
 - docs/product/COMMIT_LOG.md
 - frontend/src/composables/useReportForm.ts
 - frontend/src/views/ReportCreateView.vue
+
+---
+
+### [2026-06-13 23:45:56 +0800] test(frontend): expand test coverage for new report features and fix time-dependent tests
+- Add comprehensive unit tests for useReportForm (initialization, templates, custom tags)
+- Update useReportStrategies tests to cover TaskStrategy
+- Update useReportTemplate tests to cover Task mode
+- Fix failing useTimeFormatter tests by using relative dates instead of hardcoded ones
+- All 37 tests passing
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
+- frontend/tests/composables/useTimeFormatter.spec.ts
 
 ---

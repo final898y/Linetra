@@ -6,7 +6,13 @@ import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
-import { PlusIcon, TrashIcon, DocumentTextIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import {
+  PlusIcon,
+  TrashIcon,
+  DocumentTextIcon,
+  ArrowPathIcon,
+  EyeIcon,
+} from '@heroicons/vue/24/outline'
 import { useReportForm } from '@/composables/useReportForm'
 import type {
   ReportItem,
@@ -182,17 +188,27 @@ const handleCopyAndSave = async () => {
 <template>
   <div class="max-w-5xl mx-auto space-y-8 pb-20">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">
-          {{ currentReportId ? '編輯案件' : '建立新通報' }}
-        </h2>
-        <p class="text-cream-muted text-sm mt-1">
-          {{
-            currentReportId
-              ? '修改案件資訊並更新 LINE 格式'
-              : '選擇模式並填寫資訊，系統將自動產生 LINE 格式'
-          }}
-        </p>
+      <div class="flex items-center gap-4">
+        <div>
+          <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">
+            {{ currentReportId ? '編輯案件' : '建立新通報' }}
+          </h2>
+          <p class="text-cream-muted text-sm mt-1">
+            {{
+              currentReportId
+                ? '修改案件資訊並更新 LINE 格式'
+                : '選擇模式並填寫資訊，系統將自動產生 LINE 格式'
+            }}
+          </p>
+        </div>
+        <RouterLink
+          v-if="currentReportId"
+          :to="{ name: 'report-detail', params: { id: currentReportId } }"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-cream-surface border border-cream-border rounded-lg text-xs font-bold text-cream-muted hover:text-brand hover:border-brand transition-all"
+        >
+          <EyeIcon class="size-4" />
+          查看案件
+        </RouterLink>
       </div>
       <div class="flex bg-cream-surface p-1 rounded-xl border border-cream-border">
         <button
