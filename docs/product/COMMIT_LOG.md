@@ -560,3 +560,17 @@ author: Linetra Dev Team
 - frontend/tests/composables/useTimeFormatter.spec.ts
 
 ---
+
+### [2026-06-14 00:58:44 +0800] feat(report): enhance tag system and add navigation shortcut
+- Support custom tag input in ReportCreateView with Enter key support
+- Add 'View Case' button in edit mode for quick navigation to detail view
+- Refactor and clean up useReportForm unit tests
+- Update commonTags configuration for better usability
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/config/reportTypes.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportForm.spec.ts
+
+---
