@@ -531,3 +531,16 @@ author: Linetra Dev Team
 - frontend/src/views/ReportDetailView.vue
 
 ---
+
+### [2026-06-13 23:36:06 +0800] feat(report): support custom tag input in report form
+- Add addCustomTag logic to useReportForm composable
+- Implement custom tag input field with Enter key support in ReportCreateView
+- Display non-default tags with a distinct dashed border style
+- Ensure all changes pass build and style checks
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/composables/useReportForm.ts
+- frontend/src/views/ReportCreateView.vue
+
+---

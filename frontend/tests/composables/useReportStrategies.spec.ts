@@ -115,4 +115,18 @@ describe('Report Strategies', () => {
       expect(result).toContain('這是公告內容')
     })
   })
+
+  describe('TaskStrategy', () => {
+    it('should generate minimal task specific format', () => {
+      const data: ReportData = {
+        report: commonReport,
+        items: []
+      }
+      const result = strategies.task.generate(data)
+      expect(result).toContain('【 臨 時 任 務 】')
+      expect(result).toContain('任務： `測試案由`')
+      expect(result).toContain('期限： `formatted_detailed_2026-06-07T12:00:00`')
+      expect(result).not.toContain('通報單位')
+    })
+  })
 })

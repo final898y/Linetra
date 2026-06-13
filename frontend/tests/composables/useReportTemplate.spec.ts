@@ -10,6 +10,7 @@ vi.mock('@/composables/useReportStrategies', () => ({
     weekly_report: { generate: vi.fn(() => 'weekly_output') },
     briefing: { generate: vi.fn(() => 'briefing_output') },
     announcement: { generate: vi.fn(() => 'announcement_output') },
+    task: { generate: vi.fn(() => 'task_output') },
   }
 }))
 
@@ -26,6 +27,10 @@ describe('useReportTemplate', () => {
     const result = generateLineText({ template_type: 'meeting' }, [])
     expect(strategies.meeting.generate).toHaveBeenCalled()
     expect(result).toBe('meeting_output')
+
+    const taskResult = generateLineText({ template_type: 'task' }, [])
+    expect(strategies.task.generate).toHaveBeenCalled()
+    expect(taskResult).toBe('task_output')
   })
 
   it('should fallback to general strategy if type is unknown', () => {

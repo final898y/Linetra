@@ -52,16 +52,18 @@ describe('useTimeFormatter', () => {
 
   describe('formatDeadlineDetailed', () => {
     it('should format with full date, relative time and suffix', () => {
-      const date = '2026-06-11 17:00'
-      const result = formatDeadlineDetailed(date)
+      // 使用未來的一個日期，避免產生「已逾期」字樣導致 regex 失敗
+      const futureDate = dayjs().add(2, 'day').hour(17).minute(0)
+      const dateStr = futureDate.format('YYYY-MM-DD HH:mm')
+      const result = formatDeadlineDetailed(dateStr)
       
-      expect(result).toContain('2026/06/11 17:00')
+      expect(result).toContain(futureDate.format('YYYY/MM/DD 17:00'))
       expect(result).toMatch(/(今天|明天|下週|週)/)
       expect(result).toContain('下班前')
     })
 
     it('should add "中午前" for 12:00', () => {
-      const date = '2026-06-11 12:00'
+      const date = dayjs().hour(12).minute(0).format('YYYY-MM-DD HH:mm')
       const result = formatDeadlineDetailed(date)
       expect(result).toContain('中午前')
     })
