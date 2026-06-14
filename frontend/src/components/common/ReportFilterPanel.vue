@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ALL_REPORT_TYPES, COMMON_TAGS } from '@/config/reportTypes'
+import { ALL_REPORT_TYPES } from '@/config/reportTypes'
 import type { ReportStatus } from '@/types/models'
 import { useReportFilters } from '@/composables/useReportFilters'
+import { useReportStore } from '@/stores/reports'
+import { computed, ref } from 'vue'
 
+const reportStore = useReportStore()
 const {
   selectedStatuses,
   selectedTemplateTypes,
@@ -12,6 +15,13 @@ const {
   toggleTag,
   clearFilters,
 } = useReportFilters()
+
+const searchQuery = ref('')
+const filteredTags = computed(() => {
+  return reportStore.allUniqueTags.filter((tag) =>
+    tag.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+})
 
 const emit = defineEmits(['apply'])
 
@@ -80,12 +90,40 @@ const apply = () => {
 
     <!-- Tag Filters -->
     <div class="space-y-3">
-      <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">
-        標籤篩選 (任一符合)
-      </p>
-      <div class="flex flex-wrap gap-2">
+      <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">標籤篩選</p>
+
+      <!-- Popular Tags -->
+      <div v-if="reportStore.topTags.length > 0 && !searchQuery" class="mb-4">
+        <p class="text-[9px] text-cream-muted mb-2 italic">常用標籤</p>
+        <div class="flex flex-wrap gap-1.5">
+          <button
+            v-for="tag in reportStore.topTags"
+            :key="tag"
+            @click="toggleTag(tag)"
+            :class="[
+              selectedTags.includes(tag)
+                ? 'bg-brand/20 text-brand border-brand'
+                : 'bg-cream-bg text-cream-text border-cream-border hover:border-brand',
+            ]"
+            class="px-2 py-1 rounded-md text-[10px] font-bold border transition-colors"
+          >
+            {{ tag }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Searchable Input -->
+      <input
+        v-model="searchQuery"
+        type="text"
+        placeholder="搜尋標籤..."
+        class="w-full bg-cream-bg border border-cream-border rounded-lg px-3 py-2 text-xs text-cream-text focus:ring-1 focus:ring-brand focus:outline-none mb-2"
+      />
+
+      <!-- All Tags List -->
+      <div class="flex flex-wrap gap-1.5 max-h-[150px] overflow-y-auto">
         <button
-          v-for="tag in COMMON_TAGS"
+          v-for="tag in filteredTags"
           :key="tag"
           @click="toggleTag(tag)"
           :class="[
@@ -93,7 +131,7 @@ const apply = () => {
               ? 'bg-brand/20 text-brand border-brand'
               : 'bg-cream-bg text-cream-muted border-cream-border hover:border-brand',
           ]"
-          class="px-3 py-1 rounded-lg text-xs font-bold border transition-colors"
+          class="px-2 py-1 rounded-md text-[10px] font-bold border transition-colors"
         >
           {{ tag }}
         </button>

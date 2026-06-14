@@ -20,6 +20,8 @@ import type {
   TemplateType,
   ReportInsert,
   ReportItemInsert,
+  ReportWithTags,
+  ReportTag,
 } from '@/types/models'
 
 dayjs.extend(utc)
@@ -80,10 +82,15 @@ onMounted(async () => {
       form.importance_flag = report.importance_flag || false
       form.status = report.status as ReportStatus
       form.remarks = report.remarks || ''
-      // @ts-expect-error - Assuming relational structure
-      form.tags = report.report_tags?.map((rt) => rt.tags?.name || '').filter(Boolean) || []
+
+      // 正確讀取關聯式標籤結構
+      const reportWithTags = report as ReportWithTags
+      form.tags =
+        reportWithTags.report_tags?.map((rt: ReportTag) => rt.tags?.name || '').filter(Boolean) ||
+        []
 
       // Load items
+
       items.value = reportItems.map((item: ReportItem) => ({
         ...item,
         isCustomizable: true,

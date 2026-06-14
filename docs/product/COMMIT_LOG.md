@@ -619,3 +619,23 @@ author: Linetra Dev Team
 - frontend/tests/stores/reports.spec.ts
 
 ---
+
+### [2026-06-14 15:47:28 +0800] feat(database): define RLS policies for tagging tables
+- Add SELECT, INSERT, UPDATE RLS policies for 'tags' table
+- Add SELECT, INSERT, DELETE RLS policies for 'report_tags' table
+- Update database documentation with RLS security policies
+
+**變更檔案 (Changed Files):**
+- docs/architecture/database_design.md
+- docs/guides/dynamic_tagging_plan.md
+- docs/guides/supabase_setup_guide.md
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/stores/reports.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/views/CalendarView.vue
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/views/ReportDetailView.vue
+
+---

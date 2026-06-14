@@ -31,6 +31,31 @@ export const useReportStore = defineStore('report', () => {
     return group
   })
 
+  const allUniqueTags = computed(() => {
+    const tags = new Set<string>()
+    reports.value.forEach((report) => {
+      report.report_tags?.forEach((rt) => {
+        if (rt.tags?.name) tags.add(rt.tags.name)
+      })
+    })
+    return Array.from(tags).sort()
+  })
+
+  const topTags = computed(() => {
+    const tagCounts = new Map<string, number>()
+    reports.value.forEach((report) => {
+      report.report_tags?.forEach((rt) => {
+        if (rt.tags?.name) {
+          tagCounts.set(rt.tags.name, (tagCounts.get(rt.tags.name) || 0) + 1)
+        }
+      })
+    })
+    return Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map((entry) => entry[0])
+  })
+
   const fetchReports = async (options?: FilterOptions) => {
     loading.value = true
     try {
@@ -79,9 +104,22 @@ export const useReportStore = defineStore('report', () => {
   }
 
   const fetchReportById = async (id: string) => {
-    const { data, error } = await supabase.from('reports').select('*').eq('id', id).single()
+    const { data, error } = await supabase
+      .from('reports')
+      .select(
+        `
+        *,
+        report_tags (
+          tags (
+            name
+          )
+        )
+      `
+      )
+      .eq('id', id)
+      .single()
     if (error) throw error
-    return data as Report
+    return data as unknown as ReportWithTags
   }
 
   const fetchReportItemsById = async (reportId: string) => {
@@ -172,6 +210,8 @@ export const useReportStore = defineStore('report', () => {
   return {
     reports,
     reportsByDate,
+    allUniqueTags,
+    topTags,
     loading,
     fetchReports,
     fetchReportById,
