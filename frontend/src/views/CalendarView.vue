@@ -31,6 +31,7 @@ onMounted(async () => {
     tags: [],
     sortOrder: 'asc',
     hideAnnouncements: false,
+    hideCompleted: false,
   })
 })
 </script>

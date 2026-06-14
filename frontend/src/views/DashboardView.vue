@@ -14,7 +14,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
-const { filterOptions, sortOrder, hideAnnouncements } = useReportFilters()
+const { filterOptions, sortOrder, hideAnnouncements, hideCompleted } = useReportFilters()
 const isFilterOpen = ref(false)
 
 const applyFilters = () => {
@@ -22,8 +22,8 @@ const applyFilters = () => {
   isFilterOpen.value = false
 }
 
-// 當排序或隱藏開關變動時，立即更新列表
-watch([sortOrder, hideAnnouncements], () => {
+// 當排序或開關變動時，立即更新列表
+watch([sortOrder, hideAnnouncements, hideCompleted], () => {
   reportStore.fetchReports(filterOptions.value)
 })
 
@@ -67,6 +67,21 @@ onMounted(() => {
           <EyeSlashIcon v-if="hideAnnouncements" class="size-4" />
           <EyeIcon v-else class="size-4" />
           {{ hideAnnouncements ? '隱藏公告' : '顯示公告' }}
+        </button>
+
+        <!-- Hide Completed Toggle -->
+        <button
+          @click="hideCompleted = !hideCompleted"
+          class="flex items-center gap-1.5 px-3 py-2 border rounded-xl text-xs font-bold transition-all"
+          :class="
+            hideCompleted
+              ? 'bg-status-completed/10 border-status-completed/20 text-status-completed'
+              : 'bg-cream-surface border-cream-border text-cream-text hover:bg-cream-hover'
+          "
+        >
+          <EyeSlashIcon v-if="hideCompleted" class="size-4" />
+          <EyeIcon v-else class="size-4" />
+          {{ hideCompleted ? '隱藏已完成' : '顯示已完成' }}
         </button>
 
         <button

@@ -639,3 +639,16 @@ author: Linetra Dev Team
 - frontend/src/views/ReportDetailView.vue
 
 ---
+
+### [2026-06-14 16:06:44 +0800] feat(report): implement dynamic tag filtering and popular tags
+- Add allUniqueTags and topTags computed properties to ReportStore
+- Update ReportFilterPanel with searchable tag input and popular tags section
+- Ensure all components are type-safe and build-ready
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportFilterPanel.vue
+- frontend/src/stores/reports.ts
+- frontend/src/views/ReportCreateView.vue
+
+---

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useReportStore } from '@/stores/reports'
 import { supabase } from '@/api/supabase'
-import type { Report } from '@/types/models'
+import type { Report, ReportWithTags } from '@/types/models'
 
 // Mock Supabase
 vi.mock('@/api/supabase', () => ({
@@ -69,5 +69,17 @@ describe('ReportStore', () => {
     expect(grouped.get('2026-06-11')).toHaveLength(1)
     expect(grouped.get('2026-06-11')![0].id).toBe('3')
     expect(grouped.has('2026-06-12')).toBe(false)
+  })
+
+  it('should calculate unique and top tags correctly', () => {
+    const store = useReportStore()
+    const report1 = { id: '1', report_tags: [{ tags: { name: 'A' } }, { tags: { name: 'B' } }] } as ReportWithTags
+    const report2 = { id: '2', report_tags: [{ tags: { name: 'B' } }, { tags: { name: 'C' } }] } as ReportWithTags
+    const report3 = { id: '3', report_tags: [{ tags: { name: 'B' } }] } as ReportWithTags
+
+    store.reports = [report1, report2, report3]
+
+    expect(store.allUniqueTags).toEqual(['A', 'B', 'C'])
+    expect(store.topTags).toEqual(['B', 'A', 'C'])
   })
 })

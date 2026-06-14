@@ -95,6 +95,11 @@ export const useReportStore = defineStore('report', () => {
         query = query.neq('template_type', 'announcement')
       }
 
+      // 處理隱藏已完成
+      if (options?.hideCompleted) {
+        query = query.neq('status', 'completed')
+      }
+
       const { data, error } = await query
       if (error) throw error
       reports.value = (data as unknown as ReportWithTags[]) || []

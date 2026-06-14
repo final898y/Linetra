@@ -7,6 +7,7 @@ export interface FilterOptions {
   tags: string[]
   sortOrder: 'asc' | 'desc'
   hideAnnouncements: boolean
+  hideCompleted: boolean
 }
 
 // 從 localStorage 載入初始值
@@ -15,6 +16,7 @@ const STORAGE_KEY_TEMPLATE = 'linetra_filter_templates'
 const STORAGE_KEY_TAGS = 'linetra_filter_tags'
 const STORAGE_KEY_SORT = 'linetra_filter_sort'
 const STORAGE_KEY_HIDE_ANNOUNCEMENTS = 'linetra_filter_hide_announcements'
+const STORAGE_KEY_HIDE_COMPLETED = 'linetra_filter_hide_completed'
 
 const loadFromStorage = <T>(key: string, defaultValue: T): T => {
   const stored = localStorage.getItem(key)
@@ -32,6 +34,7 @@ const selectedTemplateTypes = ref<TemplateType[]>(loadFromStorage(STORAGE_KEY_TE
 const selectedTags = ref<string[]>(loadFromStorage(STORAGE_KEY_TAGS, []))
 const sortOrder = ref<'asc' | 'desc'>(loadFromStorage(STORAGE_KEY_SORT, 'asc'))
 const hideAnnouncements = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_ANNOUNCEMENTS, false))
+const hideCompleted = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_COMPLETED, false))
 
 // 監聽變動並存入 localStorage
 watch(
@@ -66,7 +69,12 @@ watch(hideAnnouncements, (newVal) => {
   localStorage.setItem(STORAGE_KEY_HIDE_ANNOUNCEMENTS, JSON.stringify(newVal))
 })
 
+watch(hideCompleted, (newVal) => {
+  localStorage.setItem(STORAGE_KEY_HIDE_COMPLETED, JSON.stringify(newVal))
+})
+
 export const useReportFilters = () => {
+  // ... toggle functions ...
   const toggleStatus = (status: ReportStatus) => {
     const index = selectedStatuses.value.indexOf(status)
     if (index === -1) {
@@ -100,6 +108,7 @@ export const useReportFilters = () => {
     selectedTags.value = []
     sortOrder.value = 'asc'
     hideAnnouncements.value = false
+    hideCompleted.value = false
   }
 
   const filterOptions = computed<FilterOptions>(() => ({
@@ -108,6 +117,7 @@ export const useReportFilters = () => {
     tags: selectedTags.value,
     sortOrder: sortOrder.value,
     hideAnnouncements: hideAnnouncements.value,
+    hideCompleted: hideCompleted.value,
   }))
 
   return {
@@ -116,6 +126,7 @@ export const useReportFilters = () => {
     selectedTags,
     sortOrder,
     hideAnnouncements,
+    hideCompleted,
     toggleStatus,
     toggleTemplateType,
     toggleTag,

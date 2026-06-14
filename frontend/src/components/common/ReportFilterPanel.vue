@@ -10,6 +10,7 @@ const {
   selectedStatuses,
   selectedTemplateTypes,
   selectedTags,
+  hideCompleted,
   toggleStatus,
   toggleTemplateType,
   toggleTag,
@@ -51,7 +52,7 @@ const apply = () => {
     <!-- Status Filters -->
     <div class="space-y-3">
       <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">案件狀態</p>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 mb-4">
         <button
           v-for="status in statuses"
           :key="status"
@@ -66,6 +67,20 @@ const apply = () => {
           {{ statusLabels[status] }}
         </button>
       </div>
+
+      <button
+        @click="hideCompleted = !hideCompleted"
+        class="flex items-center gap-2 text-xs font-bold transition-colors"
+        :class="hideCompleted ? 'text-brand' : 'text-cream-muted hover:text-brand'"
+      >
+        <div
+          class="w-4 h-4 border rounded flex items-center justify-center"
+          :class="hideCompleted ? 'bg-brand border-brand' : 'border-cream-border'"
+        >
+          <span v-if="hideCompleted" class="text-white text-[10px]">✓</span>
+        </div>
+        隱藏已完成案件
+      </button>
     </div>
 
     <!-- Template Filters -->
