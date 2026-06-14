@@ -603,3 +603,19 @@ author: Linetra Dev Team
 - frontend/tests/components/common/CalendarDayModal.spec.ts
 
 ---
+
+### [2026-06-14 14:36:31 +0800] feat(calendar): complete modal details view and sync grouping tests
+- Implement CalendarDayModal for detailed report listing
+
+- Fix type mismatches in CalendarView
+
+- Add unit tests for report grouping in store
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/CalendarDay.vue
+- frontend/src/components/common/CalendarDayModal.vue
+- frontend/src/views/CalendarView.vue
+- frontend/tests/stores/reports.spec.ts
+
+---

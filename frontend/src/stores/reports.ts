@@ -4,19 +4,21 @@ import { supabase } from '@/api/supabase'
 import dayjs from 'dayjs'
 import type {
   Report,
+  ReportWithTags,
   ReportInsert,
   ReportItemInsert,
   ReportStatus,
   ReportItem,
+  Tag,
 } from '@/types/models'
 import type { FilterOptions } from '@/composables/useReportFilters'
 
 export const useReportStore = defineStore('report', () => {
-  const reports = ref<Report[]>([])
+  const reports = ref<ReportWithTags[]>([])
   const loading = ref(false)
 
   const reportsByDate = computed(() => {
-    const group = new Map<string, Report[]>()
+    const group = new Map<string, ReportWithTags[]>()
     reports.value.forEach((report) => {
       if (report.announced_due_at) {
         const dateKey = dayjs(report.announced_due_at).format('YYYY-MM-DD')
@@ -34,7 +36,16 @@ export const useReportStore = defineStore('report', () => {
     try {
       let query = supabase
         .from('reports')
-        .select('*')
+        .select(
+          `
+          *,
+          report_tags (
+            tags (
+              name
+            )
+          )
+        `
+        )
         .order('announced_due_at', { ascending: options?.sortOrder === 'desc' ? false : true })
 
       // 處理狀態多選 (若無選擇，預設排除 archived/deleted)
@@ -49,9 +60,9 @@ export const useReportStore = defineStore('report', () => {
         query = query.in('template_type', options.templateTypes)
       }
 
-      // 處理標籤多選 (任一符合)
+      // 處理標籤多選 (任一符合 - 需要 join filter)
       if (options?.tags && options.tags.length > 0) {
-        query = query.overlaps('tags', options.tags)
+        query = query.in('report_tags.tags.name', options.tags)
       }
 
       // 處理隱藏公告
@@ -61,7 +72,7 @@ export const useReportStore = defineStore('report', () => {
 
       const { data, error } = await query
       if (error) throw error
-      reports.value = (data as Report[]) || []
+      reports.value = (data as unknown as ReportWithTags[]) || []
     } finally {
       loading.value = false
     }
@@ -134,7 +145,27 @@ export const useReportStore = defineStore('report', () => {
 
   const deleteReportItems = async (reportId: string) => {
     const { error } = await supabase.from('report_items').delete().eq('report_id', reportId)
+    if (error) throw error
+  }
 
+  const upsertTags = async (tagNames: string[]) => {
+    const tagsToInsert = tagNames.map((name) => ({ name }))
+    const { data, error } = await supabase
+      .from('tags')
+      .upsert(tagsToInsert, { onConflict: 'name' })
+      .select('id, name')
+
+    if (error) throw error
+    return data as Tag[]
+  }
+
+  const deleteReportTags = async (reportId: string) => {
+    const { error } = await supabase.from('report_tags').delete().eq('report_id', reportId)
+    if (error) throw error
+  }
+
+  const createReportTags = async (reportTags: { report_id: string; tag_id: string }[]) => {
+    const { error } = await supabase.from('report_tags').insert(reportTags)
     if (error) throw error
   }
 
@@ -150,5 +181,8 @@ export const useReportStore = defineStore('report', () => {
     createReportItems,
     deleteReportItems,
     updateStatus,
+    upsertTags,
+    deleteReportTags,
+    createReportTags,
   }
 })

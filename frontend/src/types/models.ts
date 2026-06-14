@@ -1,6 +1,9 @@
 import type { Database } from './database.types'
 
 export type Report = Database['public']['Tables']['reports']['Row']
+export type ReportWithTags = Report & {
+  report_tags?: ReportTag[]
+}
 export type ReportInsert = Database['public']['Tables']['reports']['Insert']
 export type ReportUpdate = Database['public']['Tables']['reports']['Update']
 
@@ -19,6 +22,18 @@ export const TemplateType = {
 export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType]
 export type ReportStatus = Database['public']['Tables']['reports']['Row']['status']
 export type ItemType = Database['public']['Tables']['report_items']['Row']['item_type']
+
+// Relational Tagging
+export interface Tag {
+  id: string
+  name: string
+}
+
+export interface ReportTag {
+  report_id: string
+  tag_id: string
+  tags?: Tag
+}
 
 // Calendar Support
 export interface CalendarEvent {

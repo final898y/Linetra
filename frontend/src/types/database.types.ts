@@ -11,7 +11,6 @@ export interface Database {
           id: string
           importance_flag: boolean
           remarks: string | null
-          tags: string[] | null
           sent_at: string | null
           status: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
@@ -34,7 +33,6 @@ export interface Database {
           id?: string
           importance_flag?: boolean
           remarks?: string | null
-          tags?: string[] | null
           sent_at?: string | null
           status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject: string
@@ -57,7 +55,6 @@ export interface Database {
           id?: string
           importance_flag?: boolean
           remarks?: string | null
-          tags?: string[] | null
           sent_at?: string | null
           status?: 'pending' | 'completed' | 'overdue' | 'archived' | 'deleted'
           subject?: string
@@ -77,6 +74,51 @@ export interface Database {
             columns: ['user_id']
             isOneToOne: false
             referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      tags: {
+        Row: {
+          id: string
+          name: string
+        }
+        Insert: {
+          id?: string
+          name: string
+        }
+        Update: {
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      report_tags: {
+        Row: {
+          report_id: string
+          tag_id: string
+        }
+        Insert: {
+          report_id: string
+          tag_id: string
+        }
+        Update: {
+          report_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'report_tags_report_id_fkey'
+            columns: ['report_id']
+            isOneToOne: false
+            referencedRelation: 'reports'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'report_tags_tag_id_fkey'
+            columns: ['tag_id']
+            isOneToOne: false
+            referencedRelation: 'tags'
             referencedColumns: ['id']
           },
         ]

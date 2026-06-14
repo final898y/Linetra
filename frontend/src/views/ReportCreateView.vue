@@ -79,6 +79,9 @@ onMounted(async () => {
         : ''
       form.importance_flag = report.importance_flag || false
       form.status = report.status as ReportStatus
+      form.remarks = report.remarks || ''
+      // @ts-expect-error - Assuming relational structure
+      form.tags = report.report_tags?.map((rt) => rt.tags?.name || '').filter(Boolean) || []
 
       // Load items
       items.value = reportItems.map((item: ReportItem) => ({
@@ -135,6 +138,7 @@ const handleCopyAndSave = async () => {
       formatted_content: previewText.value,
       status: form.status,
       department: form.department || null,
+      remarks: form.remarks || null,
       actual_due_at: form.actual_due_at ? dayjs.tz(form.actual_due_at).toISOString() : null,
       announced_due_at: form.announced_due_at
         ? dayjs.tz(form.announced_due_at).toISOString()
@@ -145,11 +149,22 @@ const handleCopyAndSave = async () => {
     if (reportId) {
       await reportStore.updateReport(reportId, reportData)
       await reportStore.deleteReportItems(reportId)
+      await reportStore.deleteReportTags(reportId)
     } else {
       const savedReport = await reportStore.createReport(reportData)
       if (!savedReport) throw new Error('Failed to create report')
       reportId = savedReport.id
       currentReportId.value = reportId
+    }
+
+    // Persist Tags
+    if (form.tags.length > 0) {
+      const persistedTags = await reportStore.upsertTags(form.tags)
+      const reportTags = persistedTags.map((tag) => ({
+        report_id: reportId!,
+        tag_id: tag.id,
+      }))
+      await reportStore.createReportTags(reportTags)
     }
 
     const reportItems: ReportItemInsert[] = items.value

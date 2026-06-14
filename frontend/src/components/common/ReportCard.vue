@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Report } from '@/types/models'
+import type { ReportWithTags } from '@/types/models'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
 import { useReportStore } from '@/stores/reports'
 import { CheckIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
-  report: Report
+  report: ReportWithTags
 }>()
 
 const { formatRelative, formatFull, getRemainingTimeColor } = useTimeFormatter()
@@ -59,13 +59,16 @@ const statusColors = {
       </p>
 
       <!-- Tags display -->
-      <div v-if="report.tags && report.tags.length > 0" class="flex flex-wrap gap-1 mb-4">
+      <div
+        v-if="report.report_tags && report.report_tags.length > 0"
+        class="flex flex-wrap gap-1 mb-4"
+      >
         <span
-          v-for="tag in report.tags"
-          :key="tag"
+          v-for="rt in report.report_tags"
+          :key="rt.tags?.name"
           class="text-[9px] font-bold px-1.5 py-0.5 bg-cream-bg text-cream-muted border border-cream-border rounded"
         >
-          #{{ tag }}
+          #{{ rt.tags?.name }}
         </span>
       </div>
     </div>

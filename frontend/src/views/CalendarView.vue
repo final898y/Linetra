@@ -104,7 +104,9 @@ onMounted(async () => {
         >
           <CalendarDay
             :day="day"
-            :reports="(reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD')) || []) as Report[]"
+            :reports="
+              (reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD')) || []) as Report[]
+            "
           />
         </div>
       </div>

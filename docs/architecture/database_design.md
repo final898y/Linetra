@@ -1,7 +1,7 @@
 ---
 title: Linetra — 資料庫實作與安全政策 (Database Implementation & RLS)
 version: v1.0
-date: 2026-06-13
+date: 2026-06-14
 status: Draft
 author: Linetra Dev Team
 ---
@@ -13,7 +13,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-06-13 |
+| **最後更新 (Last Updated)** | 2026-06-14 |
 | **狀態 (Status)** | 草案 (Draft) |
 
 ---
@@ -45,7 +45,6 @@ author: Linetra Dev Team
 | `department` | `text` | | 通報單位 |
 | `subject` | `text` | `NOT NULL` | 案由 |
 | `remarks` | `text` | | 內部備註 (不顯示於通報) |
-| `tags` | `text[]` | `DEFAULT '{}'` | 標籤 (多選) |
 | `actual_due_at` | `timestamptz` | | 真實截止時間 |
 | `announced_due_at` | `timestamptz` | | 對外通知期限 |
 | `sent_at` | `timestamptz` | | 第一次複製的時間 |
@@ -53,6 +52,20 @@ author: Linetra Dev Team
 | `status` | `text` | `DEFAULT 'pending'`, `CHECK (status IN (...))` | `pending`, `completed`, `overdue`, `archived`, `deleted` |
 | `created_at` | `timestamptz` | `DEFAULT now()` | |
 | `updated_at` | `timestamptz` | `DEFAULT now()` | |
+
+### 1.6 `tags` (標籤主表)
+
+| 欄位名 | 資料型別 | 約束 | 說明 |
+| :--- | :--- | :--- | :--- |
+| `id` | `uuid` | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | |
+| `name` | `text` | `NOT NULL`, `UNIQUE` | 標籤名稱 |
+
+### 1.7 `report_tags` (案件-標籤關聯表)
+
+| 欄位名 | 資料型別 | 約束 | 說明 |
+| :--- | :--- | :--- | :--- |
+| `report_id` | `uuid` | `PRIMARY KEY`, `REFERENCES reports(id) ON DELETE CASCADE` | |
+| `tag_id` | `uuid` | `PRIMARY KEY`, `REFERENCES tags(id) ON DELETE CASCADE` | |
 
 ### 1.3 `report_items` (條列項目)
 
@@ -105,6 +118,23 @@ CREATE POLICY "Users can manage their own reports" ON reports
     TO authenticated
     USING (auth.uid() = user_id)
     WITH CHECK (auth.uid() = user_id);
+
+-- 建立 Tag 相關 Policy
+ALTER TABLE tags ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can select tags" ON tags
+  FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert tags" ON tags
+  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Authenticated users can update tags" ON tags
+  FOR UPDATE TO authenticated USING (true) WITH CHECK (true);
+
+ALTER TABLE report_tags ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Authenticated users can select report_tags" ON report_tags
+  FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Authenticated users can insert report_tags" ON report_tags
+  FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Authenticated users can delete report_tags" ON report_tags
+  FOR DELETE TO authenticated USING (true);
 ```
 
 ### 2.2 權限對照表

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
-import type { Report, ReportItem } from '@/types/models'
+import type { ReportWithTags, ReportItem } from '@/types/models'
 import { ArrowLeftIcon, PencilIcon, CheckIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
@@ -11,7 +11,7 @@ const router = useRouter()
 const reportStore = useReportStore()
 const { formatRelative, getRemainingTimeColor } = useTimeFormatter()
 
-const report = ref<Report | null>(null)
+const report = ref<ReportWithTags | null>(null)
 const items = ref<ReportItem[]>([])
 const loading = ref(true)
 
@@ -88,13 +88,16 @@ const handleDelete = async () => {
           <p class="text-sm font-bold text-cream-muted uppercase tracking-wider">
             {{ report.department || '未設定單位' }}
           </p>
-          <div v-if="report.tags && report.tags.length > 0" class="flex flex-wrap gap-1">
+          <div
+            v-if="report.report_tags && report.report_tags.length > 0"
+            class="flex flex-wrap gap-1"
+          >
             <span
-              v-for="tag in report.tags"
-              :key="tag"
+              v-for="rt in report.report_tags"
+              :key="rt.tags?.name"
               class="text-[10px] font-bold px-2 py-0.5 bg-cream-bg text-cream-muted border border-cream-border rounded-lg"
             >
-              #{{ tag }}
+              #{{ rt.tags?.name }}
             </span>
           </div>
         </div>
