@@ -594,3 +594,12 @@ author: Linetra Dev Team
 - frontend/tests/composables/useCalendar.spec.ts
 
 ---
+
+### [2026-06-14 14:32:24 +0800] test(calendar): add tests for CalendarDayModal
+- Add unit tests for Modal rendering, visibility state, and overlay close interaction
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/tests/components/common/CalendarDayModal.spec.ts
+
+---

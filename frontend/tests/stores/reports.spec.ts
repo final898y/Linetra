@@ -50,4 +50,24 @@ describe('ReportStore', () => {
     await store.updateStatus('1', 'completed')
     expect(store.reports[0].status).toBe('completed')
   })
+
+  it('should group reports by date correctly in reportsByDate', () => {
+    const store = useReportStore()
+    const report1 = { id: '1', announced_due_at: '2026-06-10T10:00:00Z', subject: 'Report 1' } as Report
+    const report2 = { id: '2', announced_due_at: '2026-06-10T15:00:00Z', subject: 'Report 2' } as Report
+    const report3 = { id: '3', announced_due_at: '2026-06-11T10:00:00Z', subject: 'Report 3' } as Report
+    
+    store.reports = [report1, report2, report3]
+    
+    const grouped = store.reportsByDate
+    
+    expect(grouped.get('2026-06-10')).toHaveLength(2)
+    const group10 = grouped.get('2026-06-10')!
+    expect(group10.some(r => r.id === '1')).toBe(true)
+    expect(group10.some(r => r.id === '2')).toBe(true)
+    
+    expect(grouped.get('2026-06-11')).toHaveLength(1)
+    expect(grouped.get('2026-06-11')![0].id).toBe('3')
+    expect(grouped.has('2026-06-12')).toBe(false)
+  })
 })

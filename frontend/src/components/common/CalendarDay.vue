@@ -45,10 +45,11 @@ const statusColors = {
 
     <!-- 案件標籤清單 -->
     <div class="space-y-1 overflow-hidden">
-      <div
+      <RouterLink
         v-for="report in reports.slice(0, 3)"
         :key="report.id"
-        class="text-[9px] px-1.5 py-0.5 rounded border truncate font-bold flex items-center gap-1"
+        :to="{ name: 'report-detail', params: { id: report.id } }"
+        class="text-[9px] md:text-[10px] px-1 py-0.5 rounded border truncate font-bold flex items-center gap-1 hover:scale-105 hover:bg-white transition-all block"
         :class="statusColors[report.status]"
       >
         <div
@@ -56,7 +57,7 @@ const statusColors = {
           class="w-1 h-1 rounded-full bg-status-overdue animate-pulse shrink-0"
         ></div>
         {{ report.subject }}
-      </div>
+      </RouterLink>
       <div v-if="reports.length > 3" class="text-[8px] text-cream-muted font-bold pl-1">
         +{{ reports.length - 3 }} 更多...
       </div>

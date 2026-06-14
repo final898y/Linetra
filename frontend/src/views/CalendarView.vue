@@ -1,12 +1,25 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useReportStore } from '@/stores/reports'
 import { useCalendar } from '@/composables/useCalendar'
 import CalendarDay from '@/components/common/CalendarDay.vue'
+import CalendarDayModal from '@/components/common/CalendarDayModal.vue'
 import { ChevronLeftIcon, ChevronRightIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
+import type { Report } from '@/types/models'
 
 const reportStore = useReportStore()
 const { currentDate, calendarDays, nextMonth, prevMonth, goToToday } = useCalendar()
+
+const isModalOpen = ref(false)
+const selectedDateReports = ref<Report[]>([])
+const selectedDateTitle = ref('')
+
+const openModal = (dateStr: string, reports: Report[]) => {
+  if (reports.length === 0) return
+  selectedDateTitle.value = dateStr
+  selectedDateReports.value = reports as Report[]
+  isModalOpen.value = true
+}
 
 const weekDays = ['週一', '週二', '週三', '週四', '週五', '週六', '週日']
 
@@ -78,21 +91,31 @@ onMounted(async () => {
 
       <!-- Days Grid -->
       <div class="grid grid-cols-7">
-        <div v-for="day in calendarDays" :key="day.date.toString()" class="relative">
-          <RouterLink
-            v-if="reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD'))"
-            :to="{ name: 'dashboard' }"
-            class="block h-full"
-          >
-            <CalendarDay
-              :day="day"
-              :reports="reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD')) || []"
-            />
-          </RouterLink>
-          <CalendarDay v-else :day="day" :reports="[]" />
+        <div
+          v-for="day in calendarDays"
+          :key="day.date.toString()"
+          class="relative cursor-pointer"
+          @click="
+            openModal(
+              day.date.format('YYYY-MM-DD'),
+              reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD')) || []
+            )
+          "
+        >
+          <CalendarDay
+            :day="day"
+            :reports="(reportStore.reportsByDate.get(day.date.format('YYYY-MM-DD')) || []) as Report[]"
+          />
         </div>
       </div>
     </div>
+
+    <CalendarDayModal
+      :date="selectedDateTitle"
+      :reports="selectedDateReports"
+      :is-open="isModalOpen"
+      @close="isModalOpen = false"
+    />
 
     <!-- Mobile Footer Info -->
     <div class="block md:hidden text-center text-[10px] text-cream-muted italic">
