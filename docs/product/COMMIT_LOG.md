@@ -574,3 +574,23 @@ author: Linetra Dev Team
 - frontend/tests/composables/useReportForm.spec.ts
 
 ---
+
+### [2026-06-14 01:41:29 +0800] feat(calendar): implement core calendar logic and grid UI
+- Add useCalendar composable for date matrix calculations
+- Implement Map-based grouping logic in report store for efficiency
+- Create responsive CalendarView and CalendarDay UI components
+- Define decoupled CalendarEvent interface in models.ts
+- Add comprehensive unit tests for calendar month transitions
+- Include detailed calendar implementation plan in docs
+
+**變更檔案 (Changed Files):**
+- docs/guides/calendar_implementation_plan.md
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/CalendarDay.vue
+- frontend/src/composables/useCalendar.ts
+- frontend/src/stores/reports.ts
+- frontend/src/types/models.ts
+- frontend/src/views/CalendarView.vue
+- frontend/tests/composables/useCalendar.spec.ts
+
+---
