@@ -560,3 +560,46 @@ author: Linetra Dev Team
 - frontend/tests/composables/useTimeFormatter.spec.ts
 
 ---
+
+### [2026-06-14 00:58:44 +0800] feat(report): enhance tag system and add navigation shortcut
+- Support custom tag input in ReportCreateView with Enter key support
+- Add 'View Case' button in edit mode for quick navigation to detail view
+- Refactor and clean up useReportForm unit tests
+- Update commonTags configuration for better usability
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/config/reportTypes.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportForm.spec.ts
+
+---
+
+### [2026-06-14 01:41:29 +0800] feat(calendar): implement core calendar logic and grid UI
+- Add useCalendar composable for date matrix calculations
+- Implement Map-based grouping logic in report store for efficiency
+- Create responsive CalendarView and CalendarDay UI components
+- Define decoupled CalendarEvent interface in models.ts
+- Add comprehensive unit tests for calendar month transitions
+- Include detailed calendar implementation plan in docs
+
+**變更檔案 (Changed Files):**
+- docs/guides/calendar_implementation_plan.md
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/CalendarDay.vue
+- frontend/src/composables/useCalendar.ts
+- frontend/src/stores/reports.ts
+- frontend/src/types/models.ts
+- frontend/src/views/CalendarView.vue
+- frontend/tests/composables/useCalendar.spec.ts
+
+---
+
+### [2026-06-14 14:32:24 +0800] test(calendar): add tests for CalendarDayModal
+- Add unit tests for Modal rendering, visibility state, and overlay close interaction
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/tests/components/common/CalendarDayModal.spec.ts
+
+---

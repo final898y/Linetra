@@ -19,3 +19,13 @@ export const TemplateType = {
 export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType]
 export type ReportStatus = Database['public']['Tables']['reports']['Row']['status']
 export type ItemType = Database['public']['Tables']['report_items']['Row']['item_type']
+
+// Calendar Support
+export interface CalendarEvent {
+  id: string
+  date: string // ISO string or YYYY-MM-DD
+  title: string
+  status: string
+  importance?: boolean
+  meta?: unknown // 存放原始物件或其他自定義資訊
+}

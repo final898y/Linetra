@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { supabase } from '@/api/supabase'
+import dayjs from 'dayjs'
 import type {
   Report,
   ReportInsert,
@@ -13,6 +14,20 @@ import type { FilterOptions } from '@/composables/useReportFilters'
 export const useReportStore = defineStore('report', () => {
   const reports = ref<Report[]>([])
   const loading = ref(false)
+
+  const reportsByDate = computed(() => {
+    const group = new Map<string, Report[]>()
+    reports.value.forEach((report) => {
+      if (report.announced_due_at) {
+        const dateKey = dayjs(report.announced_due_at).format('YYYY-MM-DD')
+        if (!group.has(dateKey)) {
+          group.set(dateKey, [])
+        }
+        group.get(dateKey)!.push(report)
+      }
+    })
+    return group
+  })
 
   const fetchReports = async (options?: FilterOptions) => {
     loading.value = true
@@ -125,6 +140,7 @@ export const useReportStore = defineStore('report', () => {
 
   return {
     reports,
+    reportsByDate,
     loading,
     fetchReports,
     fetchReportById,
