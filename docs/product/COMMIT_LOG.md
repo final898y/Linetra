@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-14
+date: 2026-06-16
 status: Active
 author: Linetra Dev Team
 ---
@@ -650,5 +650,22 @@ author: Linetra Dev Team
 - frontend/src/components/common/ReportFilterPanel.vue
 - frontend/src/stores/reports.ts
 - frontend/src/views/ReportCreateView.vue
+
+---
+
+### [2026-06-14 16:19:59 +0800] test(frontend): add tests for store grouping and filter panel
+- Add unit tests for ReportStore allUniqueTags and topTags computed properties
+- Add component tests for ReportFilterPanel including tag search and popular tags rendering
+- Ensure all tests pass
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportFilterPanel.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/CalendarView.vue
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportFilterPanel.spec.ts
+- frontend/tests/stores/reports.spec.ts
 
 ---
