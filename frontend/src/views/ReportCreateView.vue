@@ -262,7 +262,7 @@ const handleCopyAndSave = async () => {
           >
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <button
-              v-for="tmpl in ['meeting', 'weekly_report', 'briefing', 'task'] as const"
+              v-for="tmpl in ['meeting', 'weekly_report', 'briefing'] as const"
               :key="tmpl"
               @click="applyTemplate(tmpl)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
@@ -273,13 +273,7 @@ const handleCopyAndSave = async () => {
               "
             >
               {{
-                tmpl === 'meeting'
-                  ? '處務會議'
-                  : tmpl === 'weekly_report'
-                    ? '市長週報'
-                    : tmpl === 'briefing'
-                      ? '市長面報'
-                      : '臨時任務'
+                tmpl === 'meeting' ? '處務會議' : tmpl === 'weekly_report' ? '市長週報' : '市長面報'
               }}
             </button>
           </div>
