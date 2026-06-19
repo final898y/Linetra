@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
@@ -29,6 +29,7 @@ dayjs.extend(timezone)
 
 const reportStore = useReportStore()
 const authStore = useAuthStore()
+const router = useRouter()
 const route = useRoute()
 const {
   tabs,
@@ -153,6 +154,7 @@ const handleCopyAndSave = async () => {
     }
 
     let reportId = currentReportId.value
+    const isNewReport = !reportId
     if (reportId) {
       await reportStore.updateReport(reportId, reportData)
       await reportStore.deleteReportItems(reportId)
@@ -193,10 +195,14 @@ const handleCopyAndSave = async () => {
       await reportStore.createReportItems(reportItems)
     }
 
+    if (isNewReport && reportId) {
+      router.replace({ name: 'report-edit', params: { id: reportId } })
+    }
+
     alert(
-      currentReportId.value
-        ? '已複製通報文字，並同步更新資料庫！'
-        : '已複製通報文字，並成功建立案件！'
+      isNewReport
+        ? '已複製通報文字，並成功建立案件！'
+        : '已複製通報文字，並同步更新資料庫！'
     )
   } catch (error) {
     console.error('Failed to save:', error)
@@ -262,7 +268,7 @@ const handleCopyAndSave = async () => {
           >
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <button
-              v-for="tmpl in ['meeting', 'weekly_report', 'briefing', 'task'] as const"
+              v-for="tmpl in ['meeting', 'weekly_report', 'briefing'] as const"
               :key="tmpl"
               @click="applyTemplate(tmpl)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
@@ -273,13 +279,7 @@ const handleCopyAndSave = async () => {
               "
             >
               {{
-                tmpl === 'meeting'
-                  ? '處務會議'
-                  : tmpl === 'weekly_report'
-                    ? '市長週報'
-                    : tmpl === 'briefing'
-                      ? '市長面報'
-                      : '臨時任務'
+                tmpl === 'meeting' ? '處務會議' : tmpl === 'weekly_report' ? '市長週報' : '市長面報'
               }}
             </button>
           </div>
