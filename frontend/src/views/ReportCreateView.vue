@@ -185,7 +185,10 @@ const handleCopyAndSave = async () => {
           | 'note'
           | 'agenda'
           | 'link'
-          | 'meeting_time',
+          | 'meeting_time'
+          | 'location'
+          | 'participants'
+          | 'materials',
         content: i.content || '',
         sort_order: index + 1,
         report_id: reportId!,
@@ -199,11 +202,7 @@ const handleCopyAndSave = async () => {
       router.replace({ name: 'report-edit', params: { id: reportId } })
     }
 
-    alert(
-      isNewReport
-        ? '已複製通報文字，並成功建立案件！'
-        : '已複製通報文字，並同步更新資料庫！'
-    )
+    alert(isNewReport ? '已複製通報文字，並成功建立案件！' : '已複製通報文字，並同步更新資料庫！')
   } catch (error) {
     console.error('Failed to save:', error)
     alert('發生錯誤，請稍後再試')
@@ -268,7 +267,7 @@ const handleCopyAndSave = async () => {
           >
           <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <button
-              v-for="tmpl in ['meeting', 'weekly_report', 'briefing'] as const"
+              v-for="tmpl in ['meeting', 'meeting_simple', 'weekly_report', 'briefing'] as const"
               :key="tmpl"
               @click="applyTemplate(tmpl)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
@@ -279,7 +278,13 @@ const handleCopyAndSave = async () => {
               "
             >
               {{
-                tmpl === 'meeting' ? '處務會議' : tmpl === 'weekly_report' ? '市長週報' : '市長面報'
+                tmpl === 'meeting'
+                  ? '處務會議'
+                  : tmpl === 'meeting_simple'
+                    ? '一般會議'
+                    : tmpl === 'weekly_report'
+                      ? '市長週報'
+                      : '市長面報'
               }}
             </button>
           </div>
@@ -363,7 +368,13 @@ const handleCopyAndSave = async () => {
               ></textarea>
             </div>
 
-            <div v-if="activeTab !== 'announcement'" class="space-y-4 pt-2">
+            <div
+              v-if="
+                activeTab !== 'announcement' &&
+                !(activeTab === 'template' && currentTemplate === 'meeting_simple')
+              "
+              class="space-y-4 pt-2"
+            >
               <div v-if="activeTab === 'general'">
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                   >通報單位</label
@@ -522,6 +533,14 @@ const handleCopyAndSave = async () => {
                 rows="4"
                 class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
               ></textarea>
+              <input
+                v-else-if="
+                  item.item_type === 'meeting_time' && currentTemplate === 'meeting_simple'
+                "
+                v-model="item.content"
+                type="datetime-local"
+                class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
+              />
               <input
                 v-else
                 v-model="item.content"

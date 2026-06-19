@@ -1,5 +1,7 @@
 import type { Report, ReportItem, TemplateType } from '@/types/models'
 import { useTimeFormatter } from './useTimeFormatter'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-tw'
 
 export interface ReportData {
   report: Partial<Report>
@@ -12,6 +14,23 @@ export interface ReportStrategy {
 
 const { formatDeadlineDetailed } = useTimeFormatter()
 const SEPARATOR = '~~~~~~~~~~~~~~~~~~~~~~'
+
+const WEEKDAY_MAP: Record<number, string> = {
+  0: '日',
+  1: '一',
+  2: '二',
+  3: '三',
+  4: '四',
+  5: '五',
+  6: '六',
+}
+
+function formatMeetingTime(raw: string): string {
+  const parsed = dayjs(raw)
+  if (!parsed.isValid()) return raw
+  const weekday = WEEKDAY_MAP[parsed.day()]
+  return parsed.format(`YYYY-MM-DD (${weekday}) HH:mm`)
+}
 
 class BaseStrategy {
   protected formatHeader(report: Partial<Report>, title: string): string {
@@ -191,9 +210,49 @@ class TaskStrategy extends BaseStrategy implements ReportStrategy {
   }
 }
 
+class MeetingSimpleStrategy extends BaseStrategy implements ReportStrategy {
+  generate({ report, items }: ReportData): string {
+    const lines: string[] = []
+    lines.push(this.formatHeader(report, '【 會 議 通 報 】'))
+
+    lines.push(`會議名稱： \`${report.subject}\``)
+
+    const time = items.find((i) => i.item_type === 'meeting_time')?.content
+    if (time && time.trim() !== '') {
+      lines.push(`時間： \`${formatMeetingTime(time)}\``)
+    }
+
+    const location = items.find((i) => i.item_type === 'location')?.content
+    if (location && location.trim() !== '') {
+      lines.push(`地點： \`${location}\``)
+    }
+
+    const participants = items.find((i) => i.item_type === 'participants')?.content
+    if (participants && participants.trim() !== '') {
+      lines.push(`參加人員： \`${participants}\``)
+    }
+
+    const materials = items.find((i) => i.item_type === 'materials')?.content
+    if (materials && materials.trim() !== '') {
+      lines.push(`相關資料： \`${materials}\``)
+    }
+
+    const noteText = this.formatNotes(items)
+    if (noteText) {
+      lines.push('')
+      lines.push('備註：')
+      lines.push(noteText)
+    }
+    lines.push(SEPARATOR)
+
+    return lines.join('\n')
+  }
+}
+
 export const strategies: Record<TemplateType, ReportStrategy> = {
   general: new GeneralStrategy(),
   meeting: new MeetingStrategy(),
+  meeting_simple: new MeetingSimpleStrategy(),
   weekly_report: new WeeklyStrategy(),
   briefing: new BriefingStrategy(),
   announcement: new AnnouncementStrategy(),

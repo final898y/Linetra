@@ -1,7 +1,7 @@
 ---
 title: Linetra — Supabase 資料庫初始化與設定指南
 version: v1.1
-date: 2026-06-14
+date: 2026-06-20
 status: Active
 author: Linetra Dev Team
 ---
@@ -19,6 +19,7 @@ author: Linetra Dev Team
 CREATE TYPE template_type AS ENUM (
   'general',
   'meeting',
+  'meeting_simple',
   'weekly_report',
   'briefing',
   'announcement',
@@ -41,7 +42,10 @@ CREATE TYPE report_item_type AS ENUM (
   'note',
   'agenda',
   'link',
-  'meeting_time'
+  'meeting_time',
+  'location',
+  'participants',
+  'materials'
 );
 ```
 

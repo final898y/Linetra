@@ -17,6 +17,7 @@ export interface Database {
           template_type:
             | 'general'
             | 'meeting'
+            | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
             | 'announcement'
@@ -39,6 +40,7 @@ export interface Database {
           template_type:
             | 'general'
             | 'meeting'
+            | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
             | 'announcement'
@@ -61,6 +63,7 @@ export interface Database {
           template_type?:
             | 'general'
             | 'meeting'
+            | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
             | 'announcement'
@@ -127,21 +130,48 @@ export interface Database {
         Row: {
           content: string
           id: string
-          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          item_type:
+            | 'submission_method'
+            | 'detail'
+            | 'note'
+            | 'agenda'
+            | 'link'
+            | 'meeting_time'
+            | 'location'
+            | 'participants'
+            | 'materials'
           report_id: string
           sort_order: number
         }
         Insert: {
           content: string
           id?: string
-          item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          item_type:
+            | 'submission_method'
+            | 'detail'
+            | 'note'
+            | 'agenda'
+            | 'link'
+            | 'meeting_time'
+            | 'location'
+            | 'participants'
+            | 'materials'
           report_id: string
           sort_order: number
         }
         Update: {
           content?: string
           id?: string
-          item_type?: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+          item_type?:
+            | 'submission_method'
+            | 'detail'
+            | 'note'
+            | 'agenda'
+            | 'link'
+            | 'meeting_time'
+            | 'location'
+            | 'participants'
+            | 'materials'
           report_id?: string
           sort_order?: number
         }

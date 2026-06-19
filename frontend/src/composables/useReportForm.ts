@@ -40,6 +40,9 @@ export const useReportForm = () => {
     submission_method: 10,
     detail: 20,
     meeting_time: 30,
+    location: 32,
+    participants: 34,
+    materials: 36,
     link: 40,
     agenda: 50,
     note: 100,
@@ -184,6 +187,9 @@ export const useReportForm = () => {
         meeting_time: '會議時間',
         link: '雲端連結',
         agenda: '報告事項',
+        location: '會議地點',
+        participants: '參加人員',
+        materials: '相關資料',
       }
       return labels[type] || '項目'
     },

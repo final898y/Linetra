@@ -4,6 +4,7 @@ import { z } from 'zod'
 export const TemplateTypeSchema = z.enum([
   'general',
   'meeting',
+  'meeting_simple',
   'weekly_report',
   'briefing',
   'announcement',
@@ -18,6 +19,9 @@ export const ItemTypeSchema = z.enum([
   'agenda',
   'link',
   'meeting_time',
+  'location',
+  'participants',
+  'materials',
 ])
 
 // --- Report Item ---

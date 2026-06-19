@@ -5,7 +5,16 @@ export interface TemplateConfig {
   name: string
   defaultSubject: string
   items: {
-    item_type: 'submission_method' | 'detail' | 'note' | 'agenda' | 'link' | 'meeting_time'
+    item_type:
+      | 'submission_method'
+      | 'detail'
+      | 'note'
+      | 'agenda'
+      | 'link'
+      | 'meeting_time'
+      | 'location'
+      | 'participants'
+      | 'materials'
     content: string
     isCustomizable?: boolean // 是否允許切換預設/自定義
   }[]
@@ -27,6 +36,33 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
         content:
           'https://docs.google.com/spreadsheets/d/1oaWz0Q3MNVgLg8vlyP4eTFUhvGQB2FImqHsTscltRpM/edit?gid=1569821820#gid=1569821820',
         isCustomizable: true,
+      },
+    ],
+  },
+  meeting_simple: {
+    id: 'meeting_simple',
+    name: '一般會議',
+    defaultSubject: '會議通知',
+    items: [
+      {
+        item_type: 'meeting_time',
+        content: '',
+        isCustomizable: false,
+      },
+      {
+        item_type: 'location',
+        content: '',
+        isCustomizable: false,
+      },
+      {
+        item_type: 'participants',
+        content: '',
+        isCustomizable: false,
+      },
+      {
+        item_type: 'materials',
+        content: '',
+        isCustomizable: false,
       },
     ],
   },

@@ -70,6 +70,55 @@ describe('Report Strategies', () => {
     })
   })
 
+  describe('MeetingSimpleStrategy', () => {
+    it('should generate simple meeting format with all optional items', () => {
+      const data: ReportData = {
+        report: commonReport,
+        items: [
+          { item_type: 'meeting_time', content: '2026-06-22T14:00' },
+          { item_type: 'location', content: '第三會議室' },
+          { item_type: 'participants', content: '小明, 小華' },
+          { item_type: 'materials', content: '簡報連結' },
+          { item_type: 'note', content: '備註 1' }
+        ]
+      }
+      const result = strategies.meeting_simple.generate(data)
+      expect(result).toContain('【 會 議 通 報 】')
+      expect(result).toContain('會議名稱： `測試案由`')
+      expect(result).toContain('時間： `2026-06-22 (一) 14:00`')
+      expect(result).toContain('地點： `第三會議室`')
+      expect(result).toContain('參加人員： `小明, 小華`')
+      expect(result).toContain('相關資料： `簡報連結`')
+      expect(result).toContain('1. 備註 1')
+    })
+
+    it('should omit empty optional fields from output', () => {
+      const data: ReportData = {
+        report: commonReport,
+        items: [
+          { item_type: 'meeting_time', content: '2026-06-22T14:00' }
+        ]
+      }
+      const result = strategies.meeting_simple.generate(data)
+      expect(result).toContain('會議名稱： `測試案由`')
+      expect(result).toContain('時間： `2026-06-22 (一) 14:00`')
+      expect(result).not.toContain('地點')
+      expect(result).not.toContain('參加人員')
+      expect(result).not.toContain('相關資料')
+    })
+
+    it('should pass through non-ISO time strings as-is', () => {
+      const data: ReportData = {
+        report: commonReport,
+        items: [
+          { item_type: 'meeting_time', content: '週三下午兩點' }
+        ]
+      }
+      const result = strategies.meeting_simple.generate(data)
+      expect(result).toContain('時間： `週三下午兩點`')
+    })
+  })
+
   describe('WeeklyStrategy', () => {
     it('should generate weekly report specific format', () => {
       const data: ReportData = {

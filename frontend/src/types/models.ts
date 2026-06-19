@@ -13,6 +13,7 @@ export type ReportItemInsert = Database['public']['Tables']['report_items']['Ins
 export const TemplateType = {
   General: 'general',
   Meeting: 'meeting',
+  MeetingSimple: 'meeting_simple',
   Weekly: 'weekly_report',
   Briefing: 'briefing',
   Announcement: 'announcement',
