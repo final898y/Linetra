@@ -72,13 +72,14 @@ function Install-GitHook {
 }
 
 $preCommitLogic = @"
-# Linetra Markdown Standardization
+# Linetra Commit Logging & Markdown Standardization
 PYTHON_CMD="python"
 if ! command -v "`$PYTHON_CMD" >/dev/null 2>&1; then
     if command -v python3 >/dev/null 2>&1; then PYTHON_CMD="python3"; else
         echo "Error: Python not found!" >&2; exit 1
     fi
 fi
+"`$PYTHON_CMD" "tools/git-hooks/pre_commit_log_helper.py"
 "`$PYTHON_CMD" "tools/git-hooks/pre_commit_markdown_helper.py"
 "@
 
@@ -93,19 +94,18 @@ fi
 "`$PYTHON_CMD" "tools/git-hooks/commit_msg_helper.py" "`$1"
 "@
 
-$postCommitLogic = @"
-# Linetra Commit Logging
-PYTHON_CMD="python"
-if ! command -v "`$PYTHON_CMD" >/dev/null 2>&1; then
-    if command -v python3 >/dev/null 2>&1; then PYTHON_CMD="python3"; else
-        echo "Error: Python not found!" >&2; exit 1
-    fi
-fi
-"`$PYTHON_CMD" "tools/git-hooks/post_commit_log_helper.py"
-"@
-
 Install-GitHook -HookName "pre-commit" -HelperFileName "pre_commit_markdown_helper.py" -HookLogic $preCommitLogic
 Install-GitHook -HookName "commit-msg" -HelperFileName "commit_msg_helper.py" -HookLogic $commitMsgLogic
-Install-GitHook -HookName "post-commit" -HelperFileName "post_commit_log_helper.py" -HookLogic $postCommitLogic
+
+# 移除舊有的 post-commit hook 避免重複記錄日誌
+$postCommitFile = Join-Path $hooksDir "post-commit"
+$postCommitBackupFile = Join-Path $hooksDir "post-commit.backup"
+if (Test-Path $postCommitFile) {
+    Remove-Item $postCommitFile -Force | Out-Null
+    Write-Host "已移除舊的 post-commit hook" -ForegroundColor Yellow
+}
+if (Test-Path $postCommitBackupFile) {
+    Remove-Item $postCommitBackupFile -Force | Out-Null
+}
 
 Write-Host "安裝完成" -ForegroundColor Green

@@ -15,6 +15,9 @@ frontend, backend, docs, db, root
 
 import sys
 import re
+import os
+
+LOG_FILE = "docs/product/COMMIT_LOG.md"
 
 # 強制使用 UTF-8 輸出
 sys.stdout.reconfigure(encoding="utf-8")
@@ -41,16 +44,18 @@ def main():
     try:
         with open(commit_msg_filepath, "r", encoding="utf-8-sig") as f:
             lines = f.readlines()
-            if not lines:
+            
+            # 忽略以 # 開頭的註解行 (Git 合併或編輯時產生的) 并保留乾淨的訊息內容
+            clean_lines = [line for line in lines if not line.strip().startswith("#")]
+            
+            if not clean_lines or not "".join(clean_lines).strip():
                 print("[ERROR] Commit 訊息不能為空。")
                 sys.exit(1)
             
-            # 我們只驗證第一行 (Subject line)
-            subject_line = lines[0].strip()
-
-            # 忽略以 # 開頭的註解行 (Git 合併或編輯時產生的)
-            if subject_line.startswith("#"):
-                sys.exit(0)
+            # 第一行為主旨 (Subject line)
+            subject_line = clean_lines[0].strip()
+            # 剩餘為說明正文 (Body)
+            body = "".join(clean_lines[1:]).strip()
 
             if not COMMIT_MSG_REGEX.match(subject_line):
                 print("\n[ERROR] Commit 訊息格式不正確！")
@@ -67,6 +72,30 @@ def main():
                 print("範圍 (scope) 是可選的，需用括號包圍，例如 (frontend)。")
                 print("-" * 40)
                 sys.exit(1)
+
+        # 驗證通過後，將真實訊息即時更新至磁碟上的 COMMIT_LOG.md 中
+        if os.path.exists(LOG_FILE):
+            try:
+                with open(LOG_FILE, "r", encoding="utf-8") as f:
+                    log_content = f.read()
+                
+                # 替換最後一個 [Message: Pending] 為主旨
+                if "[Message: Pending]" in log_content:
+                    parts = log_content.rpartition("[Message: Pending]")
+                    log_content = parts[0] + subject_line + parts[2]
+                
+                # 若有正文，則追加於 Hash 之下
+                if body:
+                    target_str = "- **Commit Hash:** `[Hash: Pending]`"
+                    if target_str in log_content:
+                        parts = log_content.rpartition(target_str)
+                        log_content = parts[0] + target_str + f"\n\n{body}" + parts[2]
+                
+                with open(LOG_FILE, "w", encoding="utf-8") as f:
+                    f.write(log_content)
+                print(f"-> [LOGGED] 已更新提交訊息至 {LOG_FILE}")
+            except Exception as le:
+                print(f"[WARNING] 無法更新日誌檔案訊息: {str(le)}")
 
         print("-> [PASS] Commit 訊息格式驗證通過")
         sys.exit(0)

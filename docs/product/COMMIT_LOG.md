@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-22
+date: 2026-06-23
 status: Active
 author: Linetra Dev Team
 ---
@@ -717,5 +717,39 @@ author: Linetra Dev Team
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportStrategies.spec.ts
 - frontend/tests/composables/useReportTemplate.spec.ts
+
+---
+
+### [2026-06-22 23:27:10 +0800] refactor(frontend): align report details with new schema and extract shared formatter
+- Add REPORT_ITEM_LABELS to reportTemplates.ts as a single source of truth for report item type Chinese labels
+- Extract useReportItemFormatter.ts to format report item contents (including ISO meeting_time string conversion to reader-friendly Chinese formatted dates)
+- Update ReportDetailView.vue to show Chinese labels for report items and formatted meeting times, and hide deadlines for meeting_simple templates
+- Update ReportCard.vue to hide deadline badge for meeting_simple templates
+- Update useReportForm.ts and useReportStrategies.ts to reuse extracted labels and formatting helpers
+- Add report_view_refactoring_plan.md in docs/guides/ detailing this refactoring plan
+- Add unit tests in useReportItemFormatter.spec.ts
+
+**變更檔案 (Changed Files):**
+- .gitignore
+- docs/guides/report_view_refactoring_plan.md
+- docs/product/COMMIT_LOG.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportItemFormatter.ts
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/views/ReportDetailView.vue
+- frontend/tests/composables/useReportItemFormatter.spec.ts
+
+---
+
+### [2026-06-23 00:04:05] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- tools/git-hooks/commit_msg_helper.py
+- tools/git-hooks/install_hooks.ps1
+- tools/git-hooks/pre_commit_log_helper.py
+- tools/skills/linetra-standard/SKILL.md
 
 ---
