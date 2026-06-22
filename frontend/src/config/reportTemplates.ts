@@ -91,3 +91,15 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     ],
   },
 }
+
+export const REPORT_ITEM_LABELS: Record<string, string> = {
+  submission_method: '繳交方式',
+  detail: '內容說明',
+  note: '備註項目',
+  meeting_time: '會議時間',
+  link: '雲端連結',
+  agenda: '報告事項',
+  location: '會議地點',
+  participants: '參加人員',
+  materials: '相關資料',
+}

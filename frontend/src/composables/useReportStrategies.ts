@@ -1,7 +1,6 @@
 import type { Report, ReportItem, TemplateType } from '@/types/models'
 import { useTimeFormatter } from './useTimeFormatter'
-import dayjs from 'dayjs'
-import 'dayjs/locale/zh-tw'
+import { formatMeetingTime } from './useReportItemFormatter'
 
 export interface ReportData {
   report: Partial<Report>
@@ -14,23 +13,6 @@ export interface ReportStrategy {
 
 const { formatDeadlineDetailed } = useTimeFormatter()
 const SEPARATOR = '~~~~~~~~~~~~~~~~~~~~~~'
-
-const WEEKDAY_MAP: Record<number, string> = {
-  0: '日',
-  1: '一',
-  2: '二',
-  3: '三',
-  4: '四',
-  5: '五',
-  6: '六',
-}
-
-function formatMeetingTime(raw: string): string {
-  const parsed = dayjs(raw)
-  if (!parsed.isValid()) return raw
-  const weekday = WEEKDAY_MAP[parsed.day()]
-  return parsed.format(`YYYY-MM-DD (${weekday}) HH:mm`)
-}
 
 class BaseStrategy {
   protected formatHeader(report: Partial<Report>, title: string): string {

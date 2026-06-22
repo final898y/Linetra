@@ -1,5 +1,5 @@
 import { ref, reactive, computed, watch } from 'vue'
-import { REPORT_TEMPLATES } from '@/config/reportTemplates'
+import { REPORT_TEMPLATES, REPORT_ITEM_LABELS } from '@/config/reportTemplates'
 import { COMMON_TAGS } from '@/config/reportTypes'
 import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from '@/types/models'
 import { useReportTemplate } from '@/composables/useReportTemplate'
@@ -180,18 +180,7 @@ export const useReportForm = () => {
     removeItem,
     previewText,
     getItemLabel: (type: string) => {
-      const labels: Record<string, string> = {
-        submission_method: '繳交方式',
-        detail: '內容說明',
-        note: '備註項目',
-        meeting_time: '會議時間',
-        link: '雲端連結',
-        agenda: '報告事項',
-        location: '會議地點',
-        participants: '參加人員',
-        materials: '相關資料',
-      }
-      return labels[type] || '項目'
+      return REPORT_ITEM_LABELS[type] || '項目'
     },
     commonTags: COMMON_TAGS,
     toggleTag: (tag: string) => {

@@ -67,3 +67,4 @@ pythonenv*/
 # === AI 助理專屬暫存區 ===
 .antigravitycli/
 .gemini/
+.agents/

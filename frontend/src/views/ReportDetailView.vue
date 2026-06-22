@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
+import { REPORT_ITEM_LABELS } from '@/config/reportTemplates'
+import { useReportItemFormatter } from '@/composables/useReportItemFormatter'
 import type { ReportWithTags, ReportItem } from '@/types/models'
 import { ArrowLeftIcon, PencilIcon, CheckIcon, TrashIcon } from '@heroicons/vue/24/outline'
 
@@ -10,6 +12,7 @@ const route = useRoute()
 const router = useRouter()
 const reportStore = useReportStore()
 const { formatRelative, getRemainingTimeColor } = useTimeFormatter()
+const { formatItemContent } = useReportItemFormatter()
 
 const report = ref<ReportWithTags | null>(null)
 const items = ref<ReportItem[]>([])
@@ -108,7 +111,7 @@ const handleDelete = async () => {
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">狀態</p>
           <p class="text-sm font-bold text-brand uppercase">{{ report.status }}</p>
         </div>
-        <div>
+        <div v-if="report.template_type !== 'meeting_simple'">
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">對外期限</p>
           <p
             class="text-sm font-bold"
@@ -122,7 +125,7 @@ const handleDelete = async () => {
             {{ formatRelative(report.announced_due_at) }}
           </p>
         </div>
-        <div v-if="report.actual_due_at">
+        <div v-if="report.actual_due_at && report.template_type !== 'meeting_simple'">
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">
             實際截止 (內控)
           </p>
@@ -143,8 +146,12 @@ const handleDelete = async () => {
       <div v-if="items.length > 0" class="pt-6 border-t border-cream-border/50 space-y-4">
         <h3 class="text-xs font-bold text-cream-muted uppercase tracking-widest">通報細節</h3>
         <div v-for="item in items" :key="item.id" class="space-y-1">
-          <p class="text-[10px] font-bold text-cream-muted uppercase">{{ item.item_type }}</p>
-          <p class="text-sm text-cream-text bg-cream-bg p-3 rounded-lg">{{ item.content }}</p>
+          <p class="text-[10px] font-bold text-cream-muted uppercase">
+            {{ REPORT_ITEM_LABELS[item.item_type] || item.item_type }}
+          </p>
+          <p class="text-sm text-cream-text bg-cream-bg p-3 rounded-lg whitespace-pre-wrap">
+            {{ formatItemContent(item.item_type, item.content) }}
+          </p>
         </div>
       </div>
 

@@ -75,7 +75,7 @@ const statusColors = {
 
     <div class="mt-6 pt-4 border-t border-cream-border/50">
       <div class="flex justify-between items-end">
-        <div>
+        <div v-if="report.template_type !== 'meeting_simple'">
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest mb-1">
             對外通知期限
           </p>
@@ -93,6 +93,9 @@ const statusColors = {
               {{ formatRelative(report.announced_due_at || null) }}
             </span>
           </p>
+        </div>
+        <div v-else class="text-[10px] text-cream-muted font-bold tracking-widest uppercase mb-1">
+          免截止期限
         </div>
         <button
           v-if="report.status !== 'completed'"

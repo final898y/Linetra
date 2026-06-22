@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-20
+date: 2026-06-22
 status: Active
 author: Linetra Dev Team
 ---
@@ -681,5 +681,41 @@ author: Linetra Dev Team
 - frontend/package-lock.json
 - frontend/src/config/reportTemplates.ts
 - frontend/src/views/ReportCreateView.vue
+
+---
+
+### [2026-06-20 00:27:48 +0800] feat(frontend): support redirecting to edit page and remove task template
+
+**變更檔案 (Changed Files):**
+- docs/product/COMMIT_LOG.md
+- frontend/package-lock.json
+- frontend/src/config/reportTemplates.ts
+- frontend/src/views/ReportCreateView.vue
+
+---
+
+### [2026-06-20 01:46:08 +0800] feat(frontend): add meeting_simple template for general meeting records
+- Add new template_type 'meeting_simple' and item types 'location', 'participants', 'materials' to DB schema docs and Supabase setup guide
+- Add database migration guide for Supabase SQL Editor (database_migration_20260620_add_meeting_simple.md)
+- Extend frontend TypeScript types in database.types.ts, models.ts, and schemas.ts to support new template and item types
+- Add meeting_simple config to reportTemplates.ts with fields: meeting_time, location, participants, materials
+- Add MeetingSimpleStrategy to useReportStrategies.ts with dayjs-based weekday formatting (e.g. 2026-06-22 (Yi) 14:00)
+- Update useReportForm.ts with new item order weights and Chinese labels for new item types
+- Update ReportCreateView.vue: add general meeting button, use datetime-local input for meeting_time, hide deadline fields when template is meeting_simple
+- Add and update unit tests in useReportStrategies.spec.ts and useReportTemplate.spec.ts (53 tests, all passing)
+
+**變更檔案 (Changed Files):**
+- docs/architecture/database_design.md
+- docs/guides/database_migration_20260620_add_meeting_simple.md
+- docs/guides/supabase_setup_guide.md
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/types/schemas.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportStrategies.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
 
 ---
