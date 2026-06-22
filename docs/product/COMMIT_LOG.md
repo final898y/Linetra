@@ -743,13 +743,27 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-06-23 00:04:05] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-06-23 00:04:05] chore(hooks): update Git Hooks and skills for pre-commit logging and backfilling
+- **Commit Hash:** `de4cd65`
+
+- Implement pre_commit_log_helper.py to handle pre-commit logging stub and hash backfilling
+- Update commit_msg_helper.py to update commit message in COMMIT_LOG.md on disk upon validation success
+- Update install_hooks.ps1 to chain pre-commit helpers and remove post-commit hook
+- Update tools/skills/linetra-standard/SKILL.md to document the new commit logging workflow
+- Remove post_commit_log_helper.py
 
 **變更檔案 (Changed Files):**
 - tools/git-hooks/commit_msg_helper.py
 - tools/git-hooks/install_hooks.ps1
 - tools/git-hooks/pre_commit_log_helper.py
 - tools/skills/linetra-standard/SKILL.md
+
+---
+
+### [2026-06-23 00:04:48] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- tools/git-hooks/pre_commit_log_helper.py
 
 ---
