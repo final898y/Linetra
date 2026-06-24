@@ -73,29 +73,6 @@ def main():
                 print("-" * 40)
                 sys.exit(1)
 
-        # 驗證通過後，將真實訊息即時更新至磁碟上的 COMMIT_LOG.md 中
-        if os.path.exists(LOG_FILE):
-            try:
-                with open(LOG_FILE, "r", encoding="utf-8") as f:
-                    log_content = f.read()
-                
-                # 替換最後一個 [Message: Pending] 為主旨
-                if "[Message: Pending]" in log_content:
-                    parts = log_content.rpartition("[Message: Pending]")
-                    log_content = parts[0] + subject_line + parts[2]
-                
-                # 若有正文，則追加於 Hash 之下
-                if body:
-                    target_str = "- **Commit Hash:** `[Hash: Pending]`"
-                    if target_str in log_content:
-                        parts = log_content.rpartition(target_str)
-                        log_content = parts[0] + target_str + f"\n\n{body}" + parts[2]
-                
-                with open(LOG_FILE, "w", encoding="utf-8") as f:
-                    f.write(log_content)
-                print(f"-> [LOGGED] 已更新提交訊息至 {LOG_FILE}")
-            except Exception as le:
-                print(f"[WARNING] 無法更新日誌檔案訊息: {str(le)}")
 
         print("-> [PASS] Commit 訊息格式驗證通過")
         sys.exit(0)

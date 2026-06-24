@@ -18,21 +18,44 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 LOG_FILE = "docs/product/COMMIT_LOG.md"
 
-def get_latest_commit_hash():
+def get_latest_commit_info():
     """
-    取得目前 HEAD 的 Commit Hash
+    取得目前 HEAD Commit Hash 以及提交訊息 (主旨與正文)
     """
     try:
-        result = subprocess.run(
+        # 取得 Hash
+        hash_res = subprocess.run(
             ["git", "rev-parse", "--short", "HEAD"],
             capture_output=True,
             text=True,
             check=True,
             encoding="utf-8"
         )
-        return result.stdout.strip()
+        commit_hash = hash_res.stdout.strip()
+        
+        # 取得主旨
+        subj_res = subprocess.run(
+            ["git", "log", "-1", "--format=%s", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+            encoding="utf-8"
+        )
+        subject = subj_res.stdout.strip()
+
+        # 取得正文
+        body_res = subprocess.run(
+            ["git", "log", "-1", "--format=%b", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=True,
+            encoding="utf-8"
+        )
+        body = body_res.stdout.strip()
+
+        return commit_hash, subject, body
     except Exception:
-        return None
+        return None, None, None
 
 def get_staged_files():
     """
@@ -67,10 +90,19 @@ def main():
         with open(LOG_FILE, "r", encoding="utf-8") as f:
             content = f.read()
 
-    # 2. 回填前一次 Commit 的 Hash (回填上一次的 Pending Hash)
-    last_hash = get_latest_commit_hash()
-    if last_hash and "[Hash: Pending]" in content:
-        content = content.replace("[Hash: Pending]", last_hash, 1)
+    # 2. 回填前一次 Commit 的資訊 (Hash, 主旨與正文)
+    last_hash, last_subject, last_body = get_latest_commit_info()
+    if last_hash:
+        if "[Hash: Pending]" in content:
+            content = content.replace("[Hash: Pending]", last_hash, 1)
+        if "[Message: Pending]" in content and last_subject:
+            content = content.replace("[Message: Pending]", last_subject, 1)
+        if last_body and f"- **Commit Hash:** `{last_hash}`" in content:
+            content = content.replace(
+                f"- **Commit Hash:** `{last_hash}`",
+                f"- **Commit Hash:** `{last_hash}`\n\n{last_body}",
+                1
+            )
 
     # 3. 準備本次的日誌 Stub 內容
     today_str = datetime.today().strftime("%Y-%m-%d %H:%M:%S")

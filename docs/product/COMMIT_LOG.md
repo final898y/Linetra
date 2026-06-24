@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-23
+date: 2026-06-24
 status: Active
 author: Linetra Dev Team
 ---
@@ -760,10 +760,22 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-06-23 00:04:48] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-06-23 00:04:48] test(hooks): verify hash backfilling mechanism
+- **Commit Hash:** `0ee48a9`
+
+- Trigger a change to verify that pre_commit_log_helper.py correctly backfills the previous commit hash
 
 **變更檔案 (Changed Files):**
 - tools/git-hooks/pre_commit_log_helper.py
+
+---
+
+### [2026-06-24 22:24:44] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- tools/git-hooks/commit_msg_helper.py
+- tools/git-hooks/pre_commit_log_helper.py
+- tools/skills/linetra-standard/SKILL.md
 
 ---
