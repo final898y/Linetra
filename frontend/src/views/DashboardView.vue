@@ -4,6 +4,7 @@ import { useReportStore } from '@/stores/reports'
 import { useReportFilters } from '@/composables/useReportFilters'
 import ReportCard from '@/components/common/ReportCard.vue'
 import ReportFilterPanel from '@/components/common/ReportFilterPanel.vue'
+import ReportSearchInput from '@/components/common/ReportSearchInput.vue'
 import {
   SparklesIcon,
   FunnelIcon,
@@ -14,7 +15,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
-const { filterOptions, sortOrder, hideAnnouncements, hideCompleted } = useReportFilters()
+const { filterOptions, sortOrder, hideAnnouncements, hideCompleted, keyword } = useReportFilters()
 const isFilterOpen = ref(false)
 
 const applyFilters = () => {
@@ -22,8 +23,8 @@ const applyFilters = () => {
   isFilterOpen.value = false
 }
 
-// 當排序或開關變動時，立即更新列表
-watch([sortOrder, hideAnnouncements, hideCompleted], () => {
+// 當排序、開關或搜尋關鍵字變動時，立即更新列表
+watch([sortOrder, hideAnnouncements, hideCompleted, keyword], () => {
   reportStore.fetchReports(filterOptions.value)
 })
 
@@ -34,15 +35,22 @@ onMounted(() => {
 
 <template>
   <div class="space-y-8">
-    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-      <div>
-        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">待辦案件</h2>
-        <p class="text-cream-muted mt-2 text-sm uppercase tracking-widest font-bold">
-          Pending Reports
-        </p>
+    <div class="flex flex-col gap-3">
+      <!-- 第一列：標題 + 搜尋框 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">待辦案件</h2>
+          <p class="text-cream-muted mt-1 text-sm uppercase tracking-widest font-bold">
+            Pending Reports
+          </p>
+        </div>
+        <div class="w-full sm:max-w-sm md:max-w-md">
+          <ReportSearchInput />
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
+      <!-- 第二列：篩選操作按鈕群 -->
+      <div class="flex flex-wrap items-center justify-end gap-2">
         <!-- Sort Toggle -->
         <button
           @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"

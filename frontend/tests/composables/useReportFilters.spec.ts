@@ -25,19 +25,23 @@ describe('useReportFilters', () => {
   })
 
   it('should clear all filters', () => {
-    const { selectedStatuses, selectedTemplateTypes, toggleStatus, toggleTemplateType, clearFilters } = useReportFilters()
+    const { selectedStatuses, selectedTemplateTypes, keyword, toggleStatus, toggleTemplateType, clearFilters } = useReportFilters()
     toggleStatus('pending')
     toggleTemplateType('meeting')
+    keyword.value = 'test-query'
     clearFilters()
     expect(selectedStatuses.value).toHaveLength(0)
     expect(selectedTemplateTypes.value).toHaveLength(0)
+    expect(keyword.value).toBe('')
   })
 
   it('should reflect filter options in computed property', () => {
-    const { toggleStatus, toggleTemplateType, filterOptions } = useReportFilters()
+    const { toggleStatus, toggleTemplateType, keyword, filterOptions } = useReportFilters()
     toggleStatus('completed')
     toggleTemplateType('briefing')
+    keyword.value = 'search-word'
     expect(filterOptions.value.statuses).toContain('completed')
     expect(filterOptions.value.templateTypes).toContain('briefing')
+    expect(filterOptions.value.keyword).toBe('search-word')
   })
 })

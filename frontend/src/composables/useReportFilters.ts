@@ -8,6 +8,7 @@ export interface FilterOptions {
   sortOrder: 'asc' | 'desc'
   hideAnnouncements: boolean
   hideCompleted: boolean
+  keyword?: string
 }
 
 // 從 localStorage 載入初始值
@@ -35,6 +36,7 @@ const selectedTags = ref<string[]>(loadFromStorage(STORAGE_KEY_TAGS, []))
 const sortOrder = ref<'asc' | 'desc'>(loadFromStorage(STORAGE_KEY_SORT, 'asc'))
 const hideAnnouncements = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_ANNOUNCEMENTS, false))
 const hideCompleted = ref<boolean>(loadFromStorage(STORAGE_KEY_HIDE_COMPLETED, false))
+const keyword = ref('')
 
 // 監聽變動並存入 localStorage
 watch(
@@ -109,6 +111,7 @@ export const useReportFilters = () => {
     sortOrder.value = 'asc'
     hideAnnouncements.value = false
     hideCompleted.value = false
+    keyword.value = ''
   }
 
   const filterOptions = computed<FilterOptions>(() => ({
@@ -118,6 +121,7 @@ export const useReportFilters = () => {
     sortOrder: sortOrder.value,
     hideAnnouncements: hideAnnouncements.value,
     hideCompleted: hideCompleted.value,
+    keyword: keyword.value,
   }))
 
   return {
@@ -127,6 +131,7 @@ export const useReportFilters = () => {
     sortOrder,
     hideAnnouncements,
     hideCompleted,
+    keyword,
     toggleStatus,
     toggleTemplateType,
     toggleTag,

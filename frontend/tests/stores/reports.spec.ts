@@ -82,4 +82,37 @@ describe('ReportStore', () => {
     expect(store.allUniqueTags).toEqual(['A', 'B', 'C'])
     expect(store.topTags).toEqual(['B', 'A', 'C'])
   })
+
+  it('should apply keyword filter when keyword is provided', async () => {
+    const store = useReportStore()
+    const orMock = vi.fn().mockResolvedValue({ data: [], error: null })
+
+    vi.mocked(supabase.from).mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      not: vi.fn().mockReturnThis(),
+      or: orMock,
+    } as unknown as ReturnType<typeof supabase.from>)
+
+    await store.fetchReports({ statuses: [], templateTypes: [], tags: [], sortOrder: 'asc', hideAnnouncements: false, hideCompleted: false, keyword: '測試' })
+
+    expect(orMock).toHaveBeenCalledWith('subject.ilike.%測試%,remarks.ilike.%測試%')
+  })
+
+  it('should NOT call or() when keyword is empty', async () => {
+    const store = useReportStore()
+    const orMock = vi.fn().mockResolvedValue({ data: [], error: null })
+
+    vi.mocked(supabase.from).mockReturnValue({
+      select: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      not: vi.fn().mockResolvedValue({ data: [], error: null }),
+      or: orMock,
+    } as unknown as ReturnType<typeof supabase.from>)
+
+    await store.fetchReports({ statuses: [], templateTypes: [], tags: [], sortOrder: 'asc', hideAnnouncements: false, hideCompleted: false, keyword: '' })
+
+    expect(orMock).not.toHaveBeenCalled()
+  })
 })
+

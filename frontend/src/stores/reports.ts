@@ -100,6 +100,11 @@ export const useReportStore = defineStore('report', () => {
         query = query.neq('status', 'completed')
       }
 
+      // 處理關鍵字搜尋
+      if (options?.keyword) {
+        query = query.or(`subject.ilike.%${options.keyword}%,remarks.ilike.%${options.keyword}%`)
+      }
+
       const { data, error } = await query
       if (error) throw error
       reports.value = (data as unknown as ReportWithTags[]) || []

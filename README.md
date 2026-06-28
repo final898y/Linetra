@@ -4,10 +4,10 @@
 
 | 屬性 (Metadata)             | 內容 (Content)          |
 | :-------------------------- | :---------------------- |
-| **專案版本 (Version)**      | `v1.1`                  |
+| **專案版本 (Version)**      | `v1.2`                  |
 | **開發狀態 (Status)**       | 開發中 (In Development) |
 | **建立日期 (Created Date)** | 2026-05-24              |
-| **最後更新 (Last Updated)** | 2026-06-10              |
+| **最後更新 (Last Updated)** | 2026-06-28              |
 | **主要作者 (Author)**       | Linetra Dev Team        |
 | **授權條款 (License)**      | [MIT License](LICENSE)  |
 
@@ -33,6 +33,7 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 - **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，內建自動跳過週末的期限計算邏輯。
 - **案件生命週期追蹤 (Case Lifecycle Tracking)**：完整的案件 CRUD 與狀態管理，支援待辦 (Pending)、已完成 (Completed)、已逾期 (Overdue) 等狀態切換。
 - **多維度篩選與排序 (Advanced Filtering & Sorting)**：支援按類別、狀態進行多選篩選，並提供自定義排序與篩選偏好持久化功能 (LocalStorage)。
+- **快速關鍵字搜尋 (Quick Keyword Search)**：看板頂部常駐搜尋框，對案件標題與描述進行模糊比對，內建 300 毫秒輸入防抖，可與篩選條件同時疊加運作。
 - **響應式管理介面 (RWD Layout)**：全面支援行動裝置與桌機視圖，採用側邊抽屜式導覽與流體佈局，方便在手機上快速操作。
 - **智慧提醒與視覺化 (Visualization)**：提供待辦清單 (Dashboard) 與詳情檢視，協助直覺掌握工作負荷。
 
@@ -64,13 +65,26 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
    ```powershell
    powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git-hooks/install_hooks.ps1 -Force
    ```
-2. **環境變數設定**: 複製 `.env.example` 並填入憑證。
-3. **後續步驟**: 待後續開發環境建置指南更新。
+2. **環境變數設定**: 複製 `frontend/.env.example` 至 `frontend/.env` 並填入 Supabase 憑證。
+   ```env
+   VITE_SUPABASE_URL=your_supabase_project_url
+   VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+   ```
+3. **安裝依賴並啟動前端**:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+4. **執行測試**:
+   ```bash
+   npm run test
+   ```
 
 ---
 
 ## 開發者與版本資訊 (Development Info)
 
-- **版本**: v1.1
+- **版本**: v1.2
 - **授權**: [MIT License](LICENSE)
 - **文件**: [產品需求文件 (PRD)](docs/product/prd.md)

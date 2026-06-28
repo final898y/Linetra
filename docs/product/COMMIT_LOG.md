@@ -780,10 +780,188 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-06-28 21:18:16] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-06-28 21:18:16] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
 
 **變更檔案 (Changed Files):**
 - frontend/src/components/common/ReportCard.vue
+
+---
+
+### [2026-06-28 22:44:36] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:44:52] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:45:41] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:47:17] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:47:54] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:49:01] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:50:02] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:51:02] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:51:41] fix(frontend): prevent router link navigation when clicking completion button on ReportCard
+- **Commit Hash:** `dbadb63`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-06-28 22:52:05] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- .gitattributes
+- README.md
+- docs/guides/search_implementation_plan.md
+- frontend/README.md
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/components/common/ReportSearchInput.spec.ts
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
 
 ---
