@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-24
+date: 2026-06-28
 status: Active
 author: Linetra Dev Team
 ---
@@ -770,12 +770,20 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-06-24 22:24:44] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-06-24 22:24:44] refactor(hooks): simplify commit logging and backfill workflow
+- **Commit Hash:** `526dc9d`
 
 **變更檔案 (Changed Files):**
 - tools/git-hooks/commit_msg_helper.py
 - tools/git-hooks/pre_commit_log_helper.py
 - tools/skills/linetra-standard/SKILL.md
+
+---
+
+### [2026-06-28 21:18:16] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/components/common/ReportCard.vue
 
 ---

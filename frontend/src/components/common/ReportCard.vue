@@ -99,7 +99,7 @@ const statusColors = {
         </div>
         <button
           v-if="report.status !== 'completed'"
-          @click.stop="handleComplete"
+          @click.stop.prevent="handleComplete"
           class="w-8 h-8 rounded-lg bg-cream-bg border border-cream-border flex items-center justify-center hover:bg-brand hover:text-white hover:border-brand transition-all"
           title="標記完成"
         >
