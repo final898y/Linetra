@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
@@ -24,12 +24,19 @@ onMounted(async () => {
     try {
       report.value = await reportStore.fetchReportById(reportId)
       items.value = await reportStore.fetchReportItemsById(reportId)
+      reportStore.setCurrentReport(report.value)
+      reportStore.setCurrentItems(items.value)
     } catch (error) {
       console.error('Failed to load report:', error)
     } finally {
       loading.value = false
     }
   }
+})
+
+onUnmounted(() => {
+  reportStore.setCurrentReport(null)
+  reportStore.setCurrentItems([])
 })
 
 const handleComplete = async () => {

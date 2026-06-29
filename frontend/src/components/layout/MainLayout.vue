@@ -10,10 +10,13 @@ import {
   PlusIcon,
   CalendarIcon,
 } from '@heroicons/vue/24/outline'
+import FABSpeedDial from '@/components/fab/FABSpeedDial.vue'
+import { useFABActions } from '@/composables/useFABActions'
 
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const { actions } = useFABActions()
 
 const isMobileMenuOpen = ref(false)
 
@@ -164,6 +167,8 @@ watch(isMobileMenuOpen, (val) => {
 
         <router-view />
       </div>
+
+      <FABSpeedDial :items="actions" v-if="actions.length > 0" />
     </main>
   </div>
 </template>

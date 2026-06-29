@@ -15,6 +15,8 @@ import type { FilterOptions } from '@/composables/useReportFilters'
 
 export const useReportStore = defineStore('report', () => {
   const reports = ref<ReportWithTags[]>([])
+  const currentReport = ref<ReportWithTags | null>(null)
+  const currentItems = ref<ReportItem[]>([])
   const loading = ref(false)
 
   const reportsByDate = computed(() => {
@@ -217,8 +219,18 @@ export const useReportStore = defineStore('report', () => {
     if (error) throw error
   }
 
+  const setCurrentReport = (report: ReportWithTags | null) => {
+    currentReport.value = report
+  }
+
+  const setCurrentItems = (items: ReportItem[]) => {
+    currentItems.value = items
+  }
+
   return {
     reports,
+    currentReport,
+    currentItems,
     reportsByDate,
     allUniqueTags,
     topTags,
@@ -234,5 +246,7 @@ export const useReportStore = defineStore('report', () => {
     upsertTags,
     deleteReportTags,
     createReportTags,
+    setCurrentReport,
+    setCurrentItems,
   }
 })
