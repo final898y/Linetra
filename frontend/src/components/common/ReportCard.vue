@@ -74,25 +74,48 @@ const statusColors = {
     </div>
 
     <div class="mt-6 pt-4 border-t border-cream-border/50">
-      <div class="flex justify-between items-end">
-        <div v-if="report.template_type !== 'meeting_simple'">
-          <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest mb-1">
-            對外通知期限
-          </p>
-          <p
-            class="text-sm font-bold"
-            :class="
-              getRemainingTimeColor(
-                report.announced_due_at || null,
-                report.status === 'completed' || report.status === 'deleted'
-              )
-            "
-          >
-            {{ formatFull(report.announced_due_at || null) }}
-            <span class="ml-2">
-              {{ formatRelative(report.announced_due_at || null) }}
-            </span>
-          </p>
+      <div class="flex justify-between items-end gap-4">
+        <div
+          v-if="
+            report.template_type !== 'meeting_simple' &&
+            (report.announced_due_at || report.actual_due_at)
+          "
+          class="space-y-2"
+        >
+          <div v-if="report.announced_due_at">
+            <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest mb-1">
+              對外通知期限
+            </p>
+            <p
+              class="text-sm font-bold"
+              :class="
+                getRemainingTimeColor(
+                  report.announced_due_at,
+                  report.status === 'completed' || report.status === 'deleted'
+                )
+              "
+            >
+              {{ formatFull(report.announced_due_at) }}
+              <span class="ml-2">{{ formatRelative(report.announced_due_at) }}</span>
+            </p>
+          </div>
+          <div v-if="report.actual_due_at">
+            <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest mb-1">
+              實際截止 (內控)
+            </p>
+            <p
+              class="text-sm font-bold"
+              :class="
+                getRemainingTimeColor(
+                  report.actual_due_at,
+                  report.status === 'completed' || report.status === 'deleted'
+                )
+              "
+            >
+              {{ formatFull(report.actual_due_at) }}
+              <span class="ml-2">{{ formatRelative(report.actual_due_at) }}</span>
+            </p>
+          </div>
         </div>
         <div v-else class="text-[10px] text-cream-muted font-bold tracking-widest uppercase mb-1">
           免截止期限

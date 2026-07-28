@@ -3,6 +3,7 @@ import { REPORT_TEMPLATES, REPORT_ITEM_LABELS } from '@/config/reportTemplates'
 import { COMMON_TAGS } from '@/config/reportTypes'
 import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from '@/types/models'
 import { useReportTemplate } from '@/composables/useReportTemplate'
+import { getInitialReportStatus } from '@/composables/useReportLifecycle'
 
 export const useReportForm = () => {
   const { generateLineText } = useReportTemplate()
@@ -63,6 +64,7 @@ export const useReportForm = () => {
     if (!config) return
 
     form.template_type = type
+    if (!currentReportId.value) form.status = getInitialReportStatus(type)
     currentTemplate.value = type
     form.subject = config.defaultSubject
 
@@ -84,6 +86,7 @@ export const useReportForm = () => {
 
     if (tabId === 'general') {
       form.template_type = 'general'
+      if (!currentReportId.value) form.status = getInitialReportStatus('general')
       form.subject = ''
       items.value = [
         { item_type: 'submission_method', content: '紙本核章', sort_order: 1 },
@@ -94,11 +97,13 @@ export const useReportForm = () => {
       applyTemplate(currentTemplate.value)
     } else if (tabId === 'announcement') {
       form.template_type = 'announcement'
+      if (!currentReportId.value) form.status = getInitialReportStatus('announcement')
       form.subject = ''
       form.department = ''
       items.value = [{ item_type: 'detail', content: '', sort_order: 1 }]
     } else if (tabId === 'task') {
       form.template_type = 'task'
+      if (!currentReportId.value) form.status = getInitialReportStatus('task')
       form.subject = ''
       form.department = ''
       items.value = []

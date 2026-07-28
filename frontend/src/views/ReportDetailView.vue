@@ -11,7 +11,7 @@ import { ArrowLeftIcon, PencilIcon, CheckIcon, TrashIcon } from '@heroicons/vue/
 const route = useRoute()
 const router = useRouter()
 const reportStore = useReportStore()
-const { formatRelative, getRemainingTimeColor } = useTimeFormatter()
+const { formatFull, formatRelative, getRemainingTimeColor } = useTimeFormatter()
 const { formatItemContent } = useReportItemFormatter()
 
 const report = ref<ReportWithTags | null>(null)
@@ -129,7 +129,8 @@ const handleDelete = async () => {
               )
             "
           >
-            {{ formatRelative(report.announced_due_at) }}
+            {{ formatFull(report.announced_due_at) }}
+            <span class="ml-2">{{ formatRelative(report.announced_due_at) }}</span>
           </p>
         </div>
         <div v-if="report.actual_due_at && report.template_type !== 'meeting_simple'">
@@ -145,7 +146,8 @@ const handleDelete = async () => {
               )
             "
           >
-            {{ formatRelative(report.actual_due_at) }}
+            {{ formatFull(report.actual_due_at) }}
+            <span class="ml-2">{{ formatRelative(report.actual_due_at) }}</span>
           </p>
         </div>
       </div>

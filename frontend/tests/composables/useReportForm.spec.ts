@@ -45,6 +45,24 @@ describe('useReportForm', () => {
     expect(items.value.length).toBeGreaterThan(0)
   })
 
+  it('should default a simple meeting to completed because it is not tracked', () => {
+    const { form, applyTemplate } = useReportForm()
+
+    applyTemplate('meeting_simple')
+
+    expect(form.status).toBe('completed')
+  })
+
+  it('should default an announcement to completed and a task to pending', () => {
+    const { form, updateMode } = useReportForm()
+
+    updateMode('announcement')
+    expect(form.status).toBe('completed')
+
+    updateMode('task')
+    expect(form.status).toBe('pending')
+  })
+
   it('should manage tags correctly', () => {
     const { form, toggleTag, addCustomTag } = useReportForm()
     

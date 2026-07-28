@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-06-28
+date: 2026-07-29
 status: Active
 author: Linetra Dev Team
 ---
@@ -948,8 +948,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-06-28 22:52:05] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-06-28 22:52:05] feat(frontend): add FAB Speed Dial with copy and Google Calendar actions
+- **Commit Hash:** `62d8f7a`
 
 **變更檔案 (Changed Files):**
 - .gitattributes
@@ -963,5 +963,22 @@ author: Linetra Dev Team
 - frontend/tests/components/common/ReportSearchInput.spec.ts
 - frontend/tests/composables/useReportFilters.spec.ts
 - frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-07-29 00:20:44] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/product/prd.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportLifecycle.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/src/views/ReportDetailView.vue
+- frontend/tests/components/common/ReportCard.spec.ts
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportLifecycle.spec.ts
+- frontend/tests/views/ReportDetailView.spec.ts
 
 ---

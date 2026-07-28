@@ -60,6 +60,8 @@ describe('ReportCard.vue', () => {
     })
     expect(wrapper.text()).toContain('2026/06/10 16:00')
     expect(wrapper.text()).toContain('明天(週三)')
+    expect(wrapper.text()).toContain('對外通知期限')
+    expect(wrapper.text()).toContain('實際截止 (內控)')
   })
 
   it('handles completion error gracefully', async () => {

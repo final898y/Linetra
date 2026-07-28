@@ -14,6 +14,7 @@ import {
   EyeIcon,
 } from '@heroicons/vue/24/outline'
 import { useReportForm } from '@/composables/useReportForm'
+import { getSentAtForSave } from '@/composables/useReportLifecycle'
 import type {
   ReportItem,
   ReportStatus,
@@ -155,12 +156,13 @@ const handleCopyAndSave = async () => {
 
     let reportId = currentReportId.value
     const isNewReport = !reportId
+    const sentAt = getSentAtForSave(isNewReport)
     if (reportId) {
       await reportStore.updateReport(reportId, reportData)
       await reportStore.deleteReportItems(reportId)
       await reportStore.deleteReportTags(reportId)
     } else {
-      const savedReport = await reportStore.createReport(reportData)
+      const savedReport = await reportStore.createReport({ ...reportData, sent_at: sentAt })
       if (!savedReport) throw new Error('Failed to create report')
       reportId = savedReport.id
       currentReportId.value = reportId
@@ -425,7 +427,7 @@ const handleCopyAndSave = async () => {
               >
             </div>
 
-            <div v-if="currentReportId" class="pt-4 border-t border-cream-border/50">
+            <div class="pt-4 border-t border-cream-border/50">
               <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-3"
                 >案件狀態</label
               >
@@ -451,7 +453,7 @@ const handleCopyAndSave = async () => {
                 </button>
               </div>
               <p class="text-[10px] text-cream-muted mt-2 italic">
-                ※ 編輯模式下可手動調回「pending」以恢復追蹤
+                ※ 可依案件實際進度手動調整；一般會議與公告預設為「completed」
               </p>
             </div>
           </div>

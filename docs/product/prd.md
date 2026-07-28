@@ -1,7 +1,7 @@
 ---
 title: LINE 通報追蹤管理平台 — 產品需求文件 (PRD)
 version: v2.0
-date: 2026-06-13
+date: 2026-07-29
 status: Approved
 author: Product Manager
 ---
@@ -16,7 +16,7 @@ author: Product Manager
 | **文件版本 (Version)**        | `v2.0`                         |
 | **文件狀態 (Status)**         | 已核准 (Approved)              |
 | **建立日期 (Created Date)**   | 2026-05-24                     |
-| **最後更新 (Last Updated)**   | 2026-06-13                     |
+| **最後更新 (Last Updated)**   | 2026-07-29                     |
 | **主要作者 (Author)**         | Product Manager                |
 | **產品階段 (Target Stage)**   | 最小可行性產品 (MVP)           |
 | **目標平台 (Platform)**       | 網頁應用程式 (Web Application) |
@@ -348,19 +348,22 @@ User
 
 ```
 [建立]
-  → Pending（初始狀態）
+  → Pending（一般案件、處務會議、市長週報、面報、任務等需追蹤模式）
+  → Completed（一般會議與公告通知等不需追蹤模式；使用者可於建立時調整）
 
 Pending
   → Completed（使用者點擊「標記完成」）
-  → Overdue（系統 Cron Job：announced_due_at < NOW 且仍為 Pending）
+  → Overdue（系統 Cron Job：announced_due_at < NOW 且仍為 Pending；或使用者手動標記，以記錄暫無法結案的案件）
   → Archived（使用者點擊「封存」）
 
 Completed
   → Pending（使用者點擊「重新開啟」）
+  → Overdue（使用者手動標記）
   → Archived（使用者點擊「封存」）
 
 Overdue
   → Completed（使用者點擊「標記完成」，即使逾期仍可完成）
+  → Pending（使用者點擊「重新開啟」）
   → Archived（使用者點擊「封存」）
 
 Archived
@@ -920,7 +923,7 @@ Error 404: NOT_FOUND
 **PATCH /reports/:id/status**
 
 ```
-Request Body: { "status": "completed"|"pending"|"archived" }
+Request Body: { "status": "completed"|"pending"|"overdue"|"archived" }
 Response 200: { "data": { "id": "uuid", "status": "completed" } }
 Error 400: { "error": "INVALID_TRANSITION", "message": "不允許的狀態轉換" }
 ```
