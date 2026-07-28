@@ -983,8 +983,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-07-29 01:11:39] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-07-29 01:11:39] feat(frontend): add meeting calendar scheduling
+- **Commit Hash:** `5612277`
 
 **變更檔案 (Changed Files):**
 - README.md
@@ -1007,5 +1007,14 @@ author: Linetra Dev Team
 - frontend/tests/composables/useReportForm.spec.ts
 - frontend/tests/composables/useReportItemFormatter.spec.ts
 - frontend/tests/composables/useReportStrategies.spec.ts
+
+---
+
+### [2026-07-29 01:15:12] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/config/reportTypes.ts
+- frontend/tests/components/common/ReportFilterPanel.spec.ts
 
 ---

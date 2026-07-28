@@ -31,6 +31,12 @@ describe('ReportFilterPanel.vue', () => {
     expect(wrapper.find('input[type="text"]').exists()).toBe(true)
   })
 
+  it('should render the general meeting template filter', () => {
+    const wrapper = mount(ReportFilterPanel)
+
+    expect(wrapper.text()).toContain('一般會議')
+  })
+
   it('should filter tags based on search query', async () => {
     const wrapper = mount(ReportFilterPanel)
 
