@@ -1,7 +1,7 @@
 ---
 title: Linetra — 資料庫實作與安全政策 (Database Implementation & RLS)
 version: v1.0
-date: 2026-06-20
+date: 2026-07-29
 status: Draft
 author: Linetra Dev Team
 ---
@@ -13,7 +13,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-06-20 |
+| **最後更新 (Last Updated)** | 2026-07-29 |
 | **狀態 (Status)** | 草案 (Draft) |
 
 ---
@@ -73,7 +73,7 @@ author: Linetra Dev Team
 | :--- | :--- | :--- | :--- |
 | `id` | `uuid` | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | |
 | `report_id` | `uuid` | `REFERENCES reports(id) ON DELETE CASCADE` | |
-| `item_type` | `text` | `NOT NULL` | `detail`, `note`, `submission_method`, `agenda`, `link`, `meeting_time`, `location`, `participants`, `materials` |
+| `item_type` | `text` | `NOT NULL` | `detail`, `note`, `submission_method`, `agenda`, `link`, `meeting_time`, `meeting_end_time`, `location`, `participants`, `materials` |
 | `content` | `text` | `NOT NULL` | |
 | `sort_order` | `int2` | `DEFAULT 0` | 排序用 |
 

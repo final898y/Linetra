@@ -1,7 +1,7 @@
 ---
 title: Linetra — Supabase 資料庫初始化與設定指南
 version: v1.1
-date: 2026-06-20
+date: 2026-07-29
 status: Active
 author: Linetra Dev Team
 ---
@@ -43,6 +43,7 @@ CREATE TYPE report_item_type AS ENUM (
   'agenda',
   'link',
   'meeting_time',
+  'meeting_end_time',
   'location',
   'participants',
   'materials'

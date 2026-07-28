@@ -46,10 +46,25 @@ export function useFABActions() {
                 alert('請先設定 Google Calendar Client ID')
                 return
               }
+              const meetingStart = reportStore.currentItems.find(
+                (item) => item.item_type === 'meeting_time'
+              )?.content
+              const meetingEnd = reportStore.currentItems.find(
+                (item) => item.item_type === 'meeting_end_time'
+              )?.content
+              if (report.template_type === 'meeting_simple' && !meetingStart) {
+                alert('請先設定會議時間')
+                return
+              }
               addEvent(clientId, {
                 summary: report.subject,
                 description: report.formatted_content || '',
-                due: report.announced_due_at || report.actual_due_at || '',
+                startAt:
+                  report.template_type === 'meeting_simple'
+                    ? meetingStart!
+                    : report.announced_due_at || report.actual_due_at || '',
+                endAt: report.template_type === 'meeting_simple' ? meetingEnd : undefined,
+                allDay: report.template_type !== 'meeting_simple',
               })
             },
           },

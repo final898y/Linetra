@@ -188,6 +188,7 @@ const handleCopyAndSave = async () => {
           | 'agenda'
           | 'link'
           | 'meeting_time'
+          | 'meeting_end_time'
           | 'location'
           | 'participants'
           | 'materials',
@@ -537,7 +538,8 @@ const handleCopyAndSave = async () => {
               ></textarea>
               <input
                 v-else-if="
-                  item.item_type === 'meeting_time' && currentTemplate === 'meeting_simple'
+                  (item.item_type === 'meeting_time' || item.item_type === 'meeting_end_time') &&
+                  currentTemplate === 'meeting_simple'
                 "
                 v-model="item.content"
                 type="datetime-local"

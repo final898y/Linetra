@@ -76,6 +76,7 @@ describe('Report Strategies', () => {
         report: commonReport,
         items: [
           { item_type: 'meeting_time', content: '2026-06-22T14:00' },
+          { item_type: 'meeting_end_time', content: '2026-06-22T15:30' },
           { item_type: 'location', content: '第三會議室' },
           { item_type: 'participants', content: '小明, 小華' },
           { item_type: 'materials', content: '簡報連結' },
@@ -86,6 +87,7 @@ describe('Report Strategies', () => {
       expect(result).toContain('【 會 議 通 報 】')
       expect(result).toContain('會議名稱： `測試案由`')
       expect(result).toContain('時間： `2026-06-22 (一) 14:00`')
+      expect(result).toContain('結束時間： `2026-06-22 (一) 15:30`')
       expect(result).toContain('地點： `第三會議室`')
       expect(result).toContain('參加人員： `小明, 小華`')
       expect(result).toContain('相關資料： `簡報連結`')

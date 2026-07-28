@@ -19,6 +19,7 @@ export const ItemTypeSchema = z.enum([
   'agenda',
   'link',
   'meeting_time',
+  'meeting_end_time',
   'location',
   'participants',
   'materials',

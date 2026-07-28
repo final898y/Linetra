@@ -41,6 +41,7 @@ export const useReportForm = () => {
     submission_method: 10,
     detail: 20,
     meeting_time: 30,
+    meeting_end_time: 31,
     location: 32,
     participants: 34,
     materials: 36,

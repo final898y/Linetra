@@ -46,11 +46,12 @@ describe('useReportForm', () => {
   })
 
   it('should default a simple meeting to completed because it is not tracked', () => {
-    const { form, applyTemplate } = useReportForm()
+    const { form, applyTemplate, items } = useReportForm()
 
     applyTemplate('meeting_simple')
 
     expect(form.status).toBe('completed')
+    expect(items.value.some((item) => item.item_type === 'meeting_end_time')).toBe(true)
   })
 
   it('should default an announcement to completed and a task to pending', () => {

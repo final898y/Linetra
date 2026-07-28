@@ -1,9 +1,12 @@
 import { ref } from 'vue'
+import dayjs from 'dayjs'
 
 interface CalendarEventData {
   summary: string
   description?: string
-  due: string
+  startAt: string
+  endAt?: string
+  allDay?: boolean
 }
 
 interface GoogleAccounts {
@@ -25,7 +28,7 @@ export function useGoogleCalendar() {
   const loading = ref(false)
 
   const loadGIS = (): Promise<void> =>
-    new Promise<void>((resolve) => {
+    new Promise<void>((resolve, reject) => {
       if ((window as unknown as Record<string, unknown>).google) {
         resolve()
         return
@@ -33,6 +36,7 @@ export function useGoogleCalendar() {
       const s = document.createElement('script')
       s.src = 'https://accounts.google.com/gsi/client'
       s.onload = () => resolve()
+      s.onerror = () => reject(new Error('Failed to load Google Identity Services'))
       document.head.appendChild(s)
     })
 
@@ -41,7 +45,7 @@ export function useGoogleCalendar() {
       const g = (window as unknown as Record<string, unknown>).google as
         | { accounts: GoogleAccounts }
         | undefined
-      if (!g) {
+      if (!g?.accounts?.oauth2) {
         reject(new Error('Google Identity Services not loaded'))
         return
       }
@@ -57,14 +61,29 @@ export function useGoogleCalendar() {
   const addEvent = async (clientId: string, event: CalendarEventData) => {
     loading.value = true
     try {
+      const startAt = dayjs(event.startAt)
+      if (!startAt.isValid()) throw new Error('Invalid event start date')
+
       await loadGIS()
       const token = await getToken(clientId)
-
       const body = {
         summary: event.summary,
         description: event.description || '',
-        start: { date: event.due.split('T')[0] },
-        end: { date: event.due.split('T')[0] },
+        ...(event.allDay
+          ? {
+              start: { date: startAt.format('YYYY-MM-DD') },
+              end: { date: startAt.add(1, 'day').format('YYYY-MM-DD') },
+            }
+          : (() => {
+              const endAt = event.endAt ? dayjs(event.endAt) : startAt.add(1, 'hour')
+              if (!endAt.isValid() || !endAt.isAfter(startAt)) {
+                throw new Error('Invalid event end date')
+              }
+              return {
+                start: { dateTime: startAt.format('YYYY-MM-DDTHH:mm:ssZ') },
+                end: { dateTime: endAt.format('YYYY-MM-DDTHH:mm:ssZ') },
+              }
+            })()),
       }
 
       const res = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
@@ -77,10 +96,11 @@ export function useGoogleCalendar() {
       })
 
       if (!res.ok) throw new Error('Calendar API error')
-      const data = await res.json()
-      window.open(data.htmlLink, '_blank')
+      const data = (await res.json()) as { htmlLink?: string }
+      if (data.htmlLink) window.open(data.htmlLink, '_blank')
       alert('已建立日曆事件')
-    } catch {
+    } catch (error) {
+      console.error('Failed to add Google Calendar event:', error)
       alert('加入 Google 日曆失敗，請確認 API 設定是否正確')
     } finally {
       loading.value = false

@@ -24,7 +24,7 @@ export const formatMeetingTime = (raw: string): string => {
 export const useReportItemFormatter = () => {
   const formatItemContent = (itemType: string, content: string): string => {
     if (!content) return ''
-    if (itemType === 'meeting_time') {
+    if (itemType === 'meeting_time' || itemType === 'meeting_end_time') {
       return formatMeetingTime(content)
     }
     return content

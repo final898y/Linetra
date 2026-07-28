@@ -204,6 +204,11 @@ class MeetingSimpleStrategy extends BaseStrategy implements ReportStrategy {
       lines.push(`時間： \`${formatMeetingTime(time)}\``)
     }
 
+    const endTime = items.find((i) => i.item_type === 'meeting_end_time')?.content
+    if (endTime && endTime.trim() !== '') {
+      lines.push(`結束時間： \`${formatMeetingTime(endTime)}\``)
+    }
+
     const location = items.find((i) => i.item_type === 'location')?.content
     if (location && location.trim() !== '') {
       lines.push(`地點： \`${location}\``)

@@ -23,7 +23,7 @@ describe('useReportItemFormatter', () => {
   })
 
   describe('formatItemContent', () => {
-    it('should format meeting_time content using formatMeetingTime', () => {
+  it('should format meeting_time content using formatMeetingTime', () => {
       const input = '2026-06-22T14:30:00'
       const expected = '2026-06-22 (一) 14:30'
       expect(formatItemContent('meeting_time', input)).toBe(expected)
@@ -38,5 +38,10 @@ describe('useReportItemFormatter', () => {
       expect(formatItemContent('meeting_time', '')).toBe('')
       expect(formatItemContent('location', '')).toBe('')
     })
+  })
+
+  it('should format meeting_end_time content using formatMeetingTime', () => {
+    const input = '2026-06-22T15:30:00'
+    expect(formatItemContent('meeting_end_time', input)).toBe('2026-06-22 (一) 15:30')
   })
 })

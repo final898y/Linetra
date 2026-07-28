@@ -966,8 +966,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-07-29 00:20:44] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-07-29 00:20:44] feat(frontend): enhance report lifecycle tracking
+- **Commit Hash:** `b993e35`
 
 **變更檔案 (Changed Files):**
 - docs/product/prd.md
@@ -980,5 +980,32 @@ author: Linetra Dev Team
 - frontend/tests/composables/useReportForm.spec.ts
 - frontend/tests/composables/useReportLifecycle.spec.ts
 - frontend/tests/views/ReportDetailView.spec.ts
+
+---
+
+### [2026-07-29 01:11:39] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/architecture/database_design.md
+- docs/guides/fab_speed_dial_plan.md
+- docs/guides/google_calendar_meeting_end_time_migration.md
+- docs/guides/supabase_setup_guide.md
+- docs/product/prd.md
+- frontend/src/composables/useFABActions.ts
+- frontend/src/composables/useGoogleCalendar.ts
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportItemFormatter.ts
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/schemas.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useFABActions.spec.ts
+- frontend/tests/composables/useGoogleCalendar.spec.ts
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportItemFormatter.spec.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
 
 ---

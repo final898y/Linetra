@@ -1,7 +1,7 @@
 ---
 title: FAB Speed Dial 功能設計與實作規劃
 version: v1.0
-date: 2026-06-29
+date: 2026-07-29
 status: Active
 author: Linetra Dev Team
 ---
@@ -9,7 +9,7 @@ author: Linetra Dev Team
 | 屬性 (Metadata) | 內容 (Content) |
 | :--- | :--- |
 | **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-06-29 |
+| **最後更新 (Last Updated)** | 2026-07-29 |
 
 # FAB Speed Dial 功能設計與實作規劃
 
@@ -75,11 +75,11 @@ VITE_GOOGLE_CALENDAR_CLIENT_ID=your_client_id.apps.googleusercontent.com
 
 | # | 檔案 | 操作 | 說明 |
 |---|------|------|------|
-| 1 | `src/composables/useFABActions.ts` | ✨ 新增 | 根據 `route.name` 回傳該頁面的動作陣列 |
-| 2 | `src/composables/useGoogleCalendar.ts` | ✨ 新增 | 封裝 GIS token 獲取 + Calendar API 建立事件 |
-| 3 | `src/components/fab/FABSpeedDial.vue` | ✨ 新增 | 通用 FAB + Speed Dial 元件 |
-| 4 | `src/components/layout/MainLayout.vue` | ✏️ 修改 | 引入 FABSpeedDial |
-| 5 | `.env.example` | ✏️ 修改 | 新增 `VITE_GOOGLE_CALENDAR_CLIENT_ID` |
+| 1 | `src/composables/useFABActions.ts` |  新增 | 根據 `route.name` 回傳該頁面的動作陣列 |
+| 2 | `src/composables/useGoogleCalendar.ts` |  新增 | 封裝 GIS token 獲取 + Calendar API 建立事件 |
+| 3 | `src/components/fab/FABSpeedDial.vue` |  新增 | 通用 FAB + Speed Dial 元件 |
+| 4 | `src/components/layout/MainLayout.vue` | ️ 修改 | 引入 FABSpeedDial |
+| 5 | `.env.example` | ️ 修改 | 新增 `VITE_GOOGLE_CALENDAR_CLIENT_ID` |
 
 ## 5. FABSpeedDial.vue 元件設計
 
@@ -216,22 +216,26 @@ export function useFABActions() {
 
 ```ts
 import { ref } from 'vue'
+import dayjs from 'dayjs'
 
 interface CalendarEventData {
   summary: string
   description?: string
-  due: string  // ISO date string
+  startAt: string
+  endAt?: string
+  allDay?: boolean
 }
 
 export function useGoogleCalendar() {
   const loading = ref(false)
 
   const loadGIS = (): Promise<void> =>
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       if (window.google?.accounts) { resolve(); return }
       const s = document.createElement('script')
       s.src = 'https://accounts.google.com/gsi/client'
       s.onload = () => resolve()
+      s.onerror = () => reject(new Error('Failed to load Google Identity Services'))
       document.head.appendChild(s)
     })
 
@@ -251,12 +255,25 @@ export function useGoogleCalendar() {
     try {
       await loadGIS()
       const token = await getToken(clientId)
+      const startAt = dayjs(event.startAt)
+      if (!startAt.isValid()) throw new Error('Invalid event start date')
 
       const body = {
         summary: event.summary,
         description: event.description || '',
-        start: { date: event.due.split('T')[0] },
-        end: { date: event.due.split('T')[0] },
+        ...(event.allDay
+          ? {
+              start: { date: startAt.format('YYYY-MM-DD') },
+              end: { date: startAt.add(1, 'day').format('YYYY-MM-DD') },
+            }
+          : {
+              start: { dateTime: startAt.format('YYYY-MM-DDTHH:mm:ssZ') },
+              end: {
+                dateTime: (event.endAt ? dayjs(event.endAt) : startAt.add(1, 'hour')).format(
+                  'YYYY-MM-DDTHH:mm:ssZ'
+                ),
+              },
+            }),
       }
 
       const res = await fetch(
