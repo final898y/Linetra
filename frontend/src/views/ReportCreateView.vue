@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -42,6 +42,7 @@ const {
   items,
   sortedItems,
   isInitializing,
+  resetForm,
   updateMode,
   applyTemplate,
   toggleDefault,
@@ -62,58 +63,76 @@ const handleAddCustomTag = () => {
   }
 }
 
-onMounted(async () => {
-  const reportId = route.params.id as string
-  if (reportId) {
-    isInitializing.value = true
-    try {
-      currentReportId.value = reportId
-      const report = await reportStore.fetchReportById(reportId)
-      const reportItems = await reportStore.fetchReportItemsById(reportId)
+let initializationVersion = 0
 
-      // Load form data
-      form.template_type = report.template_type as TemplateType
-      form.department = report.department || ''
-      form.subject = report.subject
-      form.actual_due_at = report.actual_due_at
-        ? dayjs(report.actual_due_at).format('YYYY-MM-DDTHH:mm')
-        : ''
-      form.announced_due_at = report.announced_due_at
-        ? dayjs(report.announced_due_at).format('YYYY-MM-DDTHH:mm')
-        : ''
-      form.importance_flag = report.importance_flag || false
-      form.status = report.status as ReportStatus
-      form.remarks = report.remarks || ''
+const initializeFromRoute = async () => {
+  const version = ++initializationVersion
+  const reportId = route.name === 'report-edit' ? (route.params.id as string) : ''
 
-      // 正確讀取關聯式標籤結構
-      const reportWithTags = report as ReportWithTags
-      form.tags =
-        reportWithTags.report_tags?.map((rt: ReportTag) => rt.tags?.name || '').filter(Boolean) ||
-        []
+  if (!reportId) {
+    resetForm()
+    isInitializing.value = false
+    return
+  }
 
-      // Load items
+  isInitializing.value = true
+  try {
+    currentReportId.value = reportId
+    const report = await reportStore.fetchReportById(reportId)
+    const reportItems = await reportStore.fetchReportItemsById(reportId)
+    if (version !== initializationVersion) return
 
-      items.value = reportItems.map((item: ReportItem) => ({
-        ...item,
-        isCustomizable: true,
-      }))
+    // Load form data
+    form.template_type = report.template_type as TemplateType
+    form.department = report.department || ''
+    form.subject = report.subject
+    form.actual_due_at = report.actual_due_at
+      ? dayjs(report.actual_due_at).format('YYYY-MM-DDTHH:mm')
+      : ''
+    form.announced_due_at = report.announced_due_at
+      ? dayjs(report.announced_due_at).format('YYYY-MM-DDTHH:mm')
+      : ''
+    form.importance_flag = report.importance_flag || false
+    form.status = report.status as ReportStatus
+    form.remarks = report.remarks || ''
 
-      // Set template and tab based on data
-      if (form.template_type === 'announcement') {
-        activeTab.value = 'announcement'
-      } else if (form.template_type === 'general') {
-        activeTab.value = 'general'
-      } else {
-        currentTemplate.value = form.template_type as TemplateType
-        activeTab.value = 'template'
-      }
-    } finally {
+    // 正確讀取關聯式標籤結構
+    const reportWithTags = report as ReportWithTags
+    form.tags =
+      reportWithTags.report_tags?.map((rt: ReportTag) => rt.tags?.name || '').filter(Boolean) || []
+
+    // Load items
+
+    items.value = reportItems.map((item: ReportItem) => ({
+      ...item,
+      isCustomizable: true,
+    }))
+
+    // Set template and tab based on data
+    if (form.template_type === 'announcement') {
+      activeTab.value = 'announcement'
+    } else if (form.template_type === 'general') {
+      activeTab.value = 'general'
+    } else {
+      currentTemplate.value = form.template_type as TemplateType
+      activeTab.value = 'template'
+    }
+  } finally {
+    if (version === initializationVersion) {
       setTimeout(() => {
-        isInitializing.value = false
+        if (version === initializationVersion) isInitializing.value = false
       }, 0)
     }
   }
-})
+}
+
+onMounted(initializeFromRoute)
+watch(
+  () => [route.name, route.params.id],
+  () => {
+    void initializeFromRoute()
+  }
+)
 
 // 當「實際截止時間」完成輸入時，若「對外期限」為空，自動預設為前一個工作日 (跳過週六、週日)
 const handleActualDueChange = () => {

@@ -1029,11 +1029,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-02 23:28:28] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-02 23:28:28] fix(frontend): omit empty announcement content
+- **Commit Hash:** `b6ffecc`
 
 **變更檔案 (Changed Files):**
 - frontend/src/composables/useReportStrategies.ts
 - frontend/tests/composables/useReportStrategies.spec.ts
+
+---
+
+### [2026-08-02 23:44:32] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/composables/useReportForm.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportForm.spec.ts
 
 ---

@@ -36,6 +36,25 @@ export const useReportForm = () => {
 
   const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
 
+  const resetForm = () => {
+    currentReportId.value = null
+    activeTab.value = 'general'
+    currentTemplate.value = 'meeting'
+    form.template_type = 'general'
+    form.department = ''
+    form.subject = ''
+    form.remarks = ''
+    form.tags.splice(0)
+    form.actual_due_at = ''
+    form.announced_due_at = ''
+    form.importance_flag = false
+    form.status = getInitialReportStatus('general')
+    items.value = [
+      { item_type: 'submission_method', content: '紙本核章', sort_order: 1 },
+      { item_type: 'detail', content: '', sort_order: 2 },
+    ]
+  }
+
   // Logic
   const ITEM_ORDER_WEIGHTS: Record<string, number> = {
     submission_method: 10,
@@ -179,6 +198,7 @@ export const useReportForm = () => {
     items,
     sortedItems,
     isInitializing,
+    resetForm,
     updateMode,
     applyTemplate,
     toggleDefault,
