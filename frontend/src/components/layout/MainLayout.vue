@@ -9,6 +9,7 @@ import {
   Squares2X2Icon,
   PlusIcon,
   CalendarIcon,
+  ClipboardDocumentListIcon,
 } from '@heroicons/vue/24/outline'
 import FABSpeedDial from '@/components/fab/FABSpeedDial.vue'
 import { useFABActions } from '@/composables/useFABActions'
@@ -23,6 +24,7 @@ const isMobileMenuOpen = ref(false)
 const navigation = [
   { name: '案件看板', href: '/', icon: Squares2X2Icon },
   { name: '建立通報', href: '/reports/new', icon: PlusIcon },
+  { name: '任務清單', href: '/tasks', icon: ClipboardDocumentListIcon },
   { name: '行事曆', href: '/calendar', icon: CalendarIcon },
 ]
 
@@ -143,6 +145,7 @@ watch(isMobileMenuOpen, (val) => {
         <div class="text-sm font-medium text-cream-muted uppercase tracking-wider">
           {{ $route.name === 'dashboard' ? '待辦案件清單' : '' }}
           {{ $route.name === 'report-create' ? '建立新通報' : '' }}
+          {{ $route.name === 'task-list' ? '任務清單' : '' }}
           {{ $route.name === 'calendar' ? '工作行事曆' : '' }}
         </div>
         <div class="flex items-center gap-4">
@@ -161,6 +164,7 @@ watch(isMobileMenuOpen, (val) => {
           <h2 class="text-lg font-bold text-cream-text">
             {{ $route.name === 'dashboard' ? '待辦案件清單' : '' }}
             {{ $route.name === 'report-create' ? '建立新通報' : '' }}
+            {{ $route.name === 'task-list' ? '任務清單' : '' }}
             {{ $route.name === 'calendar' ? '工作行事曆' : '' }}
           </h2>
         </div>

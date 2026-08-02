@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-08-02
+date: 2026-08-03
 status: Active
 author: Linetra Dev Team
 ---
@@ -1038,12 +1038,23 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-02 23:44:32] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-02 23:44:32] fix(frontend): reset report form when switching routes
+- **Commit Hash:** `bf65cc7`
 
 **變更檔案 (Changed Files):**
 - frontend/src/composables/useReportForm.ts
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportForm.spec.ts
+
+---
+
+### [2026-08-03 00:17:41] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/components/layout/MainLayout.vue
+- frontend/src/router/routes.ts
+- frontend/src/views/TaskListView.vue
+- frontend/tests/views/TaskListView.spec.ts
 
 ---
