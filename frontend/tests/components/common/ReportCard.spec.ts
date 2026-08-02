@@ -54,6 +54,43 @@ describe('ReportCard.vue', () => {
     expect(wrapper.text()).toContain('Test Report')
   })
 
+  it('renders the report type and importance as sticky note labels', () => {
+    const wrapper = mount(ReportCard, {
+      props: {
+        report: { ...mockReport, template_type: 'meeting_simple', importance_flag: true },
+      },
+    })
+
+    expect(wrapper.text()).toContain('案件：一般會議')
+    expect(wrapper.text()).toContain('重要案件')
+    expect(wrapper.find('[aria-label="案件類型"]').exists()).toBe(true)
+    expect(wrapper.find('[aria-label="重要性"]').exists()).toBe(true)
+    expect(wrapper.html().indexOf('aria-label="重要性"')).toBeLessThan(
+      wrapper.html().indexOf('aria-label="案件類型"')
+    )
+    expect(wrapper.find('[aria-label="重要性"]').classes()).toContain('report-card-note-important')
+  })
+
+  it('does not render an importance note for non-important reports', () => {
+    const wrapper = mount(ReportCard, {
+      props: { report: mockReport },
+    })
+
+    expect(wrapper.find('[aria-label="重要性"]').exists()).toBe(false)
+  })
+
+  it.each([
+    ['announcement', 'report-card-note-announcement'],
+    ['task', 'report-card-note-task'],
+    ['meeting', 'report-card-note-type'],
+  ] as const)('uses the correct note color for %s', (templateType, noteClass) => {
+    const wrapper = mount(ReportCard, {
+      props: { report: { ...mockReport, template_type: templateType } },
+    })
+
+    expect(wrapper.find('[aria-label="案件類型"]').classes()).toContain(noteClass)
+  })
+
   it('renders full time and relative time', () => {
     const wrapper = mount(ReportCard, {
       props: { report: mockReport }

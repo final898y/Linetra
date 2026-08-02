@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ReportWithTags } from '@/types/models'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
 import { useReportStore } from '@/stores/reports'
+import { ALL_REPORT_TYPES } from '@/config/reportTypes'
 import { CheckIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
@@ -10,6 +12,16 @@ const props = defineProps<{
 
 const { formatRelative, formatFull, getRemainingTimeColor } = useTimeFormatter()
 const reportStore = useReportStore()
+const reportTypeLabel = computed(
+  () =>
+    ALL_REPORT_TYPES.find((type) => type.id === props.report.template_type)?.name ||
+    props.report.template_type
+)
+const reportTypeNoteClass = computed(() => {
+  if (props.report.template_type === 'announcement') return 'report-card-note-announcement'
+  if (props.report.template_type === 'task') return 'report-card-note-task'
+  return 'report-card-note-type'
+})
 
 const handleComplete = async () => {
   try {
@@ -31,9 +43,20 @@ const statusColors = {
 
 <template>
   <div
-    class="bg-cream-surface border border-cream-border rounded-2xl p-6 hover:bg-cream-hover transition-all group flex flex-col justify-between h-full"
-    :class="[report.importance_flag ? 'border-l-4 border-l-status-overdue' : '']"
+    class="relative bg-cream-surface border border-cream-border rounded-2xl p-6 pt-8 hover:bg-cream-hover transition-all group flex flex-col justify-between h-full"
   >
+    <div class="absolute -top-3 left-5 z-10 flex items-start gap-2">
+      <span
+        v-if="report.importance_flag"
+        class="report-card-note report-card-note-important -rotate-2"
+        aria-label="重要性"
+      >
+        重要案件
+      </span>
+      <span class="report-card-note rotate-2" :class="reportTypeNoteClass" aria-label="案件類型">
+        案件：{{ reportTypeLabel }}
+      </span>
+    </div>
     <div>
       <div class="flex justify-between items-start mb-4">
         <span
@@ -42,10 +65,6 @@ const statusColors = {
         >
           {{ report.status }}
         </span>
-        <div
-          v-if="report.importance_flag"
-          class="w-2 h-2 rounded-full bg-status-overdue animate-pulse"
-        ></div>
       </div>
 
       <h3 class="text-xl font-bold text-cream-text mb-2 line-clamp-2 leading-tight">

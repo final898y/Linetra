@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-07-29
+date: 2026-08-02
 status: Active
 author: Linetra Dev Team
 ---
@@ -1010,11 +1010,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-07-29 01:15:12] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-07-29 01:15:12] fix(frontend): add general meeting filter
+- **Commit Hash:** `b1227c7`
 
 **變更檔案 (Changed Files):**
 - frontend/src/config/reportTypes.ts
 - frontend/tests/components/common/ReportFilterPanel.spec.ts
+
+---
+
+### [2026-08-02 22:34:06] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/style.css
+- frontend/tests/components/common/ReportCard.spec.ts
 
 ---

@@ -30,6 +30,20 @@
   --color-status-warning: #fbbf24;
   --color-status-archived: #78716c;
 
+  /* 案件便條紙 (Report Notes) */
+  --color-note-type-bg: #fef3c7;
+  --color-note-type-text: #78350f;
+  --color-note-type-border: #fde68a;
+  --color-note-announcement-bg: #dbeafe;
+  --color-note-announcement-text: #1e3a8a;
+  --color-note-announcement-border: #93c5fd;
+  --color-note-task-bg: #ede9fe;
+  --color-note-task-text: #4c1d95;
+  --color-note-task-border: #c4b5fd;
+  --color-note-important-bg: #ffe4e6;
+  --color-note-important-text: #881337;
+  --color-note-important-border: #fda4af;
+
   /* 字體與其它 */
   --font-sans:
     'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -38,6 +52,36 @@
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
+}
+
+@layer components {
+  .report-card-note {
+    @apply inline-block px-3 py-1.5 rounded-sm border shadow-md text-[10px] font-black tracking-wider;
+  }
+
+  .report-card-note-type {
+    background-color: var(--color-note-type-bg);
+    color: var(--color-note-type-text);
+    border-color: var(--color-note-type-border);
+  }
+
+  .report-card-note-announcement {
+    background-color: var(--color-note-announcement-bg);
+    color: var(--color-note-announcement-text);
+    border-color: var(--color-note-announcement-border);
+  }
+
+  .report-card-note-task {
+    background-color: var(--color-note-task-bg);
+    color: var(--color-note-task-text);
+    border-color: var(--color-note-task-border);
+  }
+
+  .report-card-note-important {
+    background-color: var(--color-note-important-bg);
+    color: var(--color-note-important-text);
+    border-color: var(--color-note-important-border);
+  }
 }
 
 @layer base {
