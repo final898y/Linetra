@@ -1019,12 +1019,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-02 22:34:06] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-02 22:34:06] feat(frontend): refine report card note styling
+- **Commit Hash:** `009fdee`
 
 **變更檔案 (Changed Files):**
 - frontend/src/components/common/ReportCard.vue
 - frontend/src/style.css
 - frontend/tests/components/common/ReportCard.spec.ts
+
+---
+
+### [2026-08-02 23:28:28] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/composables/useReportStrategies.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
 
 ---

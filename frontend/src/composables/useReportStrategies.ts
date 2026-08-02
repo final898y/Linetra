@@ -172,8 +172,11 @@ class AnnouncementStrategy extends BaseStrategy implements ReportStrategy {
     lines.push(`${important}\`【 公 告 通 知 】\`\n`)
 
     lines.push(`標題： \`${report.subject}\`\n`)
-    lines.push('內容：')
-    lines.push(report.formatted_content || '無') // Announcement stores content in formatted_content or we use items
+    const content = report.formatted_content?.trim()
+    if (content) {
+      lines.push('內容：')
+      lines.push(content)
+    }
 
     return lines.join('\n')
   }

@@ -165,6 +165,21 @@ describe('Report Strategies', () => {
       expect(result).toContain('標題： `測試案由`')
       expect(result).toContain('這是公告內容')
     })
+
+    it('should omit the content section when announcement content is empty', () => {
+      const data: ReportData = {
+        report: {
+          ...commonReport,
+          template_type: 'announcement',
+          formatted_content: '   ',
+        },
+        items: [],
+      }
+      const result = strategies.announcement.generate(data)
+
+      expect(result).not.toContain('內容：')
+      expect(result).not.toContain('無')
+    })
   })
 
   describe('TaskStrategy', () => {
