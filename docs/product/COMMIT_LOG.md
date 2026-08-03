@@ -1059,12 +1059,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-03 23:32:30] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-03 23:32:30] fix(frontend): restore task mode when editing tasks
+- **Commit Hash:** `b9eb4bc`
 
 **變更檔案 (Changed Files):**
 - frontend/src/composables/useReportForm.ts
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportForm.spec.ts
+
+---
+
+### [2026-08-03 23:49:59] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/composables/useTimeFormatter.ts
+- frontend/tests/composables/useTimeFormatter.spec.ts
 
 ---

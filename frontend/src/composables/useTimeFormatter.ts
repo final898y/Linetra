@@ -16,12 +16,15 @@ dayjs.extend(timezone)
 dayjs.locale('zh-tw')
 dayjs.tz.setDefault(dayjs.tz.guess())
 
+// 資料庫回傳的時間可能包含時區偏移，統一以 Day.js 解析絕對時間，避免重複套用時區。
+const parseDateTime = (dateStr: string) => dayjs(dateStr)
+
 export const useTimeFormatter = () => {
   const formatRelative = (dateStr: string | null): string => {
     if (!dateStr) return '-'
 
     const now = dayjs()
-    const target = dayjs.tz(dateStr)
+    const target = parseDateTime(dateStr)
     const diffDays = target.startOf('day').diff(now.startOf('day'), 'day')
 
     // 判斷是否為同一個日曆週 (dayjs 預設週日為一週開始)
@@ -60,7 +63,7 @@ export const useTimeFormatter = () => {
     if (!dateStr) return 'text-cream-muted'
 
     const now = dayjs()
-    const target = dayjs(dateStr)
+    const target = parseDateTime(dateStr)
     const hoursDiff = target.diff(now, 'hour')
 
     if (hoursDiff < 0) return 'text-status-overdue'
@@ -72,13 +75,13 @@ export const useTimeFormatter = () => {
   const formatFull = (dateStr: string | null): string => {
     if (!dateStr) return '-'
     // dayjs(dateStr) 會自動將帶有時區標記的 ISO 字串轉為當地時間顯示
-    return dayjs(dateStr).format('YYYY/MM/DD HH:mm')
+    return parseDateTime(dateStr).format('YYYY/MM/DD HH:mm')
   }
 
   const formatDeadlineDetailed = (dateStr: string | null): string => {
     if (!dateStr) return '未設定期限'
 
-    const target = dayjs.tz(dateStr)
+    const target = parseDateTime(dateStr)
     const fullDate = target.format('YYYY/MM/DD HH:mm')
     const relative = formatRelative(dateStr)
 

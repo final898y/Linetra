@@ -25,6 +25,14 @@ describe('useTimeFormatter', () => {
       expect(result).toMatch(/\(週.*\)/)
     })
 
+    it('should keep an offset timestamp on the correct local date and time', () => {
+      const futureDate = dayjs().add(2, 'hour')
+
+      const result = formatRelative(futureDate.format('YYYY-MM-DDTHH:mm:ssZ'))
+
+      expect(result).not.toContain('過期')
+    })
+
     it('should return "明天" with weekday for tomorrow', () => {
       const tomorrow = dayjs().add(1, 'day').format('YYYY-MM-DD HH:mm:ss')
       const result = formatRelative(tomorrow)
@@ -56,7 +64,7 @@ describe('useTimeFormatter', () => {
       const futureDate = dayjs().add(2, 'day').hour(17).minute(0)
       const dateStr = futureDate.format('YYYY-MM-DD HH:mm')
       const result = formatDeadlineDetailed(dateStr)
-      
+
       expect(result).toContain(futureDate.format('YYYY/MM/DD 17:00'))
       expect(result).toMatch(/(今天|明天|下週|週)/)
       expect(result).toContain('下班前')
