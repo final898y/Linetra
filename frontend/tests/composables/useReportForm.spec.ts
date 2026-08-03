@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useReportForm } from '@/composables/useReportForm'
+import { getReportFormTab, useReportForm } from '@/composables/useReportForm'
 
 // Mock useReportTemplate
 vi.mock('@/composables/useReportTemplate', () => ({
@@ -12,6 +12,15 @@ describe('useReportForm', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     localStorage.clear()
+  })
+
+  it.each([
+    ['general', 'general'],
+    ['announcement', 'announcement'],
+    ['task', 'task'],
+    ['meeting', 'template'],
+  ] as const)('maps %s to the correct form mode', (templateType, expectedTab) => {
+    expect(getReportFormTab(templateType)).toBe(expectedTab)
   })
 
   it('should initialize with default values', () => {

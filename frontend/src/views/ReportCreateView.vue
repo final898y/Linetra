@@ -13,7 +13,7 @@ import {
   ArrowPathIcon,
   EyeIcon,
 } from '@heroicons/vue/24/outline'
-import { useReportForm } from '@/composables/useReportForm'
+import { getReportFormTab, useReportForm } from '@/composables/useReportForm'
 import { getSentAtForSave } from '@/composables/useReportLifecycle'
 import type {
   ReportItem,
@@ -109,13 +109,9 @@ const initializeFromRoute = async () => {
     }))
 
     // Set template and tab based on data
-    if (form.template_type === 'announcement') {
-      activeTab.value = 'announcement'
-    } else if (form.template_type === 'general') {
-      activeTab.value = 'general'
-    } else {
+    activeTab.value = getReportFormTab(form.template_type)
+    if (activeTab.value === 'template') {
       currentTemplate.value = form.template_type as TemplateType
-      activeTab.value = 'template'
     }
   } finally {
     if (version === initializationVersion) {

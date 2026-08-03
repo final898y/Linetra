@@ -5,6 +5,15 @@ import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from 
 import { useReportTemplate } from '@/composables/useReportTemplate'
 import { getInitialReportStatus } from '@/composables/useReportLifecycle'
 
+export type ReportFormTab = 'general' | 'template' | 'announcement' | 'task'
+
+export const getReportFormTab = (templateType: TemplateType): ReportFormTab => {
+  if (templateType === 'announcement') return 'announcement'
+  if (templateType === 'general') return 'general'
+  if (templateType === 'task') return 'task'
+  return 'template'
+}
+
 export const useReportForm = () => {
   const { generateLineText } = useReportTemplate()
 
