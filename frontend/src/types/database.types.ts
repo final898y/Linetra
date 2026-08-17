@@ -188,6 +188,174 @@ export interface Database {
           },
         ]
       }
+      document_templates: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          category: string | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          category?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          category?: string | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'document_templates_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      document_template_versions: {
+        Row: {
+          id: string
+          template_id: string
+          version_no: number
+          content_markdown: string
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          template_id: string
+          version_no: number
+          content_markdown: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          template_id?: string
+          version_no?: number
+          content_markdown?: string
+          created_by?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'document_template_versions_template_id_fkey'
+            columns: ['template_id']
+            isOneToOne: false
+            referencedRelation: 'document_templates'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'document_template_versions_created_by_fkey'
+            columns: ['created_by']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      key_notes: {
+        Row: {
+          id: string
+          user_id: string
+          title: string
+          category: 'procedure' | 'leader_instruction' | 'reminder' | 'website'
+          content: string
+          is_pinned: boolean
+          sort_order: number
+          status: 'active' | 'archived'
+          valid_from: string | null
+          valid_until: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          title: string
+          category: 'procedure' | 'leader_instruction' | 'reminder' | 'website'
+          content?: string
+          is_pinned?: boolean
+          sort_order?: number
+          status?: 'active' | 'archived'
+          valid_from?: string | null
+          valid_until?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          category?: 'procedure' | 'leader_instruction' | 'reminder' | 'website'
+          content?: string
+          is_pinned?: boolean
+          sort_order?: number
+          status?: 'active' | 'archived'
+          valid_from?: string | null
+          valid_until?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'key_notes_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'users'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      key_note_links: {
+        Row: {
+          id: string
+          note_id: string
+          label: string
+          url: string
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          note_id: string
+          label: string
+          url: string
+          sort_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          note_id?: string
+          label?: string
+          url?: string
+          sort_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'key_note_links_note_id_fkey'
+            columns: ['note_id']
+            isOneToOne: false
+            referencedRelation: 'key_notes'
+            referencedColumns: ['id']
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

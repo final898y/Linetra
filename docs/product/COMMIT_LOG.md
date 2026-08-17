@@ -1078,8 +1078,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-17 21:31:45] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-17 21:31:45] fix(frontend): improve report filtering workflow
+- **Commit Hash:** `d8d4a1d`
 
 **變更檔案 (Changed Files):**
 - docs/guides/report_filter_improvement_plan.md
@@ -1090,5 +1090,22 @@ author: Linetra Dev Team
 - frontend/src/views/DashboardView.vue
 - frontend/tests/composables/useReportFilters.spec.ts
 - frontend/tests/stores/reports.spec.ts
+
+---
+
+### [2026-08-17 23:33:41] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/guides/document_template_and_key_notes_lecture.md
+- docs/guides/supabase_setup_guide.md
+- frontend/src/components/layout/MainLayout.vue
+- frontend/src/router/routes.ts
+- frontend/src/stores/knowledge.test.ts
+- frontend/src/stores/knowledge.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/views/DocumentTemplatesView.vue
+- frontend/src/views/KeyNotesView.vue
 
 ---

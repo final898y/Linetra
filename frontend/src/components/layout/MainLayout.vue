@@ -10,6 +10,8 @@ import {
   PlusIcon,
   CalendarIcon,
   ClipboardDocumentListIcon,
+  DocumentTextIcon,
+  LightBulbIcon,
 } from '@heroicons/vue/24/outline'
 import FABSpeedDial from '@/components/fab/FABSpeedDial.vue'
 import { useFABActions } from '@/composables/useFABActions'
@@ -25,6 +27,8 @@ const navigation = [
   { name: '案件看板', href: '/', icon: Squares2X2Icon },
   { name: '建立通報', href: '/reports/new', icon: PlusIcon },
   { name: '任務清單', href: '/tasks', icon: ClipboardDocumentListIcon },
+  { name: '公文範本', href: '/document-templates', icon: DocumentTextIcon },
+  { name: '重點記事', href: '/key-notes', icon: LightBulbIcon },
   { name: '行事曆', href: '/calendar', icon: CalendarIcon },
 ]
 
@@ -146,6 +150,8 @@ watch(isMobileMenuOpen, (val) => {
           {{ $route.name === 'dashboard' ? '待辦案件清單' : '' }}
           {{ $route.name === 'report-create' ? '建立新通報' : '' }}
           {{ $route.name === 'task-list' ? '任務清單' : '' }}
+          {{ $route.name === 'document-templates' ? '公文範本' : '' }}
+          {{ $route.name === 'key-notes' ? '重點記事' : '' }}
           {{ $route.name === 'calendar' ? '工作行事曆' : '' }}
         </div>
         <div class="flex items-center gap-4">
@@ -165,6 +171,8 @@ watch(isMobileMenuOpen, (val) => {
             {{ $route.name === 'dashboard' ? '待辦案件清單' : '' }}
             {{ $route.name === 'report-create' ? '建立新通報' : '' }}
             {{ $route.name === 'task-list' ? '任務清單' : '' }}
+            {{ $route.name === 'document-templates' ? '公文範本' : '' }}
+            {{ $route.name === 'key-notes' ? '重點記事' : '' }}
             {{ $route.name === 'calendar' ? '工作行事曆' : '' }}
           </h2>
         </div>

@@ -24,6 +24,13 @@ export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType]
 export type ReportStatus = Database['public']['Tables']['reports']['Row']['status']
 export type ItemType = Database['public']['Tables']['report_items']['Row']['item_type']
 
+export type DocumentTemplate = Database['public']['Tables']['document_templates']['Row']
+export type DocumentTemplateVersion =
+  Database['public']['Tables']['document_template_versions']['Row']
+export type KeyNote = Database['public']['Tables']['key_notes']['Row']
+export type KeyNoteLink = Database['public']['Tables']['key_note_links']['Row']
+export type KeyNoteCategory = KeyNote['category']
+
 // Relational Tagging
 export interface Tag {
   id: string
