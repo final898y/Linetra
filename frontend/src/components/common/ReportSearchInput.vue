@@ -47,7 +47,7 @@ const handleClear = () => {
     <input
       v-model="localValue"
       type="text"
-      placeholder="搜尋案件標題或描述..."
+      placeholder="搜尋案由或內部備註..."
       class="block w-full rounded-xl border border-cream-border bg-cream-surface py-2 pl-9 pr-9 text-xs font-semibold text-cream-text placeholder:text-cream-muted focus:border-brand focus:ring-1 focus:ring-brand focus:outline-none transition-all shadow-sm shadow-cream-border/20"
     />
     <button

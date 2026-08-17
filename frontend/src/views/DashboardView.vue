@@ -15,7 +15,8 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const reportStore = useReportStore()
-const { filterOptions, sortOrder, hideAnnouncements, hideCompleted, keyword } = useReportFilters()
+const { filterOptions, sortOrder, hideAnnouncements, hideCompleted, keyword, filterResetVersion } =
+  useReportFilters()
 const isFilterOpen = ref(false)
 
 const applyFilters = () => {
@@ -25,6 +26,10 @@ const applyFilters = () => {
 
 // 當排序、開關或搜尋關鍵字變動時，立即更新列表
 watch([sortOrder, hideAnnouncements, hideCompleted, keyword], () => {
+  reportStore.fetchReports(filterOptions.value)
+})
+
+watch(filterResetVersion, () => {
   reportStore.fetchReports(filterOptions.value)
 })
 

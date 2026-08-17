@@ -38,6 +38,21 @@ const statusLabels: Record<ReportStatus, string> = {
 const apply = () => {
   emit('apply')
 }
+
+const handleStatusToggle = (status: ReportStatus) => {
+  toggleStatus(status)
+  if (status === 'completed' && selectedStatuses.value.includes('completed')) {
+    hideCompleted.value = false
+  }
+}
+
+const handleHideCompletedToggle = () => {
+  if (selectedStatuses.value.includes('completed')) {
+    hideCompleted.value = false
+    return
+  }
+  hideCompleted.value = !hideCompleted.value
+}
 </script>
 
 <template>
@@ -56,7 +71,7 @@ const apply = () => {
         <button
           v-for="status in statuses"
           :key="status"
-          @click="toggleStatus(status)"
+          @click="handleStatusToggle(status)"
           :class="[
             selectedStatuses.includes(status)
               ? 'bg-brand text-white border-brand'
@@ -69,7 +84,7 @@ const apply = () => {
       </div>
 
       <button
-        @click="hideCompleted = !hideCompleted"
+        @click="handleHideCompletedToggle"
         class="flex items-center gap-2 text-xs font-bold transition-colors"
         :class="hideCompleted ? 'text-brand' : 'text-cream-muted hover:text-brand'"
       >
@@ -81,6 +96,9 @@ const apply = () => {
         </div>
         隱藏已完成案件
       </button>
+      <p v-if="selectedStatuses.includes('completed')" class="text-[10px] text-brand font-bold">
+        已選擇已完成案件，系統已關閉「隱藏已完成」。
+      </p>
     </div>
 
     <!-- Template Filters -->

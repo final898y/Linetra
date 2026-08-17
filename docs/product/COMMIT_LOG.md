@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-08-03
+date: 2026-08-17
 status: Active
 author: Linetra Dev Team
 ---
@@ -1069,11 +1069,26 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-03 23:49:59] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-03 23:49:59] fix(frontend): normalize report deadline timezones
+- **Commit Hash:** `8d1bc76`
 
 **變更檔案 (Changed Files):**
 - frontend/src/composables/useTimeFormatter.ts
 - frontend/tests/composables/useTimeFormatter.spec.ts
+
+---
+
+### [2026-08-17 21:31:45] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/guides/report_filter_improvement_plan.md
+- frontend/src/components/common/ReportFilterPanel.vue
+- frontend/src/components/common/ReportSearchInput.vue
+- frontend/src/composables/useReportFilters.ts
+- frontend/src/stores/reports.ts
+- frontend/src/views/DashboardView.vue
+- frontend/tests/composables/useReportFilters.spec.ts
+- frontend/tests/stores/reports.spec.ts
 
 ---

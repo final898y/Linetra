@@ -13,6 +13,18 @@ import type {
 } from '@/types/models'
 import type { FilterOptions } from '@/composables/useReportFilters'
 
+let latestFetchRequestId = 0
+
+export const buildKeywordFilter = (keyword: string): string => {
+  const escapedKeyword = keyword
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/%/g, '\\%')
+    .replace(/_/g, '\\_')
+  const pattern = `"%${escapedKeyword}%"`
+  return `subject.ilike.${pattern},remarks.ilike.${pattern}`
+}
+
 export const useReportStore = defineStore('report', () => {
   const reports = ref<ReportWithTags[]>([])
   const currentReport = ref<ReportWithTags | null>(null)
@@ -59,6 +71,7 @@ export const useReportStore = defineStore('report', () => {
   })
 
   const fetchReports = async (options?: FilterOptions) => {
+    const requestId = ++latestFetchRequestId
     loading.value = true
     try {
       let query = supabase
@@ -98,20 +111,24 @@ export const useReportStore = defineStore('report', () => {
       }
 
       // 處理隱藏已完成
-      if (options?.hideCompleted) {
+      if (options?.hideCompleted && !options.statuses?.includes('completed')) {
         query = query.neq('status', 'completed')
       }
 
       // 處理關鍵字搜尋
       if (options?.keyword) {
-        query = query.or(`subject.ilike.%${options.keyword}%,remarks.ilike.%${options.keyword}%`)
+        query = query.or(buildKeywordFilter(options.keyword))
       }
 
       const { data, error } = await query
       if (error) throw error
-      reports.value = (data as unknown as ReportWithTags[]) || []
+      if (requestId === latestFetchRequestId) {
+        reports.value = (data as unknown as ReportWithTags[]) || []
+      }
+    } catch (error) {
+      if (requestId === latestFetchRequestId) throw error
     } finally {
-      loading.value = false
+      if (requestId === latestFetchRequestId) loading.value = false
     }
   }
 
