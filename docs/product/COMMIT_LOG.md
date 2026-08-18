@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-08-17
+date: 2026-08-19
 status: Active
 author: Linetra Dev Team
 ---
@@ -1093,8 +1093,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-17 23:33:41] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-17 23:33:41] feat(frontend): add document templates and key notes
+- **Commit Hash:** `6914aaa`
 
 **變更檔案 (Changed Files):**
 - docs/guides/document_template_and_key_notes_lecture.md
@@ -1106,6 +1106,15 @@ author: Linetra Dev Team
 - frontend/src/types/database.types.ts
 - frontend/src/types/models.ts
 - frontend/src/views/DocumentTemplatesView.vue
+- frontend/src/views/KeyNotesView.vue
+
+---
+
+### [2026-08-19 00:40:28] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/style.css
 - frontend/src/views/KeyNotesView.vue
 
 ---

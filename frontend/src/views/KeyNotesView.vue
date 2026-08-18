@@ -150,8 +150,12 @@ onMounted(() => knowledgeStore.fetchNotes(true))
       </header>
 
       <div class="flex flex-wrap gap-2">
-        <input v-model="searchQuery" class="input flex-1 min-w-48" placeholder="搜尋標題或內容" />
-        <select v-model="categoryFilter" class="input w-auto">
+        <input
+          v-model="searchQuery"
+          class="form-input mt-0 min-w-48 flex-1"
+          placeholder="搜尋標題或內容"
+        />
+        <select v-model="categoryFilter" class="form-input mt-0 w-auto">
           <option value="all">全部分類</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.label }}
@@ -213,40 +217,37 @@ onMounted(() => knowledgeStore.fetchNotes(true))
           </div>
           <div class="grid gap-4 sm:grid-cols-2">
             <label class="sm:col-span-2"
-              ><span class="label">標題</span
-              ><input
-                v-model="form.title"
-                class="input w-full"
-                placeholder="例如：年度公文檢核流程"
+              ><span class="form-label">標題</span
+              ><input v-model="form.title" class="form-input" placeholder="例如：年度公文檢核流程"
             /></label>
             <label
-              ><span class="label">分類</span
-              ><select v-model="form.category" class="input w-full">
+              ><span class="form-label">分類</span
+              ><select v-model="form.category" class="form-input">
                 <option v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.label }}
                 </option>
               </select></label
             >
             <label
-              ><span class="label">排序</span
-              ><input v-model.number="form.sortOrder" class="input w-full" type="number" min="0"
+              ><span class="form-label">排序</span
+              ><input v-model.number="form.sortOrder" class="form-input" type="number" min="0"
             /></label>
             <label
-              ><span class="label">生效日期（選填）</span
-              ><input v-model="form.validFrom" class="input w-full" type="date"
+              ><span class="form-label">生效日期（選填）</span
+              ><input v-model="form.validFrom" class="form-input" type="date"
             /></label>
             <label
-              ><span class="label">失效日期（選填）</span
-              ><input v-model="form.validUntil" class="input w-full" type="date"
+              ><span class="form-label">失效日期（選填）</span
+              ><input v-model="form.validUntil" class="form-input" type="date"
             /></label>
             <label class="flex items-center gap-2 text-sm text-cream-text sm:col-span-2"
               ><input v-model="form.isPinned" type="checkbox" />置頂顯示</label
             >
             <label class="sm:col-span-2"
-              ><span class="label">內容</span
+              ><span class="form-label">內容</span
               ><textarea
                 v-model="form.content"
-                class="input min-h-40 w-full"
+                class="form-input min-h-40"
                 placeholder="補充流程、背景或注意事項"
               />
             </label>
@@ -254,7 +255,7 @@ onMounted(() => knowledgeStore.fetchNotes(true))
 
           <div class="mt-5 border-t border-cream-border pt-4">
             <div class="mb-2 flex items-center justify-between">
-              <span class="label mb-0">網站連結（可多筆）</span
+              <span class="form-label mb-0">網站連結（可多筆）</span
               ><button class="btn-secondary flex items-center gap-1" @click="addLink">
                 <PlusIcon class="h-4 w-4" />新增連結
               </button>
@@ -267,13 +268,13 @@ onMounted(() => knowledgeStore.fetchNotes(true))
               <div class="relative flex-1">
                 <LinkIcon class="absolute left-3 top-2.5 h-4 w-4 text-cream-muted" /><input
                   v-model="link.label"
-                  class="input w-full pl-9"
+                  class="form-input mt-0 w-full pl-9"
                   placeholder="連結名稱"
                 />
               </div>
               <input
                 v-model="link.url"
-                class="input flex-[2]"
+                class="form-input mt-0 flex-[2]"
                 placeholder="https://example.com"
               /><button
                 class="btn-secondary self-end p-2 text-red-600 sm:self-auto"
