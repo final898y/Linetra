@@ -1110,11 +1110,19 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-19 00:40:28] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-19 00:40:28] style(frontend): refine key notes form fields
+- **Commit Hash:** `2bb7a60`
 
 **變更檔案 (Changed Files):**
 - frontend/src/style.css
 - frontend/src/views/KeyNotesView.vue
+
+---
+
+### [2026-08-19 01:23:46] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/views/DocumentTemplatesView.vue
 
 ---

@@ -9,12 +9,19 @@ const authStore = useAuthStore()
 const knowledgeStore = useKnowledgeStore()
 const selectedId = ref<string | null>(null)
 const showArchived = ref(false)
+const searchQuery = ref('')
 const isSaving = ref(false)
 const form = reactive({ name: '', category: '', contentMarkdown: '' })
 
-const visibleTemplates = computed(() =>
-  knowledgeStore.templates.filter((template) => showArchived.value || template.is_active)
-)
+const visibleTemplates = computed(() => {
+  const query = searchQuery.value.trim().toLowerCase()
+  return knowledgeStore.templates.filter((template) => {
+    if (!showArchived.value && !template.is_active) return false
+    if (!query) return true
+    const content = knowledgeStore.latestTemplateVersion.get(template.id)?.content_markdown || ''
+    return `${template.name} ${template.category || ''} ${content}`.toLowerCase().includes(query)
+  })
+})
 const selectedTemplate = computed(
   () => knowledgeStore.templates.find((template) => template.id === selectedId.value) || null
 )
@@ -121,6 +128,13 @@ onMounted(async () => {
           <h3 class="text-xs font-bold uppercase tracking-widest text-cream-muted">範本清單</h3>
           <span class="text-xs font-bold text-cream-muted">{{ visibleTemplates.length }} 筆</span>
         </div>
+        <input
+          v-model="searchQuery"
+          type="search"
+          placeholder="搜尋名稱、分類或內容"
+          class="form-input mt-0"
+          aria-label="搜尋公文範本"
+        />
         <div
           v-if="visibleTemplates.length === 0"
           class="rounded-2xl border border-dashed border-cream-border bg-cream-surface p-8 text-center text-sm text-cream-muted"
