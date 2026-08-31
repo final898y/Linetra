@@ -25,6 +25,10 @@ vi.mock('@/stores/reports', () => ({
   }),
 }))
 
+vi.mock('@/stores/auth', () => ({
+  useAuthStore: () => ({ user: { email: 'user@example.com' } }),
+}))
+
 vi.mock('@/composables/useGoogleCalendar', () => ({
   useGoogleCalendar: () => ({ addEvent: state.addEvent }),
 }))
@@ -52,12 +56,16 @@ describe('useFABActions', () => {
     const { actions } = useFABActions()
     actions.value.find((action) => action.label === '加入 Google 日曆')?.handler()
 
-    expect(state.addEvent).toHaveBeenCalledWith(expect.any(String), {
-      summary: '專案會議',
-      description: '會議內容',
-      startAt: '2026-08-05T10:00',
-      endAt: '2026-08-05T11:30',
-      allDay: false,
-    })
+    expect(state.addEvent).toHaveBeenCalledWith(
+      expect.any(String),
+      {
+        summary: '專案會議',
+        description: '會議內容',
+        startAt: '2026-08-05T10:00',
+        endAt: '2026-08-05T11:30',
+        allDay: false,
+      },
+      'user@example.com'
+    )
   })
 })

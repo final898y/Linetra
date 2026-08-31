@@ -1,6 +1,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
+import { useAuthStore } from '@/stores/auth'
 import { useGoogleCalendar } from '@/composables/useGoogleCalendar'
 import { PlusIcon, DocumentDuplicateIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
 import type { Component } from 'vue'
@@ -15,6 +16,7 @@ export function useFABActions() {
   const route = useRoute()
   const router = useRouter()
   const reportStore = useReportStore()
+  const authStore = useAuthStore()
   const { addEvent } = useGoogleCalendar()
 
   const actions = computed<FABAction[]>(() => {
@@ -56,16 +58,25 @@ export function useFABActions() {
                 alert('請先設定會議時間')
                 return
               }
-              addEvent(clientId, {
-                summary: report.subject,
-                description: report.formatted_content || '',
-                startAt:
-                  report.template_type === 'meeting_simple'
-                    ? meetingStart!
-                    : report.announced_due_at || report.actual_due_at || '',
-                endAt: report.template_type === 'meeting_simple' ? meetingEnd : undefined,
-                allDay: report.template_type !== 'meeting_simple',
-              })
+              const eventStart =
+                report.template_type === 'meeting_simple'
+                  ? meetingStart
+                  : report.announced_due_at || report.actual_due_at
+              if (!eventStart) {
+                alert('請先設定案件日期')
+                return
+              }
+              addEvent(
+                clientId,
+                {
+                  summary: report.subject,
+                  description: report.formatted_content || '',
+                  startAt: report.template_type === 'meeting_simple' ? meetingStart! : eventStart,
+                  endAt: report.template_type === 'meeting_simple' ? meetingEnd : undefined,
+                  allDay: report.template_type !== 'meeting_simple',
+                },
+                authStore.user?.email ?? undefined
+              )
             },
           },
         ]

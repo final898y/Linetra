@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-08-19
+date: 2026-08-31
 status: Active
 author: Linetra Dev Team
 ---
@@ -1119,10 +1119,22 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-08-19 01:23:46] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-08-19 01:23:46] feat(frontend): add document template search
+- **Commit Hash:** `96494ba`
 
 **變更檔案 (Changed Files):**
 - frontend/src/views/DocumentTemplatesView.vue
+
+---
+
+### [2026-08-31 21:56:36] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/README.md
+- frontend/src/composables/useFABActions.ts
+- frontend/src/composables/useGoogleCalendar.ts
+- frontend/src/stores/auth.ts
+- frontend/tests/composables/useFABActions.spec.ts
 
 ---

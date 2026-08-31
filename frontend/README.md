@@ -37,15 +37,35 @@ cp .env.example .env
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+VITE_GOOGLE_CALENDAR_CLIENT_ID=your_google_oauth_client_id.apps.googleusercontent.com
 ```
 
-### 3. 啟動開發伺服器
+Supabase 變數是登入與資料存取所需；Google Calendar Client ID 是「加入 Google 日曆」功能所需。未設定 Client ID 時，其他前端功能仍可使用，但日曆事件功能會提示缺少設定。
+
+### 3. 設定 Google Calendar
+
+使用 Google Cloud Console 建立 OAuth 2.0 Web application 用戶端，並完成以下設定：
+
+1. 啟用 **Google Calendar API**。
+2. 在 OAuth consent screen 設定應用程式資訊與測試使用者（若應用程式仍在測試模式）。
+3. 在 OAuth 用戶端的 **Authorized JavaScript origins** 加入前端網址，例如 `http://localhost:5173` 及正式環境網址。
+4. 將產生的用戶端 ID 填入 `VITE_GOOGLE_CALENDAR_CLIENT_ID`。
+
+Google Calendar 所需的 OAuth scope 為：
+
+```text
+https://www.googleapis.com/auth/calendar.events
+```
+
+第一次使用功能時，Google 會要求使用者授權建立日曆事件。請使用與 Linetra 登入相同的 Google 帳號完成授權。
+
+### 4. 啟動開發伺服器
 
 ```bash
 npm run dev
 ```
 
-### 4. 其他指令
+### 5. 其他指令
 
 | 指令 | 說明 |
 | :--- | :--- |
@@ -108,3 +128,22 @@ src/
 
 ### 工作行事曆
 以月曆視圖呈現所有案件的到期日，點擊日期可查看當日案件列表。
+
+### Google Calendar 整合
+
+在案件詳細頁開啟右下角快速操作選單，選擇「加入 Google 日曆」即可建立事件：
+
+| 案件類型 | 日曆事件格式 | 時間規則 |
+| :--- | :--- | :--- |
+| 一般會議 | 定時事件 | 使用會議開始與結束時間；未填結束時間時預設為 1 小時 |
+| 其他案件 | 全天事件 | 優先使用公告到期日，沒有時使用實際到期日；結束日為開始日隔天 |
+
+建立成功後會開啟 Google Calendar 事件連結。會議案件必須先設定會議時間，其他案件必須先設定公告到期日或實際到期日。
+
+授權流程由 Google Identity Services 處理，並與目前 Supabase 登入使用者的 email 對應帳號。Google 回傳的短期 access token 只保存在目前頁面的記憶體中，依 `expires_in` 計算有效期限並提前 5 分鐘失效；因此同一頁面重複建立事件時通常不會再次選擇帳號，重新整理頁面後則可能需要重新取得授權。
+
+相關實作位於：
+
+- `src/composables/useGoogleCalendar.ts`：Google OAuth token 與 Calendar API。
+- `src/composables/useFABActions.ts`：案件資料轉換為日曆事件。
+- `src/components/fab/FABSpeedDial.vue`：快速操作選單。

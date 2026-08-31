@@ -13,16 +13,27 @@ interface GoogleAccounts {
   oauth2: {
     initTokenClient: (config: {
       client_id: string
+      login_hint?: string
       scope: string
-      callback: (response: { access_token?: string; error?: string }) => void
+      callback: (response: TokenResponse) => void
     }) => { requestAccessToken: () => void }
   }
 }
 
 interface TokenResponse {
   access_token?: string
+  expires_in?: number
   error?: string
 }
+
+interface CachedToken {
+  key: string
+  value: string
+  expiresAt: number
+}
+
+let cachedToken: CachedToken | null = null
+let tokenRequest: Promise<string> | null = null
 
 export function useGoogleCalendar() {
   const loading = ref(false)
@@ -40,7 +51,7 @@ export function useGoogleCalendar() {
       document.head.appendChild(s)
     })
 
-  const getToken = (clientId: string): Promise<string> =>
+  const getToken = (clientId: string, loginHint?: string): Promise<string> =>
     new Promise<string>((resolve, reject) => {
       const g = (window as unknown as Record<string, unknown>).google as
         | { accounts: GoogleAccounts }
@@ -51,21 +62,40 @@ export function useGoogleCalendar() {
       }
       const client = g.accounts.oauth2.initTokenClient({
         client_id: clientId,
+        login_hint: loginHint,
         scope: 'https://www.googleapis.com/auth/calendar.events',
-        callback: (r: TokenResponse) =>
-          r.access_token ? resolve(r.access_token) : reject(new Error(r.error || 'No token')),
+        callback: (r: TokenResponse) => {
+          if (!r.access_token) {
+            reject(new Error(r.error || 'No token'))
+            return
+          }
+
+          const expiresIn = r.expires_in ?? 3600
+          cachedToken = {
+            key: `${clientId}:${loginHint ?? ''}`,
+            value: r.access_token,
+            expiresAt: Date.now() + Math.max(expiresIn - 300, 60) * 1000,
+          }
+          resolve(r.access_token)
+        },
       })
       client.requestAccessToken()
     })
 
-  const addEvent = async (clientId: string, event: CalendarEventData) => {
+  const addEvent = async (clientId: string, event: CalendarEventData, loginHint?: string) => {
     loading.value = true
     try {
       const startAt = dayjs(event.startAt)
       if (!startAt.isValid()) throw new Error('Invalid event start date')
 
       await loadGIS()
-      const token = await getToken(clientId)
+      const tokenKey = `${clientId}:${loginHint ?? ''}`
+      const token =
+        cachedToken && cachedToken.key === tokenKey && Date.now() < cachedToken.expiresAt
+          ? cachedToken.value
+          : await (tokenRequest ??= getToken(clientId, loginHint).finally(() => {
+              tokenRequest = null
+            }))
       const body = {
         summary: event.summary,
         description: event.description || '',
@@ -95,6 +125,10 @@ export function useGoogleCalendar() {
         body: JSON.stringify(body),
       })
 
+      if (res.status === 401) {
+        cachedToken = null
+        throw new Error('Calendar authorization expired')
+      }
       if (!res.ok) throw new Error('Calendar API error')
       const data = (await res.json()) as { htmlLink?: string }
       if (data.htmlLink) window.open(data.htmlLink, '_blank')
