@@ -36,7 +36,7 @@ export const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'key-notes',
+        path: 'key-notes/:id?',
         name: 'key-notes',
         component: () => import('@/views/KeyNotesView.vue'),
         meta: { requiresAuth: true },

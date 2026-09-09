@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import {
   ArchiveBoxIcon,
   LightBulbIcon,
@@ -13,6 +14,8 @@ import type { KeyNoteCategory } from '@/types/models'
 
 const authStore = useAuthStore()
 const knowledgeStore = useKnowledgeStore()
+const route = useRoute()
+const router = useRouter()
 
 const categories: Array<{ id: KeyNoteCategory; label: string }> = [
   { id: 'procedure', label: '作業流程' },
@@ -49,7 +52,7 @@ const visibleNotes = computed(() => {
 
 const selectedNote = computed(() => knowledgeStore.notes.find((note) => note.id === form.id))
 
-function resetForm() {
+function resetForm(updateRoute = true) {
   form.id = null
   form.title = ''
   form.category = 'procedure'
@@ -59,9 +62,10 @@ function resetForm() {
   form.validFrom = ''
   form.validUntil = ''
   form.links = [{ label: '', url: '' }]
+  if (updateRoute && route.params.id) router.push({ name: 'key-notes' })
 }
 
-function selectNote(note: (typeof knowledgeStore.notes)[number]) {
+function selectNote(note: (typeof knowledgeStore.notes)[number], updateRoute = true) {
   form.id = note.id
   form.title = note.title
   form.category = note.category
@@ -74,6 +78,19 @@ function selectNote(note: (typeof knowledgeStore.notes)[number]) {
   form.links = noteLinks.length
     ? noteLinks.map((link) => ({ label: link.label, url: link.url }))
     : [{ label: '', url: '' }]
+  if (updateRoute && route.params.id !== note.id) {
+    router.push({ name: 'key-notes', params: { id: note.id } })
+  }
+}
+
+function syncNoteFromRoute() {
+  const noteId = route.params.id as string | undefined
+  if (!noteId) {
+    resetForm(false)
+    return
+  }
+  const note = knowledgeStore.notes.find((item) => item.id === noteId)
+  if (note) selectNote(note, false)
 }
 
 function addLink() {
@@ -128,7 +145,12 @@ async function archiveNote() {
   resetForm()
 }
 
-onMounted(() => knowledgeStore.fetchNotes(true))
+watch(() => route.params.id, syncNoteFromRoute)
+
+onMounted(async () => {
+  await knowledgeStore.fetchNotes(true)
+  syncNoteFromRoute()
+})
 </script>
 
 <template>
@@ -144,7 +166,7 @@ onMounted(() => knowledgeStore.fetchNotes(true))
             <p class="text-sm text-cream-muted">記錄流程、要求、注意事項與常用網站</p>
           </div>
         </div>
-        <button class="btn-primary flex items-center gap-2" @click="resetForm">
+        <button class="btn-primary flex items-center gap-2" type="button" @click="resetForm()">
           <PlusIcon class="h-5 w-5" />新增記事
         </button>
       </header>
@@ -175,9 +197,10 @@ onMounted(() => knowledgeStore.fetchNotes(true))
             class="w-full rounded-2xl border p-4 text-left transition"
             :class="
               form.id === note.id
-                ? 'border-brand bg-brand/5'
-                : 'border-cream-border bg-cream-surface hover:bg-cream-hover'
+                ? 'border-brand bg-brand/10 shadow-sm'
+                : 'border-cream-border bg-cream-surface hover:-translate-y-0.5 hover:border-brand hover:bg-cream-hover hover:shadow-sm'
             "
+            type="button"
             @click="selectNote(note)"
           >
             <div class="flex items-start justify-between gap-2">
@@ -209,7 +232,8 @@ onMounted(() => knowledgeStore.fetchNotes(true))
             </h2>
             <button
               v-if="selectedNote && selectedNote.status === 'active'"
-              class="btn-secondary flex items-center gap-2 text-red-600"
+              class="btn-secondary flex items-center gap-2 text-status-overdue"
+              type="button"
               @click="archiveNote"
             >
               <ArchiveBoxIcon class="h-5 w-5" />封存
@@ -256,7 +280,7 @@ onMounted(() => knowledgeStore.fetchNotes(true))
           <div class="mt-5 border-t border-cream-border pt-4">
             <div class="mb-2 flex items-center justify-between">
               <span class="form-label mb-0">網站連結（可多筆）</span
-              ><button class="btn-secondary flex items-center gap-1" @click="addLink">
+              ><button class="btn-secondary flex items-center gap-1" type="button" @click="addLink">
                 <PlusIcon class="h-4 w-4" />新增連結
               </button>
             </div>
@@ -276,17 +300,33 @@ onMounted(() => knowledgeStore.fetchNotes(true))
                 v-model="link.url"
                 class="form-input mt-0 flex-[2]"
                 placeholder="https://example.com"
-              /><button
-                class="btn-secondary self-end p-2 text-red-600 sm:self-auto"
-                :disabled="form.links.length === 1"
-                @click="removeLink(index)"
-              >
-                <TrashIcon class="h-5 w-5" />
-              </button>
+              />
+              <div class="flex self-end gap-2 sm:self-auto">
+                <a
+                  v-if="link.url"
+                  :href="link.url"
+                  class="btn-secondary p-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="開啟連結"
+                  :aria-label="`開啟${link.label || '網站連結'}`"
+                >
+                  <LinkIcon class="h-5 w-5" />
+                </a>
+                <button
+                  class="rounded-md p-1 text-status-overdue transition-colors hover:bg-rose-50"
+                  type="button"
+                  :disabled="form.links.length === 1"
+                  title="移除連結"
+                  @click="removeLink(index)"
+                >
+                  <TrashIcon class="h-5 w-5" />
+                </button>
+              </div>
             </div>
           </div>
           <div class="mt-5 flex justify-end">
-            <button class="btn-primary" :disabled="isSaving" @click="saveNote">
+            <button class="btn-primary px-5" type="button" :disabled="isSaving" @click="saveNote">
               {{ isSaving ? '儲存中…' : '儲存記事' }}
             </button>
           </div>

@@ -90,6 +90,14 @@
   .form-input {
     @apply mt-2 block w-full rounded-xl border border-cream-border bg-cream-bg px-4 py-3 text-cream-text placeholder:text-cream-muted focus:outline-none focus:ring-2 focus:ring-brand;
   }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-2xl bg-cream-text px-4 py-3 font-bold text-dark-text shadow-xl shadow-cream-text/10 transition-all hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-cream-border bg-brand/10 px-3 py-2 text-xs font-bold text-brand transition-all hover:border-brand hover:bg-brand/20 disabled:cursor-not-allowed disabled:opacity-50;
+  }
 }
 
 @layer base {
