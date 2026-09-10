@@ -14,6 +14,8 @@ const mocks = vi.hoisted(() => ({
   },
   authStore: { user: { id: 'user-1' } },
   generateLineText: vi.fn().mockReturnValue('任務通報文字'),
+  route: { params: { id: undefined } },
+  router: { push: vi.fn() },
 }))
 
 vi.mock('@/stores/reports', () => ({
@@ -28,10 +30,16 @@ vi.mock('@/composables/useReportTemplate', () => ({
   useReportTemplate: () => ({ generateLineText: mocks.generateLineText }),
 }))
 
+vi.mock('vue-router', () => ({
+  useRoute: () => mocks.route,
+  useRouter: () => mocks.router,
+}))
+
 describe('TaskListView.vue', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.stubGlobal('alert', vi.fn())
+    mocks.route.params.id = undefined
   })
 
   it('loads only pending and overdue task reports', async () => {
@@ -55,12 +63,13 @@ describe('TaskListView.vue', () => {
     const wrapper = mount(TaskListView, {
       global: { stubs: { RouterLink: true, ReportCard: true } },
     })
+    await flushPromises()
     const inputs = wrapper.findAll('input')
     await inputs[0].setValue('確認活動場地')
     await inputs[1].setValue('2026-08-03T10:30')
     await wrapper.find('textarea').setValue('請聯繫場地方')
     await wrapper.find('input[type="checkbox"]').setValue(true)
-    await wrapper.get('button').trigger('click')
+    await wrapper.get('[data-testid="save-task"]').trigger('click')
     await flushPromises()
 
     expect(mocks.reportStore.createReport).toHaveBeenCalledWith(

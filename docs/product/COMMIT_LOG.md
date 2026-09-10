@@ -1170,11 +1170,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 20:31:33] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 20:31:33] feat(frontend): add document template detail routes
+- **Commit Hash:** `3a0a67e`
 
 **變更檔案 (Changed Files):**
 - frontend/src/router/routes.ts
 - frontend/src/views/DocumentTemplatesView.vue
+
+---
+
+### [2026-09-10 20:46:22] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/router/routes.ts
+- frontend/src/views/TaskListView.vue
+- frontend/tests/views/TaskListView.spec.ts
 
 ---
