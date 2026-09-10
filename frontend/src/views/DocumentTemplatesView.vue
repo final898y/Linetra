@@ -120,30 +120,29 @@ onMounted(async () => {
 
 <template>
   <div class="space-y-8 pb-20">
-    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h2 class="text-3xl font-extrabold tracking-tightest text-cream-text">公文範本</h2>
-        <p class="mt-1 text-sm font-bold uppercase tracking-widest text-cream-muted">
-          個人 Markdown 範本與版本歷程
-        </p>
+    <header class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-3">
+        <div class="rounded-2xl bg-brand/10 p-3 text-brand">
+          <DocumentTextIcon class="h-7 w-7" />
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-cream-text">公文範本</h1>
+          <p class="text-sm text-cream-muted">個人 Markdown 範本與版本歷程</p>
+        </div>
       </div>
       <div class="flex gap-2">
         <button
           @click="showArchived = !showArchived"
           type="button"
-          class="rounded-xl border border-cream-border bg-cream-surface px-3 py-2 text-xs font-bold text-cream-text hover:bg-cream-hover"
+          class="btn-secondary text-base text-cream-text"
         >
           {{ showArchived ? '隱藏停用範本' : '顯示停用範本' }}
         </button>
-        <button
-          @click="resetForm()"
-          type="button"
-          class="flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-white hover:bg-brand/90"
-        >
+        <button @click="resetForm()" type="button" class="btn-primary flex items-center gap-1.5">
           <PlusIcon class="size-4" /> 新增範本
         </button>
       </div>
-    </div>
+    </header>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
       <section class="space-y-3 lg:col-span-4">
@@ -182,7 +181,7 @@ onMounted(async () => {
               <p class="mt-1 text-xs text-cream-muted">{{ template.category || '未分類' }}</p>
             </div>
             <span
-              class="rounded-full px-2 py-0.5 text-[10px] font-bold"
+              class="shrink-0 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold"
               :class="
                 template.is_active
                   ? 'bg-status-completed/10 text-status-completed'
@@ -253,7 +252,7 @@ onMounted(async () => {
               v-if="selectedId && selectedTemplate?.is_active"
               @click="archiveTemplate"
               type="button"
-              class="flex items-center gap-1.5 rounded-xl border border-status-overdue/30 px-3 py-2 text-xs font-bold text-status-overdue hover:bg-status-overdue/5"
+              class="btn-secondary flex items-center gap-1.5 text-status-overdue"
             >
               <ArchiveBoxIcon class="size-4" /> 停用範本
             </button>
@@ -262,7 +261,7 @@ onMounted(async () => {
               @click="saveTemplate"
               type="button"
               :disabled="isSaving"
-              class="rounded-xl bg-cream-text px-5 py-3 text-sm font-bold text-dark-text hover:opacity-90 disabled:opacity-50"
+              class="btn-primary px-5"
             >
               {{ isSaving ? '儲存中...' : selectedId ? '儲存並建立新版本' : '建立範本' }}
             </button>

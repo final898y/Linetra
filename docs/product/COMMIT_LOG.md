@@ -1179,12 +1179,20 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 20:46:22] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 20:46:22] refactor(frontend): unify task list editing layout
+- **Commit Hash:** `e0190ba`
 
 **變更檔案 (Changed Files):**
 - frontend/src/router/routes.ts
 - frontend/src/views/TaskListView.vue
 - frontend/tests/views/TaskListView.spec.ts
+
+---
+
+### [2026-09-10 20:57:49] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/views/DocumentTemplatesView.vue
 
 ---
