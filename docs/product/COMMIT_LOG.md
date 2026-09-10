@@ -1197,13 +1197,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 21:06:43] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 21:06:43] style(frontend): standardize workspace scrolling behavior
+- **Commit Hash:** `a8235f3`
 
 **變更檔案 (Changed Files):**
 - frontend/src/style.css
 - frontend/src/views/DocumentTemplatesView.vue
 - frontend/src/views/KeyNotesView.vue
 - frontend/src/views/TaskListView.vue
+
+---
+
+### [2026-09-10 21:08:09] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/index.html
 
 ---
