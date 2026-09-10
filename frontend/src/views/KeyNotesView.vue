@@ -190,7 +190,7 @@ onMounted(async () => {
       </div>
 
       <div class="grid gap-4 lg:grid-cols-12">
-        <aside class="space-y-2 lg:col-span-4">
+        <aside class="workspace-list space-y-2 lg:col-span-4">
           <button
             v-for="note in visibleNotes"
             :key="note.id"
@@ -224,7 +224,7 @@ onMounted(async () => {
         </aside>
 
         <section
-          class="rounded-2xl border border-cream-border bg-cream-surface p-4 shadow-sm sm:p-6 lg:col-span-8"
+          class="workspace-editor rounded-2xl border border-cream-border bg-cream-surface p-4 shadow-sm sm:p-6 lg:col-span-8"
         >
           <div class="mb-4 flex items-center justify-between">
             <h2 class="text-lg font-bold text-cream-text">

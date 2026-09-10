@@ -1189,10 +1189,21 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 20:57:49] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 20:57:49] style(frontend): align document template page controls
+- **Commit Hash:** `f4854f8`
 
 **變更檔案 (Changed Files):**
 - frontend/src/views/DocumentTemplatesView.vue
+
+---
+
+### [2026-09-10 21:06:43] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/style.css
+- frontend/src/views/DocumentTemplatesView.vue
+- frontend/src/views/KeyNotesView.vue
+- frontend/src/views/TaskListView.vue
 
 ---

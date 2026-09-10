@@ -98,6 +98,11 @@
   .btn-secondary {
     @apply inline-flex items-center justify-center rounded-lg border border-cream-border bg-brand/10 px-3 py-2 text-xs font-bold text-brand transition-all hover:border-brand hover:bg-brand/20 disabled:cursor-not-allowed disabled:opacity-50;
   }
+
+  .workspace-list,
+  .workspace-editor {
+    min-width: 0;
+  }
 }
 
 @layer base {
@@ -113,6 +118,27 @@
 /* 抽屜式選單過渡效果 */
 .drawer-transition {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 1024px) {
+  .workspace-list {
+    max-height: calc(100vh - 12rem);
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+
+  .workspace-editor {
+    position: sticky;
+    top: 6rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .workspace-list {
+    max-height: 42vh;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
 }
 
 /* Custom Scrollbar for Dark Mode */

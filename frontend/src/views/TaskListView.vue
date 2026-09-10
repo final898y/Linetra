@@ -177,7 +177,7 @@ onMounted(async () => {
       </header>
 
       <div class="grid gap-4 lg:grid-cols-12">
-        <aside class="space-y-3 lg:col-span-4">
+        <aside class="workspace-list space-y-3 lg:col-span-4">
           <div class="flex items-center justify-between">
             <h2 class="text-xs font-bold uppercase tracking-widest text-cream-muted">尚未完成</h2>
             <span class="rounded-full bg-brand/10 px-2.5 py-1 text-xs font-bold text-brand">
@@ -232,7 +232,7 @@ onMounted(async () => {
         </aside>
 
         <section
-          class="rounded-2xl border border-cream-border bg-cream-surface p-4 shadow-sm sm:p-6 lg:col-span-8"
+          class="workspace-editor rounded-2xl border border-cream-border bg-cream-surface p-4 shadow-sm sm:p-6 lg:col-span-8"
         >
           <div class="mb-5 flex items-center justify-between border-b border-cream-border pb-4">
             <div class="flex items-center gap-3">

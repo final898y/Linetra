@@ -145,7 +145,7 @@ onMounted(async () => {
     </header>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
-      <section class="space-y-3 lg:col-span-4">
+      <section class="workspace-list space-y-3 lg:col-span-4">
         <div class="flex items-center justify-between">
           <h3 class="text-xs font-bold uppercase tracking-widest text-cream-muted">範本清單</h3>
           <span class="text-xs font-bold text-cream-muted">{{ visibleTemplates.length }} 筆</span>
@@ -195,7 +195,7 @@ onMounted(async () => {
       </section>
 
       <section
-        class="rounded-2xl border border-cream-border bg-cream-surface p-5 sm:p-6 lg:col-span-8"
+        class="workspace-editor rounded-2xl border border-cream-border bg-cream-surface p-5 sm:p-6 lg:col-span-8"
       >
         <div class="mb-5 flex items-center gap-3 border-b border-cream-border pb-4">
           <div class="flex size-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
