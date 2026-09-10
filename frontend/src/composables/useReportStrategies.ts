@@ -117,7 +117,7 @@ class WeeklyStrategy extends BaseStrategy implements ReportStrategy {
 
     lines.push('詳細說明：')
     const link = items.find((i) => i.item_type === 'link')?.content
-    lines.push(`1. 請至「${link || '尚未提供'}」 填妥本週週報內容。`)
+    lines.push(`1. 請至「${link || '尚未提供'}」 填寫案件最新進度填妥本週週報相關內容。`)
 
     const noteText = this.formatNotes(items)
     if (noteText) {

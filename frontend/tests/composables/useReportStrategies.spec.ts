@@ -131,7 +131,7 @@ describe('Report Strategies', () => {
       }
       const result = strategies.weekly_report.generate(data)
       expect(result).toContain('繳交方式：\n- 線上表單')
-      expect(result).toContain('請至「https://weekly.com」 填妥本週週報內容')
+      expect(result).toContain('請至「https://weekly.com」 填寫案件最新進度填妥本週週報相關內容。')
     })
   })
 

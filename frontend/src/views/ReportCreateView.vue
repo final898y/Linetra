@@ -15,6 +15,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import { getReportFormTab, useReportForm } from '@/composables/useReportForm'
 import { getSentAtForSave } from '@/composables/useReportLifecycle'
+import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 import type {
   ReportItem,
   ReportStatus,
@@ -54,6 +55,8 @@ const {
   toggleTag,
   addCustomTag,
 } = useReportForm()
+
+const templateOptions = Object.values(REPORT_TEMPLATES)
 
 const customTagInput = ref('')
 const handleAddCustomTag = () => {
@@ -283,27 +286,20 @@ const handleCopyAndSave = async () => {
           <label class="block text-xs font-bold text-cream-muted uppercase tracking-widest mb-3"
             >選擇具體模板</label
           >
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <button
-              v-for="tmpl in ['meeting', 'meeting_simple', 'weekly_report', 'briefing'] as const"
-              :key="tmpl"
-              @click="applyTemplate(tmpl)"
+              v-for="tmpl in templateOptions"
+              :key="tmpl.id"
+              type="button"
+              @click="applyTemplate(tmpl.id)"
               class="px-4 py-3 text-sm font-bold border-2 rounded-xl transition-all"
               :class="
-                currentTemplate === tmpl
+                currentTemplate === tmpl.id
                   ? 'border-brand bg-brand/5 text-brand'
                   : 'border-cream-border text-cream-muted hover:border-cream-muted'
               "
             >
-              {{
-                tmpl === 'meeting'
-                  ? '處務會議'
-                  : tmpl === 'meeting_simple'
-                    ? '一般會議'
-                    : tmpl === 'weekly_report'
-                      ? '市長週報'
-                      : '市長面報'
-              }}
+              {{ tmpl.name }}
             </button>
           </div>
         </section>

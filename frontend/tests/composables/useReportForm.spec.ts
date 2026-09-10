@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { getReportFormTab, useReportForm } from '@/composables/useReportForm'
+import { REPORT_TEMPLATES } from '@/config/reportTemplates'
 
 // Mock useReportTemplate
 vi.mock('@/composables/useReportTemplate', () => ({
@@ -53,6 +54,19 @@ describe('useReportForm', () => {
     expect(form.subject).toBe('處務會議資料填報')
     expect(items.value.length).toBeGreaterThan(0)
   })
+
+  it.each(Object.values(REPORT_TEMPLATES))(
+    'should apply the configured template: $id',
+    (template) => {
+      const { form, applyTemplate, items } = useReportForm()
+
+      applyTemplate(template.id)
+
+      expect(form.template_type).toBe(template.id)
+      expect(form.subject).toBe(template.defaultSubject)
+      expect(items.value).toHaveLength(template.items.length)
+    }
+  )
 
   it('should clear an existing report when starting a new report', () => {
     const { form, items, currentReportId, activeTab, resetForm } = useReportForm()

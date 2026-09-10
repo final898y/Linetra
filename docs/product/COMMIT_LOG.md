@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-09-09
+date: 2026-09-10
 status: Active
 author: Linetra Dev Team
 ---
@@ -1149,12 +1149,23 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-09 23:56:59] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-09 23:56:59] feat(frontend): improve key notes navigation and actions
+- **Commit Hash:** `2e3adce`
 
 **變更檔案 (Changed Files):**
 - frontend/src/router/routes.ts
 - frontend/src/style.css
 - frontend/src/views/KeyNotesView.vue
+
+---
+
+### [2026-09-10 20:26:29] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/composables/useReportStrategies.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
 
 ---
