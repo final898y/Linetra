@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { DocumentTextIcon, PlusIcon, ArchiveBoxIcon } from '@heroicons/vue/24/outline'
 import { useAuthStore } from '@/stores/auth'
 import { useKnowledgeStore } from '@/stores/knowledge'
@@ -7,6 +8,8 @@ import type { DocumentTemplate } from '@/types/models'
 
 const authStore = useAuthStore()
 const knowledgeStore = useKnowledgeStore()
+const route = useRoute()
+const router = useRouter()
 const selectedId = ref<string | null>(null)
 const showArchived = ref(false)
 const searchQuery = ref('')
@@ -32,19 +35,33 @@ const selectedVersions = computed(() =>
 )
 const selectedVersionNo = computed(() => selectedVersions.value[0]?.version_no || 0)
 
-const resetForm = () => {
+const resetForm = (updateRoute = true) => {
   selectedId.value = null
   form.name = ''
   form.category = ''
   form.contentMarkdown = '# 公文範本\n\n請在此輸入 Markdown 內容。'
+  if (updateRoute && route.params.id) router.push({ name: 'document-templates' })
 }
 
-const selectTemplate = (template: DocumentTemplate) => {
+const selectTemplate = (template: DocumentTemplate, updateRoute = true) => {
   selectedId.value = template.id
   form.name = template.name
   form.category = template.category || ''
   form.contentMarkdown =
     knowledgeStore.latestTemplateVersion.get(template.id)?.content_markdown || ''
+  if (updateRoute && route.params.id !== template.id) {
+    router.push({ name: 'document-templates', params: { id: template.id } })
+  }
+}
+
+const syncTemplateFromRoute = () => {
+  const templateId = route.params.id as string | undefined
+  if (!templateId) {
+    resetForm(false)
+    return
+  }
+  const template = knowledgeStore.templates.find((item) => item.id === templateId)
+  if (template) selectTemplate(template, false)
 }
 
 const saveTemplate = async () => {
@@ -70,6 +87,7 @@ const saveTemplate = async () => {
         contentMarkdown: form.contentMarkdown,
       })
       selectedId.value = created.id
+      router.push({ name: 'document-templates', params: { id: created.id } })
       alert('範本已建立')
     }
   } catch (error) {
@@ -84,6 +102,7 @@ const archiveTemplate = async () => {
   if (!selectedId.value || !confirm('確定要停用這個公文範本嗎？')) return
   try {
     await knowledgeStore.archiveTemplate(selectedId.value)
+    resetForm()
     alert('範本已停用')
   } catch (error) {
     console.error('Failed to archive document template:', error)
@@ -91,9 +110,11 @@ const archiveTemplate = async () => {
   }
 }
 
+watch(() => route.params.id, syncTemplateFromRoute)
+
 onMounted(async () => {
   await knowledgeStore.fetchTemplates()
-  resetForm()
+  syncTemplateFromRoute()
 })
 </script>
 
@@ -109,12 +130,14 @@ onMounted(async () => {
       <div class="flex gap-2">
         <button
           @click="showArchived = !showArchived"
+          type="button"
           class="rounded-xl border border-cream-border bg-cream-surface px-3 py-2 text-xs font-bold text-cream-text hover:bg-cream-hover"
         >
           {{ showArchived ? '隱藏停用範本' : '顯示停用範本' }}
         </button>
         <button
-          @click="resetForm"
+          @click="resetForm()"
+          type="button"
           class="flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-white hover:bg-brand/90"
         >
           <PlusIcon class="size-4" /> 新增範本
@@ -144,6 +167,7 @@ onMounted(async () => {
         <button
           v-for="template in visibleTemplates"
           :key="template.id"
+          type="button"
           @click="selectTemplate(template)"
           class="w-full rounded-2xl border p-4 text-left transition-all"
           :class="
@@ -228,6 +252,7 @@ onMounted(async () => {
             <button
               v-if="selectedId && selectedTemplate?.is_active"
               @click="archiveTemplate"
+              type="button"
               class="flex items-center gap-1.5 rounded-xl border border-status-overdue/30 px-3 py-2 text-xs font-bold text-status-overdue hover:bg-status-overdue/5"
             >
               <ArchiveBoxIcon class="size-4" /> 停用範本
@@ -235,6 +260,7 @@ onMounted(async () => {
             <span v-else></span>
             <button
               @click="saveTemplate"
+              type="button"
               :disabled="isSaving"
               class="rounded-xl bg-cream-text px-5 py-3 text-sm font-bold text-dark-text hover:opacity-90 disabled:opacity-50"
             >

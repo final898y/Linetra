@@ -30,7 +30,7 @@ export const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'document-templates',
+        path: 'document-templates/:id?',
         name: 'document-templates',
         component: () => import('@/views/DocumentTemplatesView.vue'),
         meta: { requiresAuth: true },

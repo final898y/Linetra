@@ -1159,13 +1159,22 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 20:26:29] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 20:26:29] feat(frontend): centralize report template options and tests
+- **Commit Hash:** `f50a65a`
 
 **變更檔案 (Changed Files):**
 - frontend/src/composables/useReportStrategies.ts
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportForm.spec.ts
 - frontend/tests/composables/useReportStrategies.spec.ts
+
+---
+
+### [2026-09-10 20:31:33] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- frontend/src/router/routes.ts
+- frontend/src/views/DocumentTemplatesView.vue
 
 ---
