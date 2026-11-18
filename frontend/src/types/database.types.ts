@@ -20,6 +20,7 @@ export interface Database {
             | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
+            | 'youth_policy_update'
             | 'announcement'
             | 'task'
           updated_at: string
@@ -43,6 +44,7 @@ export interface Database {
             | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
+            | 'youth_policy_update'
             | 'announcement'
             | 'task'
           updated_at?: string
@@ -66,6 +68,7 @@ export interface Database {
             | 'meeting_simple'
             | 'weekly_report'
             | 'briefing'
+            | 'youth_policy_update'
             | 'announcement'
             | 'task'
           updated_at?: string

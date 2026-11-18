@@ -10,6 +10,7 @@ vi.mock('@/composables/useReportStrategies', () => ({
     meeting_simple: { generate: vi.fn(() => 'meeting_simple_output') },
     weekly_report: { generate: vi.fn(() => 'weekly_output') },
     briefing: { generate: vi.fn(() => 'briefing_output') },
+    youth_policy_update: { generate: vi.fn(() => 'youth_policy_output') },
     announcement: { generate: vi.fn(() => 'announcement_output') },
     task: { generate: vi.fn(() => 'task_output') },
   }
@@ -36,6 +37,10 @@ describe('useReportTemplate', () => {
     const meetingSimpleResult = generateLineText({ template_type: 'meeting_simple' }, [])
     expect(strategies.meeting_simple.generate).toHaveBeenCalled()
     expect(meetingSimpleResult).toBe('meeting_simple_output')
+
+    const youthPolicyResult = generateLineText({ template_type: 'youth_policy_update' }, [])
+    expect(strategies.youth_policy_update.generate).toHaveBeenCalled()
+    expect(youthPolicyResult).toBe('youth_policy_output')
   })
 
   it.each([

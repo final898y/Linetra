@@ -13,6 +13,8 @@ export interface TemplateConfig {
   id: ReportTemplateType
   name: string
   defaultSubject: string
+  defaultDepartment?: string
+  defaultAnnouncedDueAt?: string
   behavior?: TemplateBehavior
   items: {
     item_type: ItemType
@@ -120,6 +122,37 @@ export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
       {
         item_type: 'agenda',
         content: '1. 風箏節目前進度\n2. 科技產業論壇籌辦進度',
+      },
+    ],
+  },
+  youth_policy_update: {
+    id: 'youth_policy_update',
+    name: '青年政策及資源定期更新',
+    defaultSubject: '定期更新本中心官網相關青年政策及資源',
+    defaultDepartment: '新竹市青年發展中心115年9月21日竹市青年字第1150002864號',
+    defaultAnnouncedDueAt: '2026-09-30T12:00',
+    behavior: {
+      showDepartment: true,
+      showDueDates: true,
+      calendarMode: 'deadline',
+      initialStatus: 'pending',
+    },
+    items: [
+      {
+        item_type: 'submission_method',
+        content: '線上表單',
+        isCustomizable: false,
+      },
+      {
+        item_type: 'detail',
+        content:
+          '如有新增相關青年政策及宣傳資源，請於本年9月30日（星期三）前逕上雲端表單（網址：https://reurl.cc/4YYMvK）填寫，如係原有政策內容異動請一併更新並填寫更新日期，過期資訊請於雲端表單中自行刪除。',
+        isCustomizable: false,
+      },
+      {
+        item_type: 'detail',
+        content: '逾期未填報者，視為無辦理青年相關政策及資源',
+        isCustomizable: false,
       },
     ],
   },

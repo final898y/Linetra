@@ -16,4 +16,5 @@ export const strategies: Record<TemplateType, ReportStrategy> = {
   briefing: new BriefingStrategy(),
   announcement: new AnnouncementStrategy(),
   task: new TaskStrategy(),
+  youth_policy_update: new GeneralStrategy(),
 }

@@ -1311,8 +1311,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:43:34] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:43:34] refactor(frontend): centralize template downstream behavior
+- **Commit Hash:** `b80971e`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-7-downstream-template-behavior.md
@@ -1323,5 +1323,23 @@ author: Linetra Dev Team
 - frontend/tests/components/common/ReportCard.spec.ts
 - frontend/tests/config/reportTemplates.spec.ts
 - frontend/tests/views/ReportDetailView.spec.ts
+
+---
+
+### [2026-11-18 21:57:02] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-8-youth-policy-update-template.md
+- frontend/src/composables/reportStrategies/index.ts
+- frontend/src/composables/useReportForm.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/config/reportTypes.ts
+- frontend/src/types/database.types.ts
+- frontend/src/types/models.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportStrategies.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
 
 ---

@@ -16,6 +16,7 @@ export const TemplateType = {
   MeetingSimple: 'meeting_simple',
   Weekly: 'weekly_report',
   Briefing: 'briefing',
+  YouthPolicyUpdate: 'youth_policy_update',
   Announcement: 'announcement',
   Task: 'task',
 } as const

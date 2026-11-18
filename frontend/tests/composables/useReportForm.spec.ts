@@ -142,6 +142,20 @@ describe('useReportForm', () => {
     expect(items.value.some((item) => item.item_type === 'meeting_end_time')).toBe(true)
   })
 
+  it('applies the monthly youth policy template defaults', () => {
+    const { form, applyTemplate, items } = useReportForm()
+
+    applyTemplate('youth_policy_update')
+
+    expect(form.department).toBe('新竹市青年發展中心115年9月21日竹市青年字第1150002864號')
+    expect(form.announced_due_at).toBe('2026-09-30T12:00')
+    expect(items.value.map((item) => item.item_type)).toEqual([
+      'submission_method',
+      'detail',
+      'detail',
+    ])
+  })
+
   it('should default an announcement to completed and a task to pending', () => {
     const { form, updateMode } = useReportForm()
 

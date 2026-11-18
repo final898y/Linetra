@@ -110,6 +110,10 @@ export const useReportForm = () => {
     if (!currentReportId.value) form.status = getInitialReportStatus(type)
     currentTemplate.value = type
     form.subject = config.defaultSubject
+    if (!currentReportId.value) {
+      form.department = config.defaultDepartment || ''
+      form.announced_due_at = config.defaultAnnouncedDueAt || ''
+    }
 
     items.value = config.items.map((item, idx) => {
       const key = `${type}_${item.item_type}`

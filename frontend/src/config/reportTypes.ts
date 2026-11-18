@@ -8,6 +8,7 @@ export const ALL_REPORT_TYPES: { id: TemplateType; name: string }[] = [
   { id: 'briefing', name: '市長面報' },
   { id: 'announcement', name: '公告通知' },
   { id: 'task', name: '臨時任務' },
+  { id: 'youth_policy_update', name: '青年政策及資源定期更新' },
 ]
 
 export const COMMON_TAGS = ['會議通知', '議會事項', '需要參加']

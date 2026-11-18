@@ -182,6 +182,26 @@ describe('Report Strategies', () => {
     })
   })
 
+  describe('YouthPolicyUpdateStrategy', () => {
+    it('uses the general report layout for the monthly policy template', () => {
+      const result = strategies.youth_policy_update.generate({
+        report: {
+          ...commonReport,
+          template_type: 'youth_policy_update',
+        },
+        items: [
+          { item_type: 'submission_method', content: 'online form' },
+          { item_type: 'detail', content: 'policy detail' },
+          { item_type: 'detail', content: 'late submission rule' },
+        ],
+      })
+
+      expect(result).toContain('online form')
+      expect(result).toContain('1. policy detail')
+      expect(result).toContain('2. late submission rule')
+    })
+  })
+
   describe('TaskStrategy', () => {
     it('should generate minimal task specific format', () => {
       const data: ReportData = {

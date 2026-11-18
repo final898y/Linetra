@@ -386,7 +386,9 @@ const handleCopyAndSave = async () => {
               "
               class="space-y-4 pt-2"
             >
-              <div v-if="activeTab === 'general'">
+              <div
+                v-if="activeTab === 'general' || currentTemplateConfig?.behavior?.showDepartment"
+              >
                 <label class="block text-xs font-bold text-cream-text uppercase tracking-wider mb-2"
                   >通報單位</label
                 >
