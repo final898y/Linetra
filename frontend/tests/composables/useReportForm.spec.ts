@@ -68,6 +68,21 @@ describe('useReportForm', () => {
     }
   )
 
+  it('preserves the configured item order and customizability flags', () => {
+    const { applyTemplate, items } = useReportForm()
+    const template = REPORT_TEMPLATES.meeting_simple
+
+    applyTemplate(template.id)
+
+    expect(items.value.map((item) => item.item_type)).toEqual(
+      template.items.map((item) => item.item_type)
+    )
+    expect(items.value.map((item) => item.isCustomizable)).toEqual(
+      template.items.map((item) => item.isCustomizable)
+    )
+    expect(items.value.map((item) => item.sort_order)).toEqual([1, 2, 3, 4, 5])
+  })
+
   it('should clear an existing report when starting a new report', () => {
     const { form, items, currentReportId, activeTab, resetForm } = useReportForm()
 

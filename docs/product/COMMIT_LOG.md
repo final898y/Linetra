@@ -1224,12 +1224,23 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 20:56:20] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 20:56:20] docs(root): define commit history requirements
+- **Commit Hash:** `88665ea`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-update-linetra-standard-skill.md
 - tools/skills/README.md
 - tools/skills/linetra-standard/SKILL.md
+
+---
+
+### [2026-11-18 21:15:39] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-1-template-regression-tests.md
+- frontend/tests/composables/useReportForm.spec.ts
+- frontend/tests/composables/useReportTemplate.spec.ts
+- frontend/tests/config/reportTemplates.spec.ts
 
 ---

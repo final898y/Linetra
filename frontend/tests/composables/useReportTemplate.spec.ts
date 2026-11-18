@@ -38,6 +38,17 @@ describe('useReportTemplate', () => {
     expect(meetingSimpleResult).toBe('meeting_simple_output')
   })
 
+  it.each([
+    ['weekly_report', 'weekly_output'],
+    ['briefing', 'briefing_output'],
+    ['announcement', 'announcement_output'],
+  ] as const)('routes %s to its strategy', (templateType, expectedOutput) => {
+    const result = generateLineText({ template_type: templateType }, [])
+
+    expect(strategies[templateType].generate).toHaveBeenCalled()
+    expect(result).toBe(expectedOutput)
+  })
+
   it('should fallback to general strategy if type is unknown', () => {
     // @ts-expect-error - testing invalid type fallback
     const result = generateLineText({ template_type: 'invalid' }, [])
