@@ -1234,13 +1234,24 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:15:39] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:15:39] test(frontend): cover report template behavior
+- **Commit Hash:** `895fe88`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-1-template-regression-tests.md
 - frontend/tests/composables/useReportForm.spec.ts
 - frontend/tests/composables/useReportTemplate.spec.ts
+- frontend/tests/config/reportTemplates.spec.ts
+
+---
+
+### [2026-11-18 21:20:01] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-2-template-metadata.md
+- frontend/src/composables/useReportLifecycle.ts
+- frontend/src/config/reportTemplates.ts
 - frontend/tests/config/reportTemplates.spec.ts
 
 ---

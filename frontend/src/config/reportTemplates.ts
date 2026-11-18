@@ -1,9 +1,19 @@
-import type { TemplateType } from '@/types/models'
+import type { ReportStatus, TemplateType } from '@/types/models'
+
+export type TemplateInputType = 'text' | 'textarea' | 'datetime-local'
+
+export interface TemplateBehavior {
+  showDepartment?: boolean
+  showDueDates?: boolean
+  calendarMode?: 'none' | 'deadline' | 'meeting'
+  initialStatus?: ReportStatus
+}
 
 export interface TemplateConfig {
   id: TemplateType
   name: string
   defaultSubject: string
+  behavior?: TemplateBehavior
   items: {
     item_type:
       | 'submission_method'
@@ -18,6 +28,7 @@ export interface TemplateConfig {
       | 'meeting_end_time'
     content: string
     isCustomizable?: boolean // 是否允許切換預設/自定義
+    inputType?: TemplateInputType
   }[]
 }
 
@@ -26,6 +37,12 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     id: 'meeting',
     name: '處務會議',
     defaultSubject: '處務會議資料填報',
+    behavior: {
+      showDepartment: false,
+      showDueDates: true,
+      calendarMode: 'deadline',
+      initialStatus: 'pending',
+    },
     items: [
       {
         item_type: 'meeting_time',
@@ -44,16 +61,24 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     id: 'meeting_simple',
     name: '一般會議',
     defaultSubject: '會議通知',
+    behavior: {
+      showDepartment: false,
+      showDueDates: false,
+      calendarMode: 'meeting',
+      initialStatus: 'completed',
+    },
     items: [
       {
         item_type: 'meeting_time',
         content: '',
         isCustomizable: false,
+        inputType: 'datetime-local',
       },
       {
         item_type: 'meeting_end_time',
         content: '',
         isCustomizable: false,
+        inputType: 'datetime-local',
       },
       {
         item_type: 'location',
@@ -76,6 +101,12 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     id: 'weekly_report',
     name: '市長週報',
     defaultSubject: '本週市長週報',
+    behavior: {
+      showDepartment: false,
+      showDueDates: true,
+      calendarMode: 'deadline',
+      initialStatus: 'pending',
+    },
     items: [
       {
         item_type: 'link',
@@ -89,6 +120,12 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     id: 'briefing',
     name: '市長面報',
     defaultSubject: '本周產業發展處市長面報簡報資料',
+    behavior: {
+      showDepartment: false,
+      showDueDates: true,
+      calendarMode: 'deadline',
+      initialStatus: 'pending',
+    },
     items: [
       {
         item_type: 'agenda',

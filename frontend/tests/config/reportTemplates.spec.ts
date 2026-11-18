@@ -24,4 +24,25 @@ describe('REPORT_TEMPLATES', () => {
       })
     })
   })
+
+  it('describes the special behavior of simple meetings', () => {
+    expect(REPORT_TEMPLATES.meeting_simple.behavior).toEqual({
+      showDepartment: false,
+      showDueDates: false,
+      calendarMode: 'meeting',
+      initialStatus: 'completed',
+    })
+    expect(
+      REPORT_TEMPLATES.meeting_simple.items
+        .filter((item) => item.item_type.endsWith('_time'))
+        .map((item) => item.inputType)
+    ).toEqual(['datetime-local', 'datetime-local'])
+  })
+
+  it('defines lifecycle and calendar behavior for every template', () => {
+    Object.values(REPORT_TEMPLATES).forEach((template) => {
+      expect(template.behavior?.initialStatus).toBeDefined()
+      expect(template.behavior?.calendarMode).toBeDefined()
+    })
+  })
 })
