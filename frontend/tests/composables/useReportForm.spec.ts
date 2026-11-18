@@ -46,13 +46,25 @@ describe('useReportForm', () => {
   })
 
   it('should apply template correctly', () => {
-    const { form, currentTemplate, applyTemplate, items } = useReportForm()
+    const { form, currentTemplate, currentTemplateConfig, applyTemplate, items } = useReportForm()
 
     applyTemplate('meeting')
     expect(currentTemplate.value).toBe('meeting')
+    expect(currentTemplateConfig.value.id).toBe('meeting')
     expect(form.template_type).toBe('meeting')
     expect(form.subject).toBe('處務會議資料填報')
     expect(items.value.length).toBeGreaterThan(0)
+  })
+
+  it('switches template initialization through the explicit template action', () => {
+    const { updateMode, applyTemplate, currentTemplateConfig, form } = useReportForm()
+
+    updateMode('template')
+    applyTemplate('briefing')
+
+    expect(currentTemplateConfig.value.id).toBe('briefing')
+    expect(form.template_type).toBe('briefing')
+    expect(form.subject).toBe(REPORT_TEMPLATES.briefing.defaultSubject)
   })
 
   it.each(Object.values(REPORT_TEMPLATES))(

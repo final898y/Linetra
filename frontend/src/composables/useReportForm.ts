@@ -28,6 +28,7 @@ export const useReportForm = () => {
   const activeTab = ref<(typeof tabs)[number]['id']>('general')
   const currentReportId = ref<string | null>(null)
   const currentTemplate = ref<TemplateType>('meeting')
+  const currentTemplateConfig = computed(() => REPORT_TEMPLATES[currentTemplate.value])
   const useDefaultValue = reactive<Record<string, boolean>>({})
   const isInitializing = ref(false)
 
@@ -186,22 +187,12 @@ export const useReportForm = () => {
     { deep: true }
   )
 
-  watch(activeTab, (newTab) => {
-    updateMode(newTab)
-  })
-
-  watch(currentTemplate, (newType) => {
-    if (isInitializing.value) return
-    if (activeTab.value === 'template') {
-      applyTemplate(newType)
-    }
-  })
-
   return {
     tabs,
     activeTab,
     currentReportId,
     currentTemplate,
+    currentTemplateConfig,
     useDefaultValue,
     form,
     items,
