@@ -21,8 +21,23 @@ export const TemplateType = {
 } as const
 
 export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType]
+export type ReportTemplateType = Exclude<TemplateType, 'general' | 'announcement' | 'task'>
 export type ReportStatus = Database['public']['Tables']['reports']['Row']['status']
-export type ItemType = Database['public']['Tables']['report_items']['Row']['item_type']
+
+export const ItemType = {
+  SubmissionMethod: 'submission_method',
+  Detail: 'detail',
+  Note: 'note',
+  Agenda: 'agenda',
+  Link: 'link',
+  MeetingTime: 'meeting_time',
+  MeetingEndTime: 'meeting_end_time',
+  Location: 'location',
+  Participants: 'participants',
+  Materials: 'materials',
+} as const
+
+export type ItemType = (typeof ItemType)[keyof typeof ItemType]
 
 export type DocumentTemplate = Database['public']['Tables']['document_templates']['Row']
 export type DocumentTemplateVersion =

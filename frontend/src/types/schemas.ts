@@ -1,29 +1,14 @@
 import { z } from 'zod'
+import { ItemType, TemplateType } from './models'
 
 // --- Enums ---
-export const TemplateTypeSchema = z.enum([
-  'general',
-  'meeting',
-  'meeting_simple',
-  'weekly_report',
-  'briefing',
-  'announcement',
-])
+export const TemplateTypeSchema = z.enum(
+  Object.values(TemplateType) as [TemplateType, ...TemplateType[]]
+)
 
 export const ReportStatusSchema = z.enum(['pending', 'completed', 'overdue', 'archived', 'deleted'])
 
-export const ItemTypeSchema = z.enum([
-  'submission_method',
-  'detail',
-  'note',
-  'agenda',
-  'link',
-  'meeting_time',
-  'meeting_end_time',
-  'location',
-  'participants',
-  'materials',
-])
+export const ItemTypeSchema = z.enum(Object.values(ItemType) as [ItemType, ...ItemType[]])
 
 // --- Report Item ---
 export const ReportItemSchema = z.object({

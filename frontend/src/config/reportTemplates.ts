@@ -1,4 +1,4 @@
-import type { ReportStatus, TemplateType } from '@/types/models'
+import type { ItemType, ReportStatus, ReportTemplateType } from '@/types/models'
 
 export type TemplateInputType = 'text' | 'textarea' | 'datetime-local'
 
@@ -10,29 +10,19 @@ export interface TemplateBehavior {
 }
 
 export interface TemplateConfig {
-  id: TemplateType
+  id: ReportTemplateType
   name: string
   defaultSubject: string
   behavior?: TemplateBehavior
   items: {
-    item_type:
-      | 'submission_method'
-      | 'detail'
-      | 'note'
-      | 'agenda'
-      | 'link'
-      | 'meeting_time'
-      | 'location'
-      | 'participants'
-      | 'materials'
-      | 'meeting_end_time'
+    item_type: ItemType
     content: string
     isCustomizable?: boolean // 是否允許切換預設/自定義
     inputType?: TemplateInputType
   }[]
 }
 
-export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
+export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
   meeting: {
     id: 'meeting',
     name: '處務會議',
@@ -134,6 +124,9 @@ export const REPORT_TEMPLATES: Record<string, TemplateConfig> = {
     ],
   },
 }
+
+export const isReportTemplateType = (type: string): type is ReportTemplateType =>
+  type in REPORT_TEMPLATES
 
 export const REPORT_ITEM_LABELS: Record<string, string> = {
   submission_method: '繳交方式',

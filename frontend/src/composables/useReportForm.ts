@@ -5,7 +5,13 @@ import {
   type TemplateInputType,
 } from '@/config/reportTemplates'
 import { COMMON_TAGS } from '@/config/reportTypes'
-import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from '@/types/models'
+import type {
+  ReportItemInsert,
+  ReportTemplateType,
+  TemplateType,
+  ReportStatus,
+  ReportInsert,
+} from '@/types/models'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 import { getInitialReportStatus } from '@/composables/useReportLifecycle'
 
@@ -34,7 +40,7 @@ export const useReportForm = () => {
 
   const activeTab = ref<(typeof tabs)[number]['id']>('general')
   const currentReportId = ref<string | null>(null)
-  const currentTemplate = ref<TemplateType>('meeting')
+  const currentTemplate = ref<ReportTemplateType>('meeting')
   const currentTemplateConfig = computed(() => REPORT_TEMPLATES[currentTemplate.value])
   const useDefaultValue = reactive<Record<string, boolean>>({})
   const isInitializing = ref(false)
@@ -96,7 +102,7 @@ export const useReportForm = () => {
       })
   })
 
-  const applyTemplate = (type: TemplateType) => {
+  const applyTemplate = (type: ReportTemplateType) => {
     const config = REPORT_TEMPLATES[type]
     if (!config) return
 

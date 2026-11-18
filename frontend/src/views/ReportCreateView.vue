@@ -15,10 +15,12 @@ import {
 } from '@heroicons/vue/24/outline'
 import { getReportFormTab, useReportForm } from '@/composables/useReportForm'
 import { getSentAtForSave } from '@/composables/useReportLifecycle'
-import { REPORT_TEMPLATES } from '@/config/reportTemplates'
+import { isReportTemplateType, REPORT_TEMPLATES } from '@/config/reportTemplates'
 import type {
   ReportItem,
   ReportStatus,
+  ItemType,
+  ReportTemplateType,
   TemplateType,
   ReportInsert,
   ReportItemInsert,
@@ -106,7 +108,9 @@ const initializeFromRoute = async () => {
       reportWithTags.report_tags?.map((rt: ReportTag) => rt.tags?.name || '').filter(Boolean) || []
 
     // Load items
-    const templateConfig = REPORT_TEMPLATES[form.template_type]
+    const templateConfig = isReportTemplateType(form.template_type)
+      ? REPORT_TEMPLATES[form.template_type]
+      : undefined
     items.value = reportItems.map((item: ReportItem) => ({
       ...item,
       isCustomizable: true,
@@ -117,7 +121,7 @@ const initializeFromRoute = async () => {
     // Set template and tab based on data
     activeTab.value = getReportFormTab(form.template_type)
     if (activeTab.value === 'template') {
-      currentTemplate.value = form.template_type as TemplateType
+      currentTemplate.value = form.template_type as ReportTemplateType
     }
   } finally {
     if (version === initializationVersion) {
@@ -202,17 +206,7 @@ const handleCopyAndSave = async () => {
     const reportItems: ReportItemInsert[] = items.value
       .filter((i) => i.content && i.content.trim() !== '')
       .map((i, index) => ({
-        item_type: (i.item_type || 'detail') as
-          | 'submission_method'
-          | 'detail'
-          | 'note'
-          | 'agenda'
-          | 'link'
-          | 'meeting_time'
-          | 'meeting_end_time'
-          | 'location'
-          | 'participants'
-          | 'materials',
+        item_type: (i.item_type || 'detail') as ItemType,
         content: i.content || '',
         sort_order: index + 1,
         report_id: reportId!,

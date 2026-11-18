@@ -1266,13 +1266,28 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:25:22] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:25:22] refactor(frontend): make report form rendering configuration driven
+- **Commit Hash:** `de63d2a`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-4-report-create-metadata.md
 - frontend/src/composables/useReportForm.ts
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportForm.spec.ts
+
+---
+
+### [2026-11-18 21:32:18] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-5-report-types.md
+- frontend/src/composables/useReportForm.ts
+- frontend/src/composables/useReportLifecycle.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/types/models.ts
+- frontend/src/types/schemas.ts
+- frontend/src/views/ReportCreateView.vue
+- frontend/tests/types/schemas.spec.ts
 
 ---
