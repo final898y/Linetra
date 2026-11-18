@@ -1,98 +1,94 @@
 ---
-title: Linetra — 邊緣函數與自動化任務設計 (Edge Functions & Cron Jobs)
-version: v1.0
-date: 2026-05-29
-status: Active
+title: Linetra Edge Functions 與自動化任務規劃
+version: v1.1
+date: 2026-11-19
+status: Planned
 author: Linetra Dev Team
 ---
 
-# Linetra — 邊緣函數與自動化任務設計 (Edge Functions & Cron Jobs)
+# Linetra Edge Functions 與自動化任務規劃
 
-本文件詳述 Linetra 如何利用 Supabase Edge Functions 實現自動化邏輯，包括案件狀態更新與提醒推送。
+> 本文件是未來自動化能力的設計草案。目前 repository 沒有 `supabase/functions/`、Edge Function 原始碼或 `notification_rules` / `notification_logs` 資料表，因此以下內容不能視為已部署功能。
 
-| 屬性 (Metadata) | 內容 (Content) |
-| :--- | :--- |
-| **文件版本 (Version)** | `v1.0` |
-| **最後更新 (Last Updated)** | 2026-05-29 |
-| **執行環境** | Deno (Supabase Edge Functions) |
+## 1. 文件定位
 
----
+| 文件 | 責任 |
+| --- | --- |
+| [system_architecture.md](system_architecture.md) | 系統元件與服務邊界總覽 |
+| [database_design.md](database_design.md) | 目前資料表、RLS、index 與 trigger 的實際狀態 |
+| 本文件 | Edge Functions、Cron 與通知功能的未來規劃 |
+| [supabase_setup_guide.md](../guides/supabase_setup_guide.md) | Supabase 建置與驗證操作 |
 
-## 1. 任務概覽 (Task Overview)
+若未來功能正式實作，必須同步新增 migration、`supabase/functions/` 原始碼、測試與部署紀錄，並更新本文件的狀態。
 
-系統依賴兩大核心自動化任務，均建議以 **每 10 分鐘** 為週期執行：
+## 2. 規劃中的自動化任務
 
-1.  **Overdue Scanner**: 掃描已過期但仍處於 `pending` 狀態的案件。
-2.  **Notification Dispatcher**: 掃描到達觸發時間的提醒規則，並準備推送。
+### 2.1 Overdue Scanner
 
----
+定期掃描 `reports`：
 
-## 2. 逾期掃描器 (Overdue Scanner)
-
-### 2.1 執行邏輯
-掃描所有 `announced_due_at < NOW()` 且 `status = 'pending'` 的案件。
-
-### 2.2 SQL 更新語句
 ```sql
-UPDATE reports
-SET status = 'overdue', updated_at = now()
-WHERE status = 'pending'
-  AND announced_due_at < now();
+update reports
+set status = 'overdue', updated_at = now()
+where status = 'pending'
+  and announced_due_at < now();
 ```
 
-### 2.3 邊緣函數實作要點
-*   使用 `service_role` key 以跳過 RLS 進行全表掃描。
-*   每次執行後記錄更新成功的件數至日誌。
+正式實作前需要確認：
 
----
+- `announced_due_at` 為空時是否跳過。
+- 是否應同時檢查 `actual_due_at`。
+- 逾期案件是否允許跨時區執行。
+- worker 使用 service role 時的最小權限範圍。
+- 重複執行時是否具備冪等性。
 
-## 3. 提醒派發器 (Notification Dispatcher)
+### 2.2 Notification Dispatcher
 
-### 3.1 執行流程
-1.  **掃描規則**: 查詢 `notification_rules` WHERE `trigger_at <= NOW()` AND `enabled = true`。
-2.  **狀態檢查**: 確保關聯案件 `status` 非 `completed` 或 `archived`。
-3.  **去重校驗**: 檢查 `notification_logs` 是否已存在相同的 `dedup_key`。
-4.  **觸發推送**: 呼叫推送介面（MVP 為 Browser Web Push）。
-5.  **寫入日誌**: 記錄成功、失敗或跳過的結果。
+目前 PRD 規劃以 `notification_rules` 與 `notification_logs` 管理提醒，但這兩張表尚未出現在 Supabase schema 快照，也沒有前端型別。
 
-### 3.2 去重機制 (Deduplication)
-`dedup_key` 的生成格式為：`{report_id}:{rule_id}:{trigger_at_unix}`。
-這確保了即使 Cron Job 重疊執行，同一個提醒點也只會發送一次。
+實作前必須先完成：
 
----
+1. 資料表與 migration。
+2. `report_id`、`rule_id` 的外鍵與刪除行為。
+3. `dedup_key` 的唯一性。
+4. RLS 與 worker service role 權限。
+5. Edge Function 的重試、失敗與去重測試。
 
-## 4. 瀏覽器通知實作 (Browser Notification)
+## 3. 通知方式規劃
 
-由於 Edge Function 運行在後端，無法直接「彈出」瀏覽器視窗，實作方式如下：
+### 3.1 Web Push
 
-### 4.1 方案：Web Push Protocol
-1.  **前端**: 使用者登入後，請求通知權限並將 `PushSubscription` 儲存至資料庫。
-2.  **後端 (Edge Function)**: 使用 `web-push` 函式庫將加密訊息推送到瀏覽器的 Push Service。
-3.  **Service Worker**: 前端 Service Worker 接收到推送後，顯示 `self.registration.showNotification()`。
+需要新增 subscription 資料模型、瀏覽器 permission 流程、Service Worker 與 Edge Function 派送流程。這些元件目前均未存在於 repository。
 
-### 4.2 降級方案：In-App Notification
-若 Web Push 實作過於複雜，可先實作「通知暫存表」，前端透過長輪詢或 Supabase Realtime 訂閱該表，當有新紀錄時顯示 UI 通知。
+### 3.2 In-App Notification
 
----
+若先不導入 Web Push，可先將通知紀錄存入資料庫，前端再透過查詢或 Realtime 顯示。但仍需先決定通知資料表與保留期限。
 
-## 5. 錯誤處理與重試機制
+## 4. 安全與執行邊界
 
-| 異常情境 | 處理策略 |
-| :--- | :--- |
-| **掃描到舊提醒 (已過 2hr)** | 標記為 `skipped`，不補送，避免半夜收到大量過期通知。 |
-| **Push Service 回傳 410** | 表示訂閱無效，應清除該使用者的 `PushSubscription`。 |
-| **函式執行超時** | 確保 `update` 操作具備事務性，避免狀態不一致。 |
+- service role key 只能存在於 Edge Function 的 server-side secret，不得放入 Vue 前端。
+- worker 應以最小權限執行，並記錄成功、失敗與略過原因。
+- 任何通知操作都必須具備去重策略，避免 Cron 重試造成重複通知。
+- RLS policy 與 worker 權限要分開設計，不能用 service role 繞過所有安全需求。
+- Edge Function 需對外部通知服務錯誤、逾時與 HTTP 410 等失效狀態建立處理方式。
 
----
+## 5. 建議實作順序
 
-## 6. 部署設定
+1. 先決定 notification data model，更新 [database_design.md](database_design.md)。
+2. 建立 migration 並在測試 Supabase 專案驗證 RLS。
+3. 建立 `supabase/functions/process-automated-tasks/`。
+4. 先實作 Overdue Scanner，補上單元與整合測試。
+5. 再實作 Notification Dispatcher 與 deduplication。
+6. 最後選擇 Web Push 或 In-App Notification。
+7. 更新 Supabase deployment 操作、README 與本文件狀態。
 
-使用 Supabase CLI 部署 Cron Job：
-```bash
-# 部署函數
-supabase functions deploy process-automated-tasks
+## 6. 完成條件
 
-# 設定定時觸發 (需在 Supabase Dashboard 或 pg_cron 設定)
-# 範例 SQL：
-# select cron.schedule('*/10 * * * *', 'select net.http_post(url:=''https://<project>.supabase.co/functions/v1/process-automated-tasks'', headers:=''{"Authorization": "Bearer <TOKEN>"}''::jsonb)');
-```
+本文件可以從 `Planned` 改為 `Active` 前，至少需要具備：
+
+- Edge Function 原始碼與部署設定。
+- notification 相關 migration。
+- RLS 與 service role 權限驗證。
+- Overdue Scanner 與 Dispatcher 測試。
+- Cron 執行紀錄與失敗重試策略。
+- 對應的前端通知或 Web Push 實作。

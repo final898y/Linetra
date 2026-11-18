@@ -2,7 +2,7 @@
 title: Linetra -- 案件檢視功能與 SOLID 改善方案計畫書
 version: v1.0
 date: 2026-06-22
-status: Active
+status: Archived
 author: Linetra Dev Team
 ---
 

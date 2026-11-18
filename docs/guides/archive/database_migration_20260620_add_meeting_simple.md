@@ -2,7 +2,7 @@
 title: Linetra -- 資料庫遷移指南 (2026-06-20) 新增 meeting_simple 模板
 version: v1.0
 date: 2026-06-20
-status: Active
+status: Archived
 author: Linetra Dev Team
 ---
 

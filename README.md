@@ -17,12 +17,12 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 專案文件 (Documentation)
 
-- **[產品架構與規範指南 (Standard)](docs/guides/project_architecture_guidelines.md)**: 專案目錄結構、Git 分支與 Commit 規範。
+- **[產品架構與規範指南 (Standard)](docs/architecture/project_architecture_guidelines.md)**: 專案目錄結構、Git 分支與 Commit 規範。
 - **[產品需求文件 (PRD)](docs/product/prd.md)**: 定義核心功能、狀態機與時間模型。
 - **[系統架構設計 (Architecture)](docs/architecture/system_architecture.md)**: 基於 Supabase 的 Serverless 方案說明。
 - **[資料庫設計 (Database Design)](docs/architecture/database_design.md)**: SQL Schema、RLS 政策與索引優化。
-- **[自動化任務設計 (Edge Functions)](docs/architecture/edge_functions_design.md)**: 逾期掃描與提醒系統邏輯。
-- **[前端開發規範 (Frontend Guide)](docs/guides/frontend_spec.md)**: Vue 3 專案結構、型別與模板引擎實作。
+- **[自動化任務規劃 (Edge Functions)](docs/architecture/edge_functions_design.md)**: 尚未部署的逾期掃描、Cron 與提醒功能規劃。
+- **[前端架構與開發規範 (Frontend Architecture)](docs/architecture/project_architecture_guidelines.md)**: Vue 3 分層、型別、模板引擎與測試規範。
 - **[報告模板新增與擴充指南 (Report Template Extension Guide)](docs/guides/report_template_extension_guide.md)**: 模板 registry、表單 metadata、Strategy、下游行為與測試流程。
 - **[視覺識別規範 (Visual Identity)](docs/product/visual_identity.md)**: 色彩計畫、字體與 Tailwind CSS 組件規範。
 - **[Google Calendar 與一般會議結束時間更新指南](docs/guides/google_calendar_meeting_end_time_migration.md)**: 既有 Supabase 資料庫新增 `meeting_end_time` Enum 值的手動 SQL。

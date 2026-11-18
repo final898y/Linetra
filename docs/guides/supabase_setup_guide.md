@@ -1,390 +1,185 @@
 ---
-title: Linetra — Supabase 資料庫初始化與設定指南
-version: v1.2
-date: 2026-08-17
+title: Linetra Supabase 建置與驗證手冊
+version: v1.3
+date: 2026-11-19
 status: Active
 author: Linetra Dev Team
 ---
 
-# Linetra — Supabase 資料庫初始化與設定指南
+# Linetra Supabase 建置與驗證手冊
 
-本文件提供 Linetra 專案在 Supabase 環境下的完整初始化 SQL 指令。請依照以下步驟在 Supabase Dashboard 的 **SQL Editor** 中執行。
+> 本文件是 Supabase 專案的建置、驗證與維運手冊，不是資料庫 schema 的第二份定義。資料表、欄位、enum、foreign key、index、trigger、function 與 RLS 的權威狀態，請以 [database_design.md](../architecture/database_design.md) 及正式 migration 為準。
 
-| 屬性 (Metadata) | 內容 (Content) |
-| :--- | :--- |
-| **文件版本 (Version)** | `v1.2` |
-| **最後更新 (Last Updated)** | 2026-08-17 |
-| **適用範圍 (Scope)** | 通報案件、公文範本、重點記事 |
-| **文件狀態 (Status)** | Active |
+## 1. 文件責任
 
----
+| 文件 | 用途 |
+| --- | --- |
+| [database_design.md](../architecture/database_design.md) | 目前 Supabase schema、RLS 與資料庫設計的唯一基準 |
+| 本文件 | 建立專案、設定環境、執行 migration 與驗證操作 |
+| [document_template_and_key_notes_lecture.md](document_template_and_key_notes_lecture.md) | 公文範本與重點記事的功能規格 |
+| `docs/guides/*migration*.md` | 單次 schema 變更的背景與執行紀錄 |
 
-## 第一步：建立自定義 Enum 型別 (Types)
+不要在本文件新增另一份長期維護的完整 `CREATE TABLE`、RLS 或 index 定義；若 schema 改變，應先更新 migration，再更新 `database_design.md`。
+
+## 2. 目前環境狀態
+
+目前 Supabase `public` schema 已包含：
+
+- `users`
+- `reports`
+- `report_items`
+- `tags`
+- `report_tags`
+- `document_templates`
+- `document_template_versions`
+- `key_notes`
+- `key_note_links`
+
+目前已完成的特別變更：
+
+- `template_type` enum 已加入 `youth_policy_update`。
+- 9 張 public table 已啟用 RLS。
+- `reports`、`document_templates`、`key_notes` 已套用 `handle_updated_at()` trigger。
+
+完整狀態與遠端快照請參考 [database_design.md](../architecture/database_design.md)。
+
+## 3. 建立 Supabase 專案
+
+1. 在 Supabase 建立專案。
+2. 記錄 Project URL 與 publishable key。
+3. 在 Authentication 中設定登入提供者與 redirect URL。
+4. 不要將 service role key 放入前端環境變數、repository 或文件。
+5. 將本機 `.env` 設定為：
+
+```env
+VITE_SUPABASE_URL=https://<project-ref>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+```
+
+前端 client 入口為 `frontend/src/api/supabase.ts`。前端只應使用 publishable key，資料權限由 Auth session 與 PostgreSQL RLS 控制。
+
+## 4. Schema 初始化與變更
+
+正式環境的 schema 變更應依下列順序處理：
+
+1. 先在測試 Supabase 專案驗證 SQL。
+2. 建立 migration，記錄變更原因、前後差異與回滾風險。
+3. 執行 migration。
+4. 匯出 schema、constraints、RLS、index、enum 與 functions 結果。
+5. 更新 [database_design.md](../architecture/database_design.md)。
+6. 更新 `frontend/src/types/database.types.ts`，確保前端型別與遠端 schema 一致。
+7. 執行前端測試與 build。
+
+`youth_policy_update` 的 enum 變更已在 Supabase 執行；目前仍應補充正式 migration 歷史，避免未來環境無法重建相同 schema。
+
+## 5. RLS 驗證
+
+每張 public table 都應確認 RLS 開啟：
 
 ```sql
--- 模板類型
-CREATE TYPE template_type AS ENUM (
-  'general',
-  'meeting',
-  'meeting_simple',
-  'weekly_report',
-  'briefing',
-  'announcement',
-  'task'
-);
-
--- 案件狀態
-CREATE TYPE report_status AS ENUM (
-  'pending',
-  'completed',
-  'overdue',
-  'archived',
-  'deleted'
-);
-
--- 提醒項目類型
-CREATE TYPE report_item_type AS ENUM (
-  'submission_method',
-  'detail',
-  'note',
-  'agenda',
-  'link',
-  'meeting_time',
-  'meeting_end_time',
-  'location',
-  'participants',
-  'materials'
-);
-
--- 重點記事分類
-CREATE TYPE key_note_category AS ENUM (
-  'procedure',
-  'leader_instruction',
-  'reminder',
-  'website'
-);
-
--- 重點記事狀態
-CREATE TYPE key_note_status AS ENUM (
-  'active',
-  'archived'
-);
+select
+  n.nspname as schemaname,
+  c.relname as tablename,
+  c.relrowsecurity as rls_enabled,
+  c.relforcerowsecurity as force_rls
+from pg_class c
+join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'public'
+  and c.relkind = 'r'
+order by c.relname;
 ```
 
----
-
-## 第二步：建立核心資料表 (Tables)
-
-### 1. `users` 映射表
+查詢 policy：
 
 ```sql
-CREATE TABLE public.users (
-  id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
-  email text NOT NULL,
-  name text,
-  avatar_url text,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+select
+  p.schemaname,
+  p.tablename,
+  c.relrowsecurity as rowsecurity,
+  p.policyname,
+  p.permissive,
+  p.roles,
+  p.cmd,
+  p.qual,
+  p.with_check
+from pg_policies p
+join pg_class c on c.relname = p.tablename
+join pg_namespace n
+  on n.oid = c.relnamespace
+ and n.nspname = p.schemaname
+where p.schemaname = 'public'
+order by p.tablename, p.policyname;
 ```
 
-### 2. `reports` 通報案件表
+驗證時至少要測試：
+
+- 使用者只能讀寫自己的 `reports`。
+- `report_items`、`document_template_versions`、`key_note_links` 不能繞過父表 owner 權限。
+- 未登入使用者不能讀取個人資料。
+- `report_tags` 與 `tags` 的共享權限符合產品決策。
+
+目前 `report_tags` 與 `tags` 的權限仍列在 [database_design.md](../architecture/database_design.md) 的待確認事項中，不能直接視為最終安全設定。
+
+## 6. Schema 驗證查詢
+
+### 6.1 資料表與欄位
 
 ```sql
-CREATE TABLE public.reports (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  template_type template_type NOT NULL,
-  department text,
-  subject text NOT NULL,
-  remarks text,
-  formatted_content text,
-  actual_due_at timestamptz,
-  announced_due_at timestamptz,
-  sent_at timestamptz,
-  importance_flag boolean DEFAULT false,
-  status report_status DEFAULT 'pending',
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
-
-ALTER TABLE public.reports ENABLE ROW LEVEL SECURITY;
+select
+  table_name,
+  column_name,
+  ordinal_position,
+  data_type,
+  udt_name,
+  is_nullable,
+  column_default
+from information_schema.columns
+where table_schema = 'public'
+order by table_name, ordinal_position;
 ```
 
-### 3. `tags` 與關聯表
+### 6.2 Foreign key、primary key 與 unique constraint
 
 ```sql
-CREATE TABLE public.tags (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  name text NOT NULL UNIQUE
-);
-
-CREATE TABLE public.report_tags (
-  report_id uuid REFERENCES public.reports(id) ON DELETE CASCADE,
-  tag_id uuid REFERENCES public.tags(id) ON DELETE CASCADE,
-  PRIMARY KEY (report_id, tag_id)
-);
-
-ALTER TABLE public.tags ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.report_tags ENABLE ROW LEVEL SECURITY;
+select
+  ns.nspname as schema_name,
+  conrel.relname as table_name,
+  con.conname as constraint_name,
+  pg_get_constraintdef(con.oid) as constraint_definition
+from pg_constraint con
+join pg_class conrel on conrel.oid = con.conrelid
+join pg_namespace ns on ns.oid = conrel.relnamespace
+where ns.nspname = 'public'
+order by conrel.relname, con.conname;
 ```
 
-### 4. `report_items` 案件細項表
+### 6.3 Index
 
 ```sql
-CREATE TABLE public.report_items (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  report_id uuid NOT NULL REFERENCES public.reports(id) ON DELETE CASCADE,
-  item_type report_item_type NOT NULL,
-  content text NOT NULL,
-  sort_order smallint DEFAULT 0
-);
-
-ALTER TABLE public.report_items ENABLE ROW LEVEL SECURITY;
+select schemaname, tablename, indexname, indexdef
+from pg_indexes
+where schemaname = 'public'
+order by tablename, indexname;
 ```
 
-### 5. `document_templates` 公文範本主檔
+### 6.4 Enum、function 與 trigger
 
-公文範本是可重複使用的 Markdown 內容，不屬於 `reports` 通報案件，因此使用獨立資料表。範本目前採個人使用，透過 `user_id` 進行 RLS 控制。
+請使用 [database_design.md](../architecture/database_design.md) 第 9 節的查詢，並將結果與前端型別及正式 migration 比對。
 
-```sql
-CREATE TABLE public.document_templates (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  name text NOT NULL,
-  category text,
-  is_active boolean NOT NULL DEFAULT true,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now()
-);
+## 7. 變更後檢查清單
 
-ALTER TABLE public.document_templates ENABLE ROW LEVEL SECURITY;
-```
+- [ ] 已在測試專案驗證 migration。
+- [ ] 已確認欄位、enum、constraint、index、trigger、function 與 RLS。
+- [ ] 已更新 `database_design.md`。
+- [ ] 已同步更新 `frontend/src/types/database.types.ts`。
+- [ ] 已新增或更新測試。
+- [ ] 已執行 `npm run test` 與 `npm run build`。
+- [ ] 已確認根目錄 `README.md` 與 `frontend/README.md` 是否需要更新。
+- [ ] commit 前已在 `docs/history/` 建立變更紀錄。
 
-### 6. `document_template_versions` 公文範本版本
+## 8. 安全注意事項
 
-每次編輯都新增一筆版本，不覆寫舊內容。這樣可以查看歷史版本，但目前不產生公文草稿，也不保存套用後快照。
-
-```sql
-CREATE TABLE public.document_template_versions (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  template_id uuid NOT NULL REFERENCES public.document_templates(id) ON DELETE CASCADE,
-  version_no integer NOT NULL CHECK (version_no > 0),
-  content_markdown text NOT NULL,
-  created_by uuid NOT NULL REFERENCES public.users(id) ON DELETE RESTRICT,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (template_id, version_no)
-);
-
-ALTER TABLE public.document_template_versions ENABLE ROW LEVEL SECURITY;
-```
-
-### 7. `key_notes` 重點記事
-
-重點記事與臨時任務不同，不使用 `reports.status`。它支援分類、置頂、排序、封存，以及生效／失效日期。
-
-```sql
-CREATE TABLE public.key_notes (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
-  title text NOT NULL,
-  category key_note_category NOT NULL,
-  content text NOT NULL DEFAULT '',
-  is_pinned boolean NOT NULL DEFAULT false,
-  sort_order integer NOT NULL DEFAULT 0,
-  status key_note_status NOT NULL DEFAULT 'active',
-  valid_from date,
-  valid_until date,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz NOT NULL DEFAULT now(),
-  CHECK (valid_until IS NULL OR valid_from IS NULL OR valid_until >= valid_from)
-);
-
-ALTER TABLE public.key_notes ENABLE ROW LEVEL SECURITY;
-```
-
-### 8. `key_note_links` 重點記事網站連結
-
-一則記事可能包含多個網站，因此使用子表，而不是把多個 URL 塞在同一個文字欄位。
-
-```sql
-CREATE TABLE public.key_note_links (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  note_id uuid NOT NULL REFERENCES public.key_notes(id) ON DELETE CASCADE,
-  label text NOT NULL,
-  url text NOT NULL CHECK (url ~* '^https://'),
-  sort_order integer NOT NULL DEFAULT 0,
-  created_at timestamptz NOT NULL DEFAULT now()
-);
-
-ALTER TABLE public.key_note_links ENABLE ROW LEVEL SECURITY;
-```
-
-目前不建立附件資料表。未來若啟用附件，檔案本體應放在 Supabase Storage，資料庫只保存檔案名稱、路徑、MIME type、大小與上傳者等 metadata。
-
----
-
-## 第三步：自動化機制 (Triggers & Functions)
-
-### 1. 自動更新 `updated_at`
-
-```sql
-CREATE OR REPLACE FUNCTION handle_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER tr_reports_updated_at
-  BEFORE UPDATE ON public.reports
-  FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
-```
-
-### 2. 自動同步 Auth Users
-
-```sql
-CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS trigger AS $$
-BEGIN
-  INSERT INTO public.users (id, email, name, avatar_url)
-  VALUES (
-    NEW.id,
-    NEW.email,
-    NEW.raw_user_meta_data->>'full_name',
-    NEW.raw_user_meta_data->>'avatar_url'
-  );
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER on_auth_user_created
-  AFTER INSERT ON auth.users
-  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
-```
-
-### 3. 新增資料表的 `updated_at` Trigger
-
-```sql
-CREATE TRIGGER tr_document_templates_updated_at
-  BEFORE UPDATE ON public.document_templates
-  FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
-
-CREATE TRIGGER tr_key_notes_updated_at
-  BEFORE UPDATE ON public.key_notes
-  FOR EACH ROW EXECUTE FUNCTION handle_updated_at();
-```
-
----
-
-## 第四步：Row Level Security (RLS)
-
-目前公文範本與重點記事都是個人資料。`auth.uid()` 代表目前登入者的 Supabase Auth UUID；每個人只能讀寫自己的主檔資料。
-
-```sql
--- 公文範本主檔
-CREATE POLICY "Users can manage their own document templates"
-  ON public.document_templates
-  FOR ALL TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
-
--- 公文範本版本：透過主檔繼承擁有權
-CREATE POLICY "Users can manage their own template versions"
-  ON public.document_template_versions
-  FOR ALL TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1
-      FROM public.document_templates
-      WHERE id = template_id AND user_id = auth.uid()
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1
-      FROM public.document_templates
-      WHERE id = template_id AND user_id = auth.uid()
-    )
-  );
-
--- 重點記事
-CREATE POLICY "Users can manage their own key notes"
-  ON public.key_notes
-  FOR ALL TO authenticated
-  USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user_id);
-
--- 重點記事連結：透過記事主檔繼承擁有權
-CREATE POLICY "Users can manage their own key note links"
-  ON public.key_note_links
-  FOR ALL TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1
-      FROM public.key_notes
-      WHERE id = note_id AND user_id = auth.uid()
-    )
-  )
-  WITH CHECK (
-    EXISTS (
-      SELECT 1
-      FROM public.key_notes
-      WHERE id = note_id AND user_id = auth.uid()
-    )
-  );
-```
-
-> 目前使用者系統尚未完成。正式啟用前，請確認 `public.users` 已由 `auth.users` 建立對應資料，否則 `user_id` 外鍵會阻止新增資料。
-
----
-
-## 第五步：效能優化 (Indexes)
-
-```sql
-CREATE INDEX idx_reports_user_status_due ON public.reports(user_id, status, announced_due_at);
-CREATE INDEX idx_tags_name ON public.tags(name);
-CREATE INDEX idx_document_templates_owner_active
-  ON public.document_templates(user_id, is_active, category);
-CREATE INDEX idx_template_versions_latest
-  ON public.document_template_versions(template_id, version_no DESC);
-CREATE INDEX idx_key_notes_owner_status
-  ON public.key_notes(user_id, status, category, is_pinned, sort_order);
-CREATE INDEX idx_key_note_links_order
-  ON public.key_note_links(note_id, sort_order);
-```
-
----
-
-## 第六步：Markdown 與附件安全注意事項
-
-公文範本與記事內容以 Markdown 儲存，但 Markdown 轉 HTML 顯示前必須使用 **HTML Sanitizer（HTML 清理器）**，移除 `<script>`、事件屬性與 `javascript:` URL，避免 **XSS（Cross-Site Scripting，跨網站腳本攻擊）**。
-
-附件功能目前只保留擴充空間。啟用時建議：
-
-1. 在 Supabase Storage 建立 private bucket。
-2. 資料庫只保存檔案 metadata，不直接保存檔案本體。
-3. 下載使用短時效的 **Signed URL（簽名網址）**。
-4. 附件 metadata 表依附在 `document_templates` 或 `key_notes`，不使用沒有外鍵保護的 polymorphic entity 欄位。
-
----
-
-## 第七步：型別同步與驗證
-
-Schema 修改完成後，需重新產生前端 TypeScript 型別，避免 `database.types.ts` 與實際資料庫不一致：
-
-```powershell
-supabase gen types typescript --project-id <PROJECT_ID> > frontend/src/types/database.types.ts
-```
-
-執行後請確認：
-
-- 新增四張資料表的 `Row`、`Insert`、`Update` 型別。
-- Enum 型別包含 `key_note_category` 與 `key_note_status`。
-- 前端 Store 的 CRUD 欄位與資料庫一致。
-- RLS 開啟後，使用者只能讀寫自己的資料。
-
-> 若使用 Supabase Dashboard 手動執行 SQL，仍建議將相同內容保存為 migration，避免測試、預備環境與正式環境的 schema 漂移。
+- 不要把 service role key 放入前端或提交至 Git。
+- 不要只用前端條件判斷資料權限。
+- 不要直接在正式環境手動修改 schema 而不留下 migration 紀錄。
+- 不要把 SQL Editor 的查詢結果與任何機密憑證一起分享。

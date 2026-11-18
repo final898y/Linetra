@@ -2,7 +2,7 @@
 title: Linetra — 行事曆功能實作計畫 (Calendar Implementation Plan)
 version: v1.0
 date: 2026-06-14
-status: Draft
+status: Archived
 author: Linetra Dev Team
 ---
 

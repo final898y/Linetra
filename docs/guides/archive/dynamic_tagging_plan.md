@@ -2,7 +2,7 @@
 title: Linetra — 標籤系統遷移計畫 (Tag Migration Plan)
 version: v1.0
 date: 2026-06-14
-status: Draft
+status: Archived
 author: Linetra Dev Team
 ---
 

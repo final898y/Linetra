@@ -2,7 +2,7 @@
 title: Linetra — 前端實作詳細計畫 (Frontend Implementation Plan)
 version: v1.0
 date: 2026-06-06
-status: Active
+status: Archived
 author: Linetra Dev Team
 ---
 

@@ -2,7 +2,7 @@
 title: 看板快速關鍵字搜尋功能設計與實作規劃
 version: v1.1
 date: 2026-06-28
-status: Active
+status: Archived
 author: Antigravity
 ---
 

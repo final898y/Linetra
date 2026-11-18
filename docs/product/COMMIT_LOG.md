@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-11-18
+date: 2026-11-19
 status: Active
 author: Linetra Dev Team
 ---
@@ -1354,12 +1354,33 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 22:44:21] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 22:44:21] docs(root): document report template architecture
+- **Commit Hash:** `726a118`
 
 **變更檔案 (Changed Files):**
 - README.md
 - docs/guides/report_template_extension_guide.md
 - docs/history/2026-11-18-update-readme-template-guide.md
+
+---
+
+### [2026-11-19 00:36:46] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/architecture/README.md
+- docs/architecture/database_design.md
+- docs/architecture/edge_functions_design.md
+- docs/architecture/project_architecture_guidelines.md
+- docs/architecture/system_architecture.md
+- docs/guides/README.md
+- docs/guides/archive/README.md
+- docs/guides/archive/google_calendar_meeting_end_time_migration.md
+- docs/guides/document_template_and_key_notes_lecture.md
+- docs/guides/frontend_spec.md
+- docs/guides/google_calendar_meeting_end_time_migration.md
+- docs/guides/supabase_setup_guide.md
+- docs/history/2026-11-19-organize-architecture-and-guides.md
 
 ---

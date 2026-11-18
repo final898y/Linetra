@@ -2,7 +2,7 @@
 title: FAB Speed Dial 功能設計與實作規劃
 version: v1.0
 date: 2026-07-29
-status: Active
+status: Archived
 author: Linetra Dev Team
 ---
 
