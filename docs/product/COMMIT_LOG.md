@@ -1,7 +1,7 @@
 ---
 title: Linetra — 專案提交日誌 (Commit Log)
 version: v1.0
-date: 2026-09-10
+date: 2026-11-18
 status: Active
 author: Linetra Dev Team
 ---
@@ -1216,10 +1216,20 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-09-10 21:11:26] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-09-10 21:11:26] style(frontend): customize workspace list scrollbars
+- **Commit Hash:** `f29605e`
 
 **變更檔案 (Changed Files):**
 - frontend/src/style.css
+
+---
+
+### [2026-11-18 20:56:20] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-update-linetra-standard-skill.md
+- tools/skills/README.md
+- tools/skills/linetra-standard/SKILL.md
 
 ---
