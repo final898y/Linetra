@@ -38,6 +38,7 @@ const {
   activeTab,
   currentReportId,
   currentTemplate,
+  currentTemplateConfig,
   useDefaultValue,
   form,
   items,
@@ -105,10 +106,12 @@ const initializeFromRoute = async () => {
       reportWithTags.report_tags?.map((rt: ReportTag) => rt.tags?.name || '').filter(Boolean) || []
 
     // Load items
-
+    const templateConfig = REPORT_TEMPLATES[form.template_type]
     items.value = reportItems.map((item: ReportItem) => ({
       ...item,
       isCustomizable: true,
+      inputType: templateConfig?.items.find((templateItem) => templateItem.item_type === item.item_type)
+        ?.inputType,
     }))
 
     // Set template and tab based on data
@@ -385,7 +388,7 @@ const handleCopyAndSave = async () => {
             <div
               v-if="
                 activeTab !== 'announcement' &&
-                !(activeTab === 'template' && currentTemplate === 'meeting_simple')
+                !(activeTab === 'template' && currentTemplateConfig?.behavior?.showDueDates === false)
               "
               class="space-y-4 pt-2"
             >
@@ -548,10 +551,7 @@ const handleCopyAndSave = async () => {
                 class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"
               ></textarea>
               <input
-                v-else-if="
-                  (item.item_type === 'meeting_time' || item.item_type === 'meeting_end_time') &&
-                  currentTemplate === 'meeting_simple'
-                "
+                v-else-if="item.inputType === 'datetime-local'"
                 v-model="item.content"
                 type="datetime-local"
                 class="w-full bg-cream-bg border border-cream-border rounded-xl px-4 py-2 text-sm text-cream-text focus:ring-1 focus:ring-brand focus:outline-none"

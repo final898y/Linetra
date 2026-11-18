@@ -1256,12 +1256,23 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:22:39] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:22:39] refactor(frontend): centralize template form initialization
+- **Commit Hash:** `0b58e8b`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-3-report-form-initialization.md
 - frontend/src/composables/useReportForm.ts
+- frontend/tests/composables/useReportForm.spec.ts
+
+---
+
+### [2026-11-18 21:25:22] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-4-report-create-metadata.md
+- frontend/src/composables/useReportForm.ts
+- frontend/src/views/ReportCreateView.vue
 - frontend/tests/composables/useReportForm.spec.ts
 
 ---

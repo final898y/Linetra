@@ -92,6 +92,9 @@ describe('useReportForm', () => {
     expect(items.value.map((item) => item.isCustomizable)).toEqual(
       template.items.map((item) => item.isCustomizable)
     )
+    expect(items.value.map((item) => item.inputType)).toEqual(
+      template.items.map((item) => item.inputType)
+    )
     expect(items.value.map((item) => item.sort_order)).toEqual([1, 2, 3, 4, 5])
   })
 

@@ -1,11 +1,18 @@
 import { ref, reactive, computed, watch } from 'vue'
-import { REPORT_TEMPLATES, REPORT_ITEM_LABELS } from '@/config/reportTemplates'
+import {
+  REPORT_TEMPLATES,
+  REPORT_ITEM_LABELS,
+  type TemplateInputType,
+} from '@/config/reportTemplates'
 import { COMMON_TAGS } from '@/config/reportTypes'
 import type { ReportItemInsert, TemplateType, ReportStatus, ReportInsert } from '@/types/models'
 import { useReportTemplate } from '@/composables/useReportTemplate'
 import { getInitialReportStatus } from '@/composables/useReportLifecycle'
 
 export type ReportFormTab = 'general' | 'template' | 'announcement' | 'task'
+export type ReportFormItem = Partial<
+  ReportItemInsert & { isCustomizable?: boolean; inputType?: TemplateInputType }
+>
 
 export const getReportFormTab = (templateType: TemplateType): ReportFormTab => {
   if (templateType === 'announcement') return 'announcement'
@@ -44,7 +51,7 @@ export const useReportForm = () => {
     status: 'pending' as ReportStatus,
   })
 
-  const items = ref<Partial<ReportItemInsert & { isCustomizable?: boolean }>[]>([])
+  const items = ref<ReportFormItem[]>([])
 
   const resetForm = () => {
     currentReportId.value = null
@@ -140,7 +147,7 @@ export const useReportForm = () => {
     }
   }
 
-  const toggleDefault = (item: Partial<ReportItemInsert & { isCustomizable?: boolean }>) => {
+  const toggleDefault = (item: ReportFormItem) => {
     const key = `${currentTemplate.value}_${item.item_type}`
     useDefaultValue[key] = !useDefaultValue[key]
     if (useDefaultValue[key]) {
