@@ -1277,8 +1277,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:32:18] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:32:18] refactor(frontend): unify report type definitions
+- **Commit Hash:** `d1e93ff`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-5-report-types.md
@@ -1289,5 +1289,24 @@ author: Linetra Dev Team
 - frontend/src/types/schemas.ts
 - frontend/src/views/ReportCreateView.vue
 - frontend/tests/types/schemas.spec.ts
+
+---
+
+### [2026-11-18 21:38:53] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-6-split-report-strategies.md
+- frontend/src/composables/reportStrategies/announcementStrategy.ts
+- frontend/src/composables/reportStrategies/baseStrategy.ts
+- frontend/src/composables/reportStrategies/briefingStrategy.ts
+- frontend/src/composables/reportStrategies/generalStrategy.ts
+- frontend/src/composables/reportStrategies/index.ts
+- frontend/src/composables/reportStrategies/meetingSimpleStrategy.ts
+- frontend/src/composables/reportStrategies/meetingStrategy.ts
+- frontend/src/composables/reportStrategies/taskStrategy.ts
+- frontend/src/composables/reportStrategies/types.ts
+- frontend/src/composables/reportStrategies/weeklyStrategy.ts
+- frontend/src/composables/useReportStrategies.ts
 
 ---
