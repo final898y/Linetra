@@ -1326,8 +1326,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:57:02] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:57:02] feat(frontend): add youth policy update template
+- **Commit Hash:** `cdc1016`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-8-youth-policy-update-template.md
@@ -1341,5 +1341,15 @@ author: Linetra Dev Team
 - frontend/tests/composables/useReportForm.spec.ts
 - frontend/tests/composables/useReportStrategies.spec.ts
 - frontend/tests/composables/useReportTemplate.spec.ts
+
+---
+
+### [2026-11-18 22:39:27] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-set-meeting-report-status-completed.md
+- frontend/src/config/reportTemplates.ts
+- frontend/tests/composables/useReportLifecycle.spec.ts
 
 ---

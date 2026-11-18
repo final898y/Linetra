@@ -4,6 +4,9 @@ import { getInitialReportStatus, getSentAtForSave } from '@/composables/useRepor
 describe('useReportLifecycle', () => {
   it('marks non-tracking modes as completed when created', () => {
     expect(getInitialReportStatus('meeting_simple')).toBe('completed')
+    expect(getInitialReportStatus('meeting')).toBe('completed')
+    expect(getInitialReportStatus('weekly_report')).toBe('completed')
+    expect(getInitialReportStatus('briefing')).toBe('completed')
     expect(getInitialReportStatus('announcement')).toBe('completed')
   })
 

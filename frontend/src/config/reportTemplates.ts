@@ -33,7 +33,7 @@ export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
       showDepartment: false,
       showDueDates: true,
       calendarMode: 'deadline',
-      initialStatus: 'pending',
+      initialStatus: 'completed',
     },
     items: [
       {
@@ -97,7 +97,7 @@ export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
       showDepartment: false,
       showDueDates: true,
       calendarMode: 'deadline',
-      initialStatus: 'pending',
+      initialStatus: 'completed',
     },
     items: [
       {
@@ -116,7 +116,7 @@ export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
       showDepartment: false,
       showDueDates: true,
       calendarMode: 'deadline',
-      initialStatus: 'pending',
+      initialStatus: 'completed',
     },
     items: [
       {
