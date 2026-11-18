@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useReportStore } from '@/stores/reports'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
-import { REPORT_ITEM_LABELS } from '@/config/reportTemplates'
+import { getReportBehavior, REPORT_ITEM_LABELS } from '@/config/reportTemplates'
 import { useReportItemFormatter } from '@/composables/useReportItemFormatter'
 import type { ReportWithTags, ReportItem } from '@/types/models'
 import { ArrowLeftIcon, PencilIcon, CheckIcon, TrashIcon } from '@heroicons/vue/24/outline'
@@ -17,6 +17,9 @@ const { formatItemContent } = useReportItemFormatter()
 const report = ref<ReportWithTags | null>(null)
 const items = ref<ReportItem[]>([])
 const loading = ref(true)
+const showDueDates = computed(
+  () => report.value !== null && getReportBehavior(report.value.template_type).showDueDates !== false
+)
 
 onMounted(async () => {
   const reportId = route.params.id as string
@@ -118,7 +121,7 @@ const handleDelete = async () => {
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">狀態</p>
           <p class="text-sm font-bold text-brand uppercase">{{ report.status }}</p>
         </div>
-        <div v-if="report.template_type !== 'meeting_simple'">
+        <div v-if="showDueDates">
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">對外期限</p>
           <p
             class="text-sm font-bold"
@@ -133,7 +136,7 @@ const handleDelete = async () => {
             <span class="ml-2">{{ formatRelative(report.announced_due_at) }}</span>
           </p>
         </div>
-        <div v-if="report.actual_due_at && report.template_type !== 'meeting_simple'">
+        <div v-if="report.actual_due_at && showDueDates">
           <p class="text-[10px] font-bold text-cream-muted uppercase tracking-widest">
             實際截止 (內控)
           </p>

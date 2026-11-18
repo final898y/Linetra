@@ -4,6 +4,7 @@ import { useReportStore } from '@/stores/reports'
 import { useAuthStore } from '@/stores/auth'
 import { useGoogleCalendar } from '@/composables/useGoogleCalendar'
 import { PlusIcon, DocumentDuplicateIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline'
+import { getReportBehavior } from '@/config/reportTemplates'
 import type { Component } from 'vue'
 
 export interface FABAction {
@@ -54,14 +55,15 @@ export function useFABActions() {
               const meetingEnd = reportStore.currentItems.find(
                 (item) => item.item_type === 'meeting_end_time'
               )?.content
-              if (report.template_type === 'meeting_simple' && !meetingStart) {
+              const calendarMode = getReportBehavior(report.template_type).calendarMode
+              const isMeeting = calendarMode === 'meeting'
+              if (isMeeting && !meetingStart) {
                 alert('請先設定會議時間')
                 return
               }
-              const eventStart =
-                report.template_type === 'meeting_simple'
-                  ? meetingStart
-                  : report.announced_due_at || report.actual_due_at
+              const eventStart = isMeeting
+                ? meetingStart
+                : report.announced_due_at || report.actual_due_at
               if (!eventStart) {
                 alert('請先設定案件日期')
                 return
@@ -71,9 +73,9 @@ export function useFABActions() {
                 {
                   summary: report.subject,
                   description: report.formatted_content || '',
-                  startAt: report.template_type === 'meeting_simple' ? meetingStart! : eventStart,
-                  endAt: report.template_type === 'meeting_simple' ? meetingEnd : undefined,
-                  allDay: report.template_type !== 'meeting_simple',
+                  startAt: isMeeting ? meetingStart! : eventStart,
+                  endAt: isMeeting ? meetingEnd : undefined,
+                  allDay: !isMeeting,
                 },
                 authStore.user?.email ?? undefined
               )

@@ -4,6 +4,7 @@ import type { ReportWithTags } from '@/types/models'
 import { useTimeFormatter } from '@/composables/useTimeFormatter'
 import { useReportStore } from '@/stores/reports'
 import { ALL_REPORT_TYPES } from '@/config/reportTypes'
+import { getReportBehavior } from '@/config/reportTemplates'
 import { CheckIcon } from '@heroicons/vue/24/outline'
 
 const props = defineProps<{
@@ -22,6 +23,9 @@ const reportTypeNoteClass = computed(() => {
   if (props.report.template_type === 'task') return 'report-card-note-task'
   return 'report-card-note-type'
 })
+const showDueDates = computed(
+  () => getReportBehavior(props.report.template_type).showDueDates !== false
+)
 
 const handleComplete = async () => {
   try {
@@ -95,10 +99,7 @@ const statusColors = {
     <div class="mt-6 pt-4 border-t border-cream-border/50">
       <div class="flex justify-between items-end gap-4">
         <div
-          v-if="
-            report.template_type !== 'meeting_simple' &&
-            (report.announced_due_at || report.actual_due_at)
-          "
+          v-if="showDueDates && (report.announced_due_at || report.actual_due_at)"
           class="space-y-2"
         >
           <div v-if="report.announced_due_at">

@@ -101,6 +101,17 @@ describe('ReportCard.vue', () => {
     expect(wrapper.text()).toContain('實際截止 (內控)')
   })
 
+  it('hides deadline details for templates that disable due dates', () => {
+    const wrapper = mount(ReportCard, {
+      props: {
+        report: { ...mockReport, template_type: 'meeting_simple' },
+      },
+    })
+
+    expect(wrapper.text()).not.toContain('2026/06/10 16:00')
+    expect(wrapper.text()).not.toContain('����(�g�T)')
+  })
+
   it('handles completion error gracefully', async () => {
     mockUpdateStatus.mockRejectedValueOnce(new Error('Update failed'))
 

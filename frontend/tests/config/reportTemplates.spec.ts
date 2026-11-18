@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { REPORT_TEMPLATES } from '@/config/reportTemplates'
+import { getReportBehavior, REPORT_TEMPLATES } from '@/config/reportTemplates'
 
 describe('REPORT_TEMPLATES', () => {
   it('keeps each registry key aligned with its template id', () => {
@@ -43,6 +43,17 @@ describe('REPORT_TEMPLATES', () => {
     Object.values(REPORT_TEMPLATES).forEach((template) => {
       expect(template.behavior?.initialStatus).toBeDefined()
       expect(template.behavior?.calendarMode).toBeDefined()
+    })
+  })
+
+  it('provides default downstream behavior for non-template report types', () => {
+    expect(getReportBehavior('general')).toMatchObject({
+      showDueDates: true,
+      calendarMode: 'deadline',
+    })
+    expect(getReportBehavior('meeting_simple')).toMatchObject({
+      showDueDates: false,
+      calendarMode: 'meeting',
     })
   })
 })

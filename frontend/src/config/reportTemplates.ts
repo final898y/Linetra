@@ -1,4 +1,4 @@
-import type { ItemType, ReportStatus, ReportTemplateType } from '@/types/models'
+import type { ItemType, ReportStatus, ReportTemplateType, TemplateType } from '@/types/models'
 
 export type TemplateInputType = 'text' | 'textarea' | 'datetime-local'
 
@@ -127,6 +127,18 @@ export const REPORT_TEMPLATES: Record<ReportTemplateType, TemplateConfig> = {
 
 export const isReportTemplateType = (type: string): type is ReportTemplateType =>
   type in REPORT_TEMPLATES
+
+const DEFAULT_REPORT_BEHAVIOR: TemplateBehavior = {
+  showDepartment: true,
+  showDueDates: true,
+  calendarMode: 'deadline',
+  initialStatus: 'pending',
+}
+
+export const getReportBehavior = (type: TemplateType): TemplateBehavior => ({
+  ...DEFAULT_REPORT_BEHAVIOR,
+  ...(isReportTemplateType(type) ? REPORT_TEMPLATES[type].behavior : {}),
+})
 
 export const REPORT_ITEM_LABELS: Record<string, string> = {
   submission_method: '繳交方式',

@@ -1292,8 +1292,8 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 21:38:53] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 21:38:53] refactor(frontend): split report output strategies
+- **Commit Hash:** `44c957e`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-phase-6-split-report-strategies.md
@@ -1308,5 +1308,20 @@ author: Linetra Dev Team
 - frontend/src/composables/reportStrategies/types.ts
 - frontend/src/composables/reportStrategies/weeklyStrategy.ts
 - frontend/src/composables/useReportStrategies.ts
+
+---
+
+### [2026-11-18 21:43:34] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- docs/history/2026-11-18-phase-7-downstream-template-behavior.md
+- frontend/src/components/common/ReportCard.vue
+- frontend/src/composables/useFABActions.ts
+- frontend/src/config/reportTemplates.ts
+- frontend/src/views/ReportDetailView.vue
+- frontend/tests/components/common/ReportCard.spec.ts
+- frontend/tests/config/reportTemplates.spec.ts
+- frontend/tests/views/ReportDetailView.spec.ts
 
 ---

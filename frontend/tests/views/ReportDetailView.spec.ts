@@ -48,6 +48,20 @@ vi.mock('@/composables/useReportItemFormatter', () => ({
 }))
 
 describe('ReportDetailView.vue', () => {
+  it('hides deadline details for simple meetings', async () => {
+    const originalType = mockReport.template_type
+    mockReport.template_type = 'meeting_simple'
+
+    const wrapper = mount(ReportDetailView, {
+      global: { stubs: { RouterLink: true } },
+    })
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain('2026-07-31T09:00:00Z')
+    expect(wrapper.text()).not.toContain('2026-08-01T09:00:00Z')
+    mockReport.template_type = originalType
+  })
+
   it('shows the absolute date and relative description for both deadlines', async () => {
     const wrapper = mount(ReportDetailView, {
       global: { stubs: { RouterLink: true } },
