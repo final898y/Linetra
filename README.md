@@ -7,7 +7,7 @@
 | **專案版本 (Version)**      | `v1.3`                  |
 | **開發狀態 (Status)**       | 開發中 (In Development) |
 | **建立日期 (Created Date)** | 2026-05-24              |
-| **最後更新 (Last Updated)** | 2026-07-29              |
+| **最後更新 (Last Updated)** | 2026-11-18              |
 | **主要作者 (Author)**       | Linetra Dev Team        |
 | **授權條款 (License)**      | [MIT License](LICENSE)  |
 
@@ -23,6 +23,7 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 - **[資料庫設計 (Database Design)](docs/architecture/database_design.md)**: SQL Schema、RLS 政策與索引優化。
 - **[自動化任務設計 (Edge Functions)](docs/architecture/edge_functions_design.md)**: 逾期掃描與提醒系統邏輯。
 - **[前端開發規範 (Frontend Guide)](docs/guides/frontend_spec.md)**: Vue 3 專案結構、型別與模板引擎實作。
+- **[報告模板新增與擴充指南 (Report Template Extension Guide)](docs/guides/report_template_extension_guide.md)**: 模板 registry、表單 metadata、Strategy、下游行為與測試流程。
 - **[視覺識別規範 (Visual Identity)](docs/product/visual_identity.md)**: 色彩計畫、字體與 Tailwind CSS 組件規範。
 - **[Google Calendar 與一般會議結束時間更新指南](docs/guides/google_calendar_meeting_end_time_migration.md)**: 既有 Supabase 資料庫新增 `meeting_end_time` Enum 值的手動 SQL。
 
@@ -30,7 +31,8 @@ Linetra 是一款專為行政承辦人設計的通報管理平台，旨在解決
 
 ## 核心功能 (Key Features)
 
-- **策略模式通報產生器 (Strategy-based Report Generator)**：提供 7 種行政專用模板（一般案件、處務會議、一般會議、市長週報、面報、公告通知、臨時任務），基於策略模式實現高度可擴充的格式化文字輸出與即時預覽。
+- **策略模式通報產生器 (Strategy-based Report Generator)**：提供 8 種行政專用模板（一般案件、處務會議、一般會議、市長週報、面報、青年政策及資源定期更新、公告通知、臨時任務），基於 registry 與策略模式實現可擴充的格式化文字輸出與即時預覽。
+- **模板 metadata 與分層策略 (Template Metadata & Strategy Registry)**：模板設定集中管理預設欄位、通報單位、期限、輸入型態、初始狀態與 Calendar 行為；各報告輸出策略拆分於 `frontend/src/composables/reportStrategies/`。
 - **雙重期限管理 (Dual-Deadline Management)**：同時管理「真實截止時間 (Actual Due)」與「對外通知期限 (Announced Due)」，內建自動跳過週末的期限計算邏輯。
 - **一般會議與 Google Calendar**：一般會議以起訖時間建立定時日曆事件，未填結束時間時預設為 1 小時；其他案件以對外通知期限建立全天事件。
 - **案件生命週期追蹤 (Case Lifecycle Tracking)**：完整的案件 CRUD 與狀態管理，支援待辦 (Pending)、已完成 (Completed)、已逾期 (Overdue) 等狀態切換。

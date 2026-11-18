@@ -1344,12 +1344,22 @@ author: Linetra Dev Team
 
 ---
 
-### [2026-11-18 22:39:27] [Message: Pending]
-- **Commit Hash:** `[Hash: Pending]`
+### [2026-11-18 22:39:27] fix(frontend): mark executive report templates completed
+- **Commit Hash:** `95f2fe1`
 
 **變更檔案 (Changed Files):**
 - docs/history/2026-11-18-set-meeting-report-status-completed.md
 - frontend/src/config/reportTemplates.ts
 - frontend/tests/composables/useReportLifecycle.spec.ts
+
+---
+
+### [2026-11-18 22:44:21] [Message: Pending]
+- **Commit Hash:** `[Hash: Pending]`
+
+**變更檔案 (Changed Files):**
+- README.md
+- docs/guides/report_template_extension_guide.md
+- docs/history/2026-11-18-update-readme-template-guide.md
 
 ---
